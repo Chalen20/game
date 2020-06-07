@@ -19,6 +19,7 @@ class Monster():
 
     def attack(self):
         attack_value = randint(0.7 * allMonsters[self.name][5], 1.3 * allMonsters[self.name][5])
+        return attack_value
 
     def die(self):
         self.health = 0

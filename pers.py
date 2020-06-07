@@ -33,7 +33,7 @@ class Pers():
             attack_value = randint(1, 5)
         else:
             attack_value = randint(1, 5 + self.equipment["weapon"]["value"])
-        print(attack_value)
+        return attack_value
 
     def eat(self, item):
         if "food" in item["uses"]:
