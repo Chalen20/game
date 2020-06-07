@@ -23,6 +23,7 @@ class Pers():
         self.faced_east = False
         self.bot_skin = allPers[name][2]
         self.speed_of_hunger_change_timer = 13
+        self.isDied = False
         while True:
             sleep(self.speed_of_hunger_change_timer)
             self.starvation()
@@ -49,6 +50,7 @@ class Pers():
         self.health = 0
         self.hunger = 100
         self.skin = self.died_skin
+        self.isDied = True
 
     def move_left(self):
         if self.faced_east:

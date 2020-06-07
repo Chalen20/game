@@ -15,6 +15,7 @@ class Monster():
         self.coords = {}
         self.coords.x = 0
         self.coords.y = 0
+        self.isDied = False
 
     def attack(self):
         attack_value = randint(0.7 * allMonsters[self.name][5], 1.3 * allMonsters[self.name][5])
@@ -22,6 +23,7 @@ class Monster():
     def die(self):
         self.health = 0
         self.skin = self.died_skin
+        self.isDied = True
 
     def move_left(self):
         if self.faced_east:
