@@ -1,7 +1,11 @@
 from random import *
 from time import *
+from tkinter import *
 
-allPers = {"name1": ["skin", "dead_skin", "bot_skin"]}
+allPers = {"pers1": [PhotoImage(file='img/Pers1.png'), PhotoImage(file='img/Pers1_bottom_view.png')],
+           "pers2": [PhotoImage(file="img/Pers4.png"), PhotoImage(file='img/Pers4_bottom_view.png')],
+           "pers3": [PhotoImage(file="img/Pers5.png"), PhotoImage(file="img/Pers5_bottom_view.png")],
+           "pers4": [PhotoImage(file="img/Pers8.png"), PhotoImage(file="img/Pers8_bottom_view.png")]}
 
 class Pers():
     def __init__(self, name):
@@ -15,7 +19,6 @@ class Pers():
         self.equipment = {}
         self.equipment.weapon = None
         self.equipment.armor = None
-        self.died_skin = allPers[name][1]
         self.coords = {}
         self.coords.x = 0
         self.coords.y = 0
@@ -49,7 +52,7 @@ class Pers():
     def die(self):
         self.health = 0
         self.hunger = 100
-        self.skin = self.died_skin
+        self.skin = self.skin.rotate(90)
         self.isDied = True
 
     def move_left(self):
