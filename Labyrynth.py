@@ -12,9 +12,9 @@ from time import sleep
 class GUI:
     def __init__(self):
         window=Tk()
-        canvas = Canvas(window,width=300,height=300,bg='white')
+        canvas = Canvas(window,width=600,height=600,bg='white')
         canvas.pack()
-        c=Chunk({'chunk_size':16},0,0)
+        c=Chunk({'chunk_size':32},0,0)
         ren = Renderer(canvas)
         cb = CollectiveBrain()
         cb.setChunk(c)
@@ -29,8 +29,7 @@ class Renderer:
            for j in i:
                self.renderTile(j)
     def renderTile(self,tile):
-        print('tile: '+str(tile.x)+" "+str(tile.y)+'con:')
-        self.betterTiles(tile.connections)
+        
         size =10
         x= tile.x*10
         y= tile.y*10
@@ -42,13 +41,6 @@ class Renderer:
             self.canvas.create_line(x+10,y,x+10,y+10)
         if not tile.connections[3]:
             self.canvas.create_line(x,y+10,x+10,y+10)
-    def renderBuilder(self,b):
-         self.canvas.create_rectangle(b.x*10,b.y*10,b.x*10+10,b.y*10+10,fill='red')
-    def betterTiles(self, tiles):
-        for i in tiles:
-            if i :
-                print(str(i.x)+' '+str(i.y))
-        print()
 #------------------------------------------------------------
 #Labyrynth:
 #   Chunk(every chunk has the same tile numeration but ech chunk has it`s own x y z):
@@ -69,7 +61,7 @@ class Chunk:
         self.size=options['chunk_size']
         self.tiles=[]
         self.chunkExits=[]
-        #self.generateExits(0,0,0,0)
+       
         for i in range(options['chunk_size']):
             self.tiles.append([])
             for j in range(options['chunk_size']):
@@ -78,20 +70,7 @@ class Chunk:
                     self.tiles[i][j].addNeighbour(EAST,self.tiles[i-1][j])
                 if(j>0):
                     self.tiles[i][j].addNeighbour(SOUTH,self.tiles[i][j-1])
-    #def neighbours(self,tile):
-    #    result=[None,None,None,None]
-    #    #y x reversed    
-    #    x=tile.x
-    #    y=tile.y
-    #    if(x>0):
-    #        result[SOUTH]=self.tiles[x][y-1]
-    #    if(y>0):
-    #        result[WEST]=self.tiles[x-1][y]
-    #    if(y+2<self.size):
-    #        result[NORTH]=self.tiles[x][y+1]
-    #    if(x+2<self.size):
-    #        result[EAST]=self.tiles[x+1][y]
-    #    return result
+    
     def generateExits(self,southExit,eastExit,westExit,northExit):
             self.self.chunkExits=[southExit,eastExit,westExit,northExit]
                    
@@ -107,9 +86,7 @@ class Tile:
         self.neighbours[direction]=tile
         tile.neighbours[3-direction]=self
     def connect(self,tile):
-        #if self.connections[self.neighbours.index(tile)]==tile:
             self.connections[self.neighbours.index(tile)]=tile
-            #if tile.connections[3-self.neighbours.index(tile)]==False:
             tile.connections[3-self.neighbours.index(tile)]=self
         
 #---------------------------------------------------------------
@@ -120,7 +97,7 @@ class CollectiveBrain:
     def __init__(self):
         self.chunk=None
         self.intensity=0.1
-        self.lifespanlength = 6
+        self.lifespanlength = 10
         self.loopChance=0.2
     def setChunk(self,chunk):
         self.chunk = chunk
@@ -129,11 +106,11 @@ class CollectiveBrain:
         self.pool=[]
         self.addBuilder(enterPoint)
         while len(self.pool)< self.chunk.size*self.chunk.size :
-            print(len(self.pool))
+            
             for i in self.team:
                 
                 result = i.findAndMove(self.pool)
-                print(result)
+               
                 if result['tile']:
                     self.pool.append(result['tile'])
                 if result['newBorn']:
@@ -143,7 +120,7 @@ class CollectiveBrain:
                     self.team.remove(i)
                     del i
             
-        #print(self.pool)         
+       
     def addBuilder(self,tile):
         self.team.append(LabBuilder(tile.x,tile.y,tile,self.lifespanlength,self.intensity,self.loopChance))
         self.pool.append(tile)
@@ -158,11 +135,10 @@ class LabBuilder:
         self.loopChance=chance
         self.currentTile=tile
         self.memory=[]
-        #self.memory.append(tile)
+       
         self.died=False
     def move(self,tile):
-        #print(neighbours)
-        #self.betterTiles(neighbours)
+        
         self.memory.append(self.currentTile)
         self.currentTile.connect(tile)
         self.currentTile=tile
@@ -192,24 +168,16 @@ class LabBuilder:
                 possible.remove(tile)
                 tile=possible[randint(0,len(possible)-1)]
                 result['newBorn']=self.born(tile)
-            #self.betterTiles(possible)
+            
             tile=possible[randint(0,len(possible)-1)]
-            #direction=self.getDirection(self.currentTile,tile)
-            #print(str(self.currentTile.x)+" "+str(self.currentTile.y)+"   "+str(tile.x)+" "+str(tile.y)+'  '+str(direction))
+           
+            
             result['tile']=self.move(tile)
-            self.betterTile(result['tile'])
-            #pool.append(result['tile'])
+
+            
+           
             
         return result
-    def betterTile(self,tile):
-        print(str(tile.x)+' '+str(tile.y))
-    def betterTiles(self, tiles):
-        for i in range(len(tiles)):
-            
-            if tiles[i] :
-                print(str(tiles[i].x)+' '+str(tiles[i].y)+"  "+str(i))
-        print()
-    
     def die(self):
         
         tile=self.currentTile.neighbours[randint(0,3)]
