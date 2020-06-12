@@ -1,6 +1,9 @@
 from random import *
 
-allWeapons = {"name1": ["skin", "arr_attack", "died_skin", "coefficient_of_fracture"]}
+allWeapons = {"ax1": [PhotoImage(file='img/weapon/Ax.png'), 10, 0.05],
+              "ax2": [PhotoImage(file='img/weapon/Ax2.png'), 11, 0.051],
+              "sword1": [PhotoImage(file='img/weapon/Sword1.png'), 5, 0.1],
+              "sword2": [PhotoImage(file='img/weapon/Sword2.png'), 11, 0.051}
 
 class Weapon():
     def __init__(self, name):
@@ -10,7 +13,6 @@ class Weapon():
         self.coords = {}
         self.coords.x = 0
         self.coords.y = 0
-        self.died_skin = allWeapons[name][2]
         self.fracture_of_weapon = 0
         self.coefficient = allWeapons[name][3]
         self.isBroken = False
@@ -19,7 +21,6 @@ class Weapon():
     def broke(self):
         self.value = 0
         self.fracture_of_weapon = 100
-        self.skin = self.died_skin
         self.isBroken = True
 
     def fracture(self):
