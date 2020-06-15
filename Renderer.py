@@ -4,22 +4,24 @@ class Renderer:
         self.gui=gui
         self.x=self.gui.x
         self.y=self.gui.y
-    def drawChunk(self,canvas,chunk):
+        self.canvas=self.gui.canvas
+    def renderChunk(self,chunk):
+       for i in chunk.tiles:
+           for j in i:
+               self.renderTile(j,chunk.x,chunk.y)
+    def renderTile(self,tile,cx,cy):
         
-    def drawTile(self,tile,size):
-        x= self.x+self.tileWidth*(tile.x+size*cx
-        y= tile.y*10+180*cy
+        size =10
+        x= tile.x*50+900*cx
+        y= tile.y*50+900*cy
         if not tile.connections[0]:
-            self.canvas.create_line(x,y,x+10,y)
+            self.canvas.create_rectangle(x,y,x+50,y+1)
         if not tile.connections[1]:
-            self.canvas.create_line(x,y,x,y+10)
+            self.canvas.create_rectangle(x,y,x+1,y+50)
         if not tile.connections[2]:
-            self.canvas.create_line(x+10,y,x+10,y+10)
+            self.canvas.create_rectangle(x+50,y+1,x+50,y+50)
         if not tile.connections[3]:
-            self.canvas.create_line(x,y+10,x+10,y+10)
-    
-    def drawWalls(x1,y1,x2,y2):
-        
+            self.canvas.create_rectangle(x+1,y+50,x+50,y+50)
         
         
     

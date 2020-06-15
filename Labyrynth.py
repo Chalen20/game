@@ -46,10 +46,12 @@ class GUI:
         self.maze.addChunk(2,2,0)
         self.maze.addChunk(0,2,0)
         self.maze.addChunk(2,0,0)
+         
         for i in self.maze.chunks:
             for j in self.maze.chunks[i]:
                 for t in self.maze.chunks[i][j]:
-                    if t==0: 
+                    if t==0:
+                        print(self.maze.chunks[i][j][t].y)
                         ren.renderChunk(self.maze.chunks[i][j][t])
     
 class Renderer:
@@ -62,8 +64,8 @@ class Renderer:
     def renderTile(self,tile,cx,cy):
         
         size =10
-        x= tile.x*10+180*cx
-        y= tile.y*10+180*cy
+        x = tile.x*10+180*cx
+        y = tile.y*10+180*cy
         if not tile.connections[0]:
             self.canvas.create_line(x,y,x+10,y)
         if not tile.connections[1]:
@@ -138,9 +140,10 @@ class Maze:
         return self.chunks[x][y][z]
 class Chunk:
     def __init__(self,options,x,y,z):
+        print(y)
         self.x=x
         self.y=y
-        self.y=z
+        self.z=z
         self.size=options['chunk_size']
         self.block_chance=options['block_chance']
         self.e_chance=options['double_entrance']
@@ -342,4 +345,5 @@ class LabBuilder:
         die = self.died
         self.died=False
         return die       
+
 
