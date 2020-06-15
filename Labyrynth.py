@@ -92,19 +92,20 @@ class Maze:
             'double_entrance':opt['double_entrance'],
             
         }
+        self.rooms=[]
         self.chunks = {}
         self.cb=CollectiveBrain(options)
         self.chunks[0]={}
         self.chunks[0][0]={}
         self.chunks[0][0][0]={}
     def addChunk(self,x,y,z):
-        c=Chunk(self.chunkOptions,x,y)
+        c=Chunk(self.chunkOptions,x,y,z)
         southN=self.get(x,y-1,z)
         northN=self.get(x,y+1,z)
         westN=self.get(x+1,y,z)
         eastN=self.get(x-1,y,z)
         self.cb.setChunk(c)
-        self.cb.createChunk(c.tiles[0][0])     
+        room = self.cb.createChunk(c.tiles[0][0])     
         if southN:
             c.connect(southN,SOUTH)
         if westN:
@@ -113,7 +114,7 @@ class Maze:
             c.connect(eastN,EAST)
         if northN:
             c.connect(northN,NORTH)
-        
+        self.rooms.append(room)
         self.add(x,y,z,c)
     def getTiles(self,x,y,deltax,deltay):
         pass
@@ -136,9 +137,10 @@ class Maze:
             return False
         return self.chunks[x][y][z]
 class Chunk:
-    def __init__(self,options,x,y):
+    def __init__(self,options,x,y,z):
         self.x=x
         self.y=y
+        self.y=z
         self.size=options['chunk_size']
         self.block_chance=options['block_chance']
         self.e_chance=options['double_entrance']
@@ -213,6 +215,14 @@ class Tile:
     def connect(self,tile):
             self.connections[self.neighbours.index(tile)]=tile
             tile.connections[3-self.neighbours.index(tile)]=self
+class Room:
+    def __init__(self,x,y,deltax,deltay,chunk):
+        self.tiles=[]
+        self.x=x
+        self.y=y
+        self.deltax=deltax
+        self.deltay=deltay
+        self.chunk=chunk
         
 #---------------------------------------------------------------
 #CollectiveBrain(coordinate work of all labBuilders):
@@ -246,18 +256,20 @@ class CollectiveBrain:
                     self.team.remove(i)
                     del i
         if(random()<self.caveChance):
-            self.addRoom()
+            return self.addRoom()
     def addRoom(self):
         x=round(self.chunk.size/2-3)+randint(0,3)
         y=round(self.chunk.size/2-3)+randint(0,3)
         sizex=3+randint(0,3)
         sizey=3+randint(0,3)
+        room = Room(x,y,sizex,sizey,self.chunk)
         for i in range(sizex):
             for j in range(sizey):
                 nt=self.chunk.tiles[x+i][y+j]
                 nt.connect(self.chunk.tiles[x+i-1][y+j])
                 nt.connect(self.chunk.tiles[x+i][y+j-1])
-        
+                
+        return room
     def addBuilder(self,tile):
         self.team.append(LabBuilder(tile.x,tile.y,tile,self.lifespanlength,self.intensity,self.loopChance))
         self.pool.append(tile)
