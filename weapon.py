@@ -1,9 +1,9 @@
 from random import *
-
+from tkinter import *
 allWeapons = {"ax1": [PhotoImage(file='img/weapon/Ax.png'), 10, 0.05],
               "ax2": [PhotoImage(file='img/weapon/Ax2.png'), 11, 0.051],
               "sword1": [PhotoImage(file='img/weapon/Sword1.png'), 5, 0.1],
-              "sword2": [PhotoImage(file='img/weapon/Sword2.png'), 11, 0.051}
+              "sword2": [PhotoImage(file='img/weapon/Sword2.png'), 11, 0.051]}
 
 class Weapon():
     def __init__(self, name):
