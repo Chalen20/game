@@ -5,21 +5,52 @@ NORTH=3
 from tkinter import *
 from random import*
 from time import sleep
-
+#
+#options={
+#            'intensity':0.1,
+#            'lifespan':8,
+#            'loopchance':0.5,
+#            'cavechance':0.5,
+##            Chunck options:
+#            'chunk_size':18,
+#            'block_chance':0.9,
+#            'double_entrance':0.2
+#        }
+#
 #------------------------------------------------------------
 #Temporary Renderer
 #
 class GUI:
     def __init__(self):
         window=Tk()
-        canvas = Canvas(window,width=600,height=600,bg='white')
+        canvas = Canvas(window,width=640,height=640,bg='white')
         canvas.pack()
-        c=Chunk({'chunk_size':32},0,0)
         ren = Renderer(canvas)
-        cb = CollectiveBrain()
-        cb.setChunk(c)
-        cb.createChunk(c.tiles[0][0])
-        ren.renderChunk(c)
+        options={
+            'intensity':0.1,
+            'lifespan':8,
+            'loopchance':0.5,
+            'cavechance':0.5,
+            'chunk_size':18,
+            'block_chance':0.9,
+            'double_entrance':0.2
+        }
+        self.maze=Maze(options)
+        self.maze.addChunk(0,0,0)
+        self.maze.addChunk(0,1,0)
+        self.maze.addChunk(1,1,0)
+        self.maze.addChunk(1,0,0)
+        self.maze.addChunk(1,2,0)
+        self.maze.addChunk(2,1,0)
+        self.maze.addChunk(1,2,0)
+        self.maze.addChunk(2,2,0)
+        self.maze.addChunk(0,2,0)
+        self.maze.addChunk(2,0,0)
+        for i in self.maze.chunks:
+            for j in self.maze.chunks[i]:
+                for t in self.maze.chunks[i][j]:
+                    if t==0: 
+                        ren.renderChunk(self.maze.chunks[i][j][t])
     
 class Renderer:
     def __init__(self,canvas):
@@ -27,12 +58,12 @@ class Renderer:
     def renderChunk(self,chunk):
        for i in chunk.tiles:
            for j in i:
-               self.renderTile(j)
-    def renderTile(self,tile):
+               self.renderTile(j,chunk.x,chunk.y)
+    def renderTile(self,tile,cx,cy):
         
         size =10
-        x= tile.x*10
-        y= tile.y*10
+        x= tile.x*10+180*cx
+        y= tile.y*10+180*cy
         if not tile.connections[0]:
             self.canvas.create_line(x,y,x+10,y)
         if not tile.connections[1]:
@@ -42,26 +73,78 @@ class Renderer:
         if not tile.connections[3]:
             self.canvas.create_line(x,y+10,x+10,y+10)
 #------------------------------------------------------------
-#Labyrynth:
+#Maze:
 #   Chunk(every chunk has the same tile numeration but ech chunk has it`s own x y z):
 #       Tile(has main property - connections which tiles it is connectd to)
 #
 #
-class Labyrynth:
-    def __init__(self,options):
-        self.chunks =[[[]]]
+class Maze:
+    def __init__(self,opt):
+        options={
+            'intensity': opt['intensity'],
+            'lifespan':opt['lifespan'],
+            'loopchance':opt['loopchance'],
+            'cavechance':opt['cavechance']            
+        }
+        self.chunkOptions={
+            'chunk_size':opt['chunk_size'],
+            'block_chance':opt['block_chance'],
+            'double_entrance':opt['double_entrance'],
+            
+        }
+        self.chunks = {}
+        self.cb=CollectiveBrain(options)
+        self.chunks[0]={}
+        self.chunks[0][0]={}
+        self.chunks[0][0][0]={}
+    def addChunk(self,x,y,z):
+        c=Chunk(self.chunkOptions,x,y)
+        southN=self.get(x,y-1,z)
+        northN=self.get(x,y+1,z)
+        westN=self.get(x+1,y,z)
+        eastN=self.get(x-1,y,z)
+        self.cb.setChunk(c)
+        self.cb.createChunk(c.tiles[0][0])     
+        if southN:
+            c.connect(southN,SOUTH)
+        if westN:
+            c.connect(westN,WEST)
+        if eastN:
+            c.connect(eastN,EAST)
+        if northN:
+            c.connect(northN,NORTH)
         
-    
+        self.add(x,y,z,c)
+    def getTiles(self,x,y,deltax,deltay):
+        pass
         
+     
+        
+    def add(self,x,y,z,item):
+        if not x in self.chunks:
+            self.chunks[x]={}
+        if not y in self.chunks[x]:
+            self.chunks[x][y]={}
+        self.chunks[x][y][z]=item  
 
+    def get(self,x,y,z):
+        if not x in self.chunks:
+            return False
+        if not y in self.chunks[x]:
+            return False
+        if not z in self.chunks[x][y]:
+            return False
+        return self.chunks[x][y][z]
 class Chunk:
     def __init__(self,options,x,y):
         self.x=x
         self.y=y
         self.size=options['chunk_size']
+        self.block_chance=options['block_chance']
+        self.e_chance=options['double_entrance']
         self.tiles=[]
-        self.chunkExits=[]
-       
+        self.chunkExits=[None,None,None,None]
+        self.neighbours=[]
         for i in range(options['chunk_size']):
             self.tiles.append([])
             for j in range(options['chunk_size']):
@@ -71,9 +154,51 @@ class Chunk:
                 if(j>0):
                     self.tiles[i][j].addNeighbour(SOUTH,self.tiles[i][j-1])
     
-    def generateExits(self,southExit,eastExit,westExit,northExit):
-            self.self.chunkExits=[southExit,eastExit,westExit,northExit]
-                   
+    #def generateExits(self,southExit,eastExit,westExit,northExit):
+    #        self.self.chunkExits=[southExit,eastExit,westExit,northExit]
+    def connect(self,chunk,direction):
+        exits=0
+        def genEx(x,y,exits):
+            blocked=False
+            for i in self.chunkExits:
+                if(i):
+                    blocked=True
+                    break
+            if(blocked and random()>self.block_chance):
+                blocked=False
+            for t in range(self.size):
+                cx=x
+                cy=y
+                if(y is False):
+                    cy=t
+                    oy=t
+                else:
+                    oy=chunk.size-cy-1
+                if(x is False):
+                    cx=t
+                    ox=t
+                else:
+                    ox=chunk.size-cx-1
+                    
+                i=self.tiles[cx][cy]
+                i.addNeighbour(direction,chunk.tiles[ox][oy])
+                rand = random()
+                if not blocked and exits<3 and (random()<t/(chunk.size-1) or rand<self.e_chance):
+                    exits+=1         
+                    i.connect(chunk.tiles[ox][oy])
+                    self.chunkExits[direction]=i
+       
+        if direction==EAST:
+            genEx(0,False,exits)
+        if direction==SOUTH:
+            genEx(False,0,exits)
+        if direction==NORTH:
+            genEx(False,chunk.size-1,exits)
+        if direction==WEST:
+            genEx(chunk.size-1,False,exits)
+        
+            
+        
 class Tile:
     def __init__(self,x,y,cx,cy):
         self.x=x
@@ -94,11 +219,12 @@ class Tile:
 #   LabBuilder
 #
 class CollectiveBrain:
-    def __init__(self):
+    def __init__(self,options):
         self.chunk=None
-        self.intensity=0.1
-        self.lifespanlength = 10
-        self.loopChance=0.2
+        self.intensity=options['intensity']
+        self.lifespanlength = options['lifespan']
+        self.loopChance= options['loopchance']
+        self.caveChance=options['cavechance']
     def setChunk(self,chunk):
         self.chunk = chunk
     def createChunk(self,enterPoint):
@@ -119,8 +245,19 @@ class CollectiveBrain:
                     i.die()
                     self.team.remove(i)
                     del i
-            
-       
+        if(random()<self.caveChance):
+            self.addRoom()
+    def addRoom(self):
+        x=round(self.chunk.size/2-3)+randint(0,3)
+        y=round(self.chunk.size/2-3)+randint(0,3)
+        sizex=3+randint(0,3)
+        sizey=3+randint(0,3)
+        for i in range(sizex):
+            for j in range(sizey):
+                nt=self.chunk.tiles[x+i][y+j]
+                nt.connect(self.chunk.tiles[x+i-1][y+j])
+                nt.connect(self.chunk.tiles[x+i][y+j-1])
+        
     def addBuilder(self,tile):
         self.team.append(LabBuilder(tile.x,tile.y,tile,self.lifespanlength,self.intensity,self.loopChance))
         self.pool.append(tile)
@@ -192,6 +329,5 @@ class LabBuilder:
     def requestToDie(self):
         die = self.died
         self.died=False
-        return die
-        
-GUI()
+        return die       
+
