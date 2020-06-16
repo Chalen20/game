@@ -37,7 +37,7 @@ class GUI:
             'block_chance': 0.9,
             'double_entrance': 0.2
         }
-        self.maze=Maze(options)
+        self.maze = Maze(options)
         self.maze.addChunk(0, 0, 0)
         self.maze.addChunk(0, -1, 0)
         self.maze.addChunk(1, -1, 0)
@@ -57,8 +57,8 @@ class GUI:
         self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(-4570, -4570, gain=1)
 
-        self.pers=TestPers(5000, 5000, self.maze.get(0, 0, 0).tiles[0][0])
-        rect=self.canvas.create_rectangle(self.pers.x, self.pers.y, self.pers.x+10, self.pers.y+10, fill='red')
+        self.pers = TestPers(5000, 5000, self.maze.get(0, 0, 0).tiles[0][0])
+        rect = self.canvas.create_rectangle(self.pers.x, self.pers.y, self.pers.x+10, self.pers.y+10, fill='red')
         def onKeyUp(event):
             print(1)
             self.canvas.scan_mark(0, 0)
