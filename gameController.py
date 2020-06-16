@@ -59,30 +59,70 @@ class GUI:
                     if t==0: 
                         ren.renderChunk(self.maze.chunks[i][j][t])
         self.canvas.scan_mark(0,0)
-        self.canvas.scan_dragto(-4570,-4570,gain=1)
-
-        self.pers=TestPers(5000,5000,self.maze.get(0,0,0).tiles[0][0])
+        self.canvas.scan_dragto(-5000,-5000,gain=1)
+        persTile=self.maze.get(0,0,0).tiles[5][5]
+        self.pers=TestPers(persTile.realx,persTile.realy,persTile)
         rect=self.canvas.create_rectangle(self.pers.x,self.pers.y,self.pers.x+10,self.pers.y+10,fill='red')
-        def onKeyUp(event):
-            print(1);
-            self.canvas.scan_mark(0,0)
-            self.canvas.scan_dragto(0,1)
-            self.canvas.move(rect,0,-self.pers.speed)
 
-        def onKeyDown(event):
-            self.canvas.scan_mark(0,0)
-            self.canvas.scan_dragto(0,-1)
-            self.canvas.move(rect,0,self.pers.speed)
-        
-        def onKeyRight(event):
-            self.canvas.scan_mark(0,0)
-            self.canvas.scan_dragto(-1,0)
-            self.canvas.move(rect,self.pers.speed,0)
-        
+        pers=self.pers
+        speed=pers.speed
         def onKeyLeft(event):
-            self.canvas.scan_mark(0,0)
-            self.canvas.scan_dragto(1,0)
-            self.canvas.move(rect,-self.pers.speed,0)
+        
+            tile=pers.tile
+            move=True
+            if(tile.realx>pers.x-speed):
+                
+                if(tile.connections[1]):
+                    pers.tile=tile.connections[1]
+                else:
+                    move=False
+            if move:
+                self.canvas.scan_mark(0,0)
+                self.canvas.scan_dragto(int(speed/10),0) 
+                self.canvas.move(rect,-speed,0)
+                pers.x-=speed
+        def onKeyRight(event):
+            move=True
+            tile =pers.tile
+            if(tile.realx+self.size-pers.size<pers.x+speed):
+                
+                if(tile.connections[2]):
+                    pers.tile=tile.connections[2]
+                else:
+                    move=False
+            if move:
+                self.canvas.scan_mark(0,0)
+                self.canvas.scan_dragto(int(-speed/10),0) 
+                self.canvas.move(rect,speed,0)
+                pers.x+=speed
+        def onKeyDown(event):
+            move=True
+            tile =pers.tile
+            if(tile.realy+self.size-pers.size<pers.y+speed):
+                
+                if(tile.connections[3]):
+                    pers.tile=tile.connections[3]
+                else:
+                    move=False
+            if move:
+                self.canvas.scan_mark(0,0)
+                self.canvas.scan_dragto(0,int(-speed/10)) 
+                self.canvas.move(rect,0,speed)
+                pers.y+=speed
+        def onKeyUp(event):
+            move=True
+            tile =pers.tile
+            if(tile.realy>pers.y-speed):
+                
+                if(tile.connections[0]):
+                    pers.tile=tile.connections[0]
+                else:
+                    move=False
+            if move:
+                self.canvas.scan_mark(0,0)
+                self.canvas.scan_dragto(0,int(speed/10)) 
+                self.canvas.move(rect,0,-speed)
+                pers.y-=speed
         root.bind('<Left>',onKeyLeft)
         root.bind('<Right>',onKeyRight)
         root.bind('<Up>',onKeyUp)

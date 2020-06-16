@@ -4,5 +4,6 @@ class TestPers:
         self.y=y
         self.tile=tile
         self.speed=10
+        self.size=10
     
     

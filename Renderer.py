@@ -12,8 +12,10 @@ class Renderer:
     def renderTile(self,tile,cx,cy,chunk):
         
         size = self.size
-        x= self.x+size*(tile.x+cx*chunk.size)
-        y= self.y+size*(tile.y+cy*chunk.size)
+        x = self.x+size*(tile.x+cx*chunk.size)
+        y = self.y+size*(tile.y+cy*chunk.size)
+        tile.realx=x
+        tile.realy=y
         if not tile.connections[0]:
             self.addWall(x,y,x+size,y+1)
         if not tile.connections[1]:
@@ -22,6 +24,8 @@ class Renderer:
             self.addWall(x+size,y+1,x+size,y+size)
         if not tile.connections[3]:
             self.addWall(x+1,y+size,x+size,y+size)
+        if tile.x==5 and tile.y==5:
+            self.canvas.create_rectangle(x,y,x+70,y+70,fill='yellow')    
     def addWall(self,x1,y1,x2,y2):
         self.canvas.create_rectangle(x1,y1,x2,y2)
         
