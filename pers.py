@@ -1,35 +1,66 @@
 from random import *
 from time import *
-from tkinter import *
-
-allPers = {"pers1": [PhotoImage(file='img/Pers1.png'), PhotoImage(file='img/Pers1_bottom_view.png')],
-           "pers2": [PhotoImage(file="img/Pers4.png"), PhotoImage(file='img/Pers4_bottom_view.png')],
-           "pers3": [PhotoImage(file="img/Pers5.png"), PhotoImage(file="img/Pers5_bottom_view.png")],
-           "pers4": [PhotoImage(file="img/Pers8.png"), PhotoImage(file="img/Pers8_bottom_view.png")]}
+from PIL import Image, ImageTk
 
 class Pers():
-    def __init__(self, name):
+    def __init__(self, name, x, y, tile):
+        front_skin1 = Image.open("img/Pers1.png")
+        front_skin1 = front_skin1.resize((50, 50), Image.ANTIALIAS)
+        transpose_front_skin1 = front_skin1.transpose(Image.FLIP_LEFT_RIGHT)
+        back_skin1 = Image.open("img/Pers1_bottom_view.png")
+        back_skin1 = back_skin1.resize((50, 50), Image.ANTIALIAS)
+        transpose_back_skin1 = back_skin1.transpose(Image.FLIP_LEFT_RIGHT)
+
+        front_skin2 = Image.open("img/Pers4.png")
+        front_skin2 = front_skin2.resize((50, 50), Image.ANTIALIAS)
+        transpose_front_skin2 = front_skin2.transpose(Image.FLIP_LEFT_RIGHT)
+        back_skin2 = Image.open("img/Pers4_bottom_view.png")
+        back_skin2 = back_skin2.resize((50, 50), Image.ANTIALIAS)
+        transpose_back_skin2 = back_skin2.transpose(Image.FLIP_LEFT_RIGHT)
+
+        front_skin3 = Image.open("img/Pers5.png")
+        front_skin3 = front_skin3.resize((50, 50), Image.ANTIALIAS)
+        transpose_front_skin3 = front_skin3.transpose(Image.FLIP_LEFT_RIGHT)
+        back_skin3 = Image.open("img/Pers5_bottom_view.png")
+        back_skin3 = back_skin3.resize((50, 50), Image.ANTIALIAS)
+        transpose_back_skin3 = back_skin3.transpose(Image.FLIP_LEFT_RIGHT)
+
+        front_skin4 = Image.open("img/Pers8.png")
+        front_skin4 = front_skin4.resize((50, 50), Image.ANTIALIAS)
+        transpose_front_skin4 = front_skin4.transpose(Image.FLIP_LEFT_RIGHT)
+        back_skin4 = Image.open("img/Pers8_bottom_view.png")
+        back_skin4 = back_skin4.resize((50, 50), Image.ANTIALIAS)
+        transpose_back_skin4 = back_skin4.transpose(Image.FLIP_LEFT_RIGHT)
+
+        allPers = {"pers1": [ImageTk.PhotoImage(front_skin1), ImageTk.PhotoImage(back_skin1), 16, 20, 100,
+                             ImageTk.PhotoImage(transpose_front_skin1), ImageTk.PhotoImage(transpose_back_skin1)],
+                   "pers2": [ImageTk.PhotoImage(front_skin2), ImageTk.PhotoImage(back_skin2), 20, 20, 80,
+                             ImageTk.PhotoImage(transpose_front_skin2), ImageTk.PhotoImage(transpose_back_skin2)],
+                   "pers3": [ImageTk.PhotoImage(front_skin3), ImageTk.PhotoImage(back_skin3), 12, 25, 110,
+                             ImageTk.PhotoImage(transpose_front_skin3), ImageTk.PhotoImage(transpose_back_skin3)],
+                   "pers4": [ImageTk.PhotoImage(front_skin4), ImageTk.PhotoImage(back_skin4), 20, 10, 120,
+                             ImageTk.PhotoImage(transpose_front_skin4), ImageTk.PhotoImage(transpose_back_skin4)]}
+        self.x = x
+        self.y = y
+        self.tile = tile
+        self.power = allPers[name][2]
+        self.size = 5
+        self.chunk = 0
         self.skin = allPers[name][0]
+        self.transpose_skin = allPers[name][5]
+        self.bot_transpose_skin = allPers[name][6]
         self.items = []
-        self.speed = 20
-        self.health = 100
+        self.speed = allPers[name][3]
+        self.health = allPers[name][4]
         self.satiety = 100
         self.speed_of_hunger_change = 5
         self.armor = 0
         self.equipment = {}
-        self.equipment.weapon = None
-        self.equipment.armor = None
-        self.coords = {}
-        self.coords.x = 0
-        self.coords.y = 0
-        self.faced_north = True
-        self.faced_east = False
-        self.bot_skin = allPers[name][2]
+        self.equipment['weapon'] = None
+        self.equipment['armor'] = None
+        self.bot_skin = allPers[name][1]
         self.speed_of_hunger_change_timer = 13
         self.isDied = False
-        while True:
-            sleep(self.speed_of_hunger_change_timer)
-            self.starvation()
 
     def attack(self):
         if not self.equipment["weapon"]:
@@ -55,32 +86,6 @@ class Pers():
         self.skin = self.skin.rotate(90)
         self.isDied = True
 
-    def move_left(self):
-        if self.faced_east:
-            pass
-        self.coords["x"] -= 1
-
-    def move_right(self):
-        if not self.faced_east:
-            pass
-        self.coords['x'] += 1
-
-    def move_top(self):
-        if not self.faced_north:
-            self.faced_north = True
-            revert = self.bot_skin
-            self.bot_skin = self.skin
-            self.skin = revert
-        self.coords['y'] += 1
-
-    def move_bot(self):
-        if self.faced_north:
-            self.faced_north = False
-            revert = self.bot_skin
-            self.bot_skin = self.skin
-            self.skin = revert
-        self.coords['y'] -= 1
-
     def take_damage(self, damage):
         if self.health + self.armor < damage:
             self.die()
@@ -94,15 +99,15 @@ class Pers():
             self.health -= damage
 
     def starvation(self):
-        if self.hunger < self.speed_of_hunger_change:
+        if self.satiety < self.speed_of_hunger_change:
             self.die()
             return
-        self.hunger += self.speed_of_hunger_change
-        if self.hunger > 70:
+        self.satiety += self.speed_of_hunger_change
+        if self.satiety > 70:
             self.speed_of_hunger_change_timer = 13
-        elif self.hunger > 40:
+        elif self.satiety > 40:
             self.speed_of_hunger_change_timer = 26
-        elif self.hunger > 10:
+        elif self.satiety > 10:
             self.speed_of_hunger_change_timer = 39
         else:
             self.speed_of_hunger_change_timer = 52

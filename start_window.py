@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 from functools import partial
 from tkinter.ttk import *
+from gameController import GUI
 class Start_window():
     def __init__(self):
         self.window = Tk()
@@ -45,6 +46,10 @@ class Start_window():
         self.selected_pers = self.selected_pers.resize((350, 350), Image.ANTIALIAS)
         self.selected_pers = ImageTk.PhotoImage(self.selected_pers)
         self.canvas.create_image(250, 150, image=self.selected_pers)
+        self.play = Image.open("img/play.png")
+        self.play = ImageTk.PhotoImage(self.play)
+        self.play_button = self.canvas.create_image(240, 350, image=self.play)
+        self.canvas.tag_bind(self.play_button, "<Button-1>", self.start_f)
 
     def pers_choice(self, event):
         self.canvas.delete(self.menu)
@@ -139,6 +144,9 @@ class Start_window():
         self.selected_pers = self.selected_pers.resize((350, 350), Image.ANTIALIAS)
         self.selected_pers = ImageTk.PhotoImage(self.selected_pers)
         self.canvas.create_image(250, 150, image=self.selected_pers)
+        self.play = Image.open("img/play.png")
+        self.play = ImageTk.PhotoImage(self.play)
+        self.play_button = self.canvas.create_image(240, 350, image=self.play)
 
     def properties_pers1(self, event):
         self.pers1_canv.delete(self.pers1)
@@ -181,7 +189,7 @@ class Start_window():
         self.pers3_canv.config(bg="red")
         self.rect3 = self.pers3_canv.create_rectangle(10, 10, 214, 239, fill="yellow")
         self.power3 = self.pers3_canv.create_text(60, 40, text="power:", font="Verdana 14")
-        self.power_value3 = self.pers3_canv.create_text(150, 40, text="14", font="Verdana 15 bold")
+        self.power_value3 = self.pers3_canv.create_text(150, 40, text="12", font="Verdana 15 bold")
         self.speed3 = self.pers3_canv.create_text(60, 80, text="speed:", font="Verdana 14")
         self.speed_value3 = self.pers3_canv.create_text(150, 80, text="25", font="Verdana 15 bold")
         self.health3 = self.pers3_canv.create_text(60, 120, text="health", font="Verdana 14")
@@ -284,4 +292,6 @@ class Start_window():
         self.pers4_canv.bind("<Button-1>", partial(self.click_color_config, self.pers4_canv, "lightgreen"))
         self.pers4_canv.tag_bind(self.pers4, "<Button-3>", self.properties_pers4)
 
+    def start_f(self, event):
+        gui = GUI()
 Start_window()

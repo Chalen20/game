@@ -1,9 +1,10 @@
 from Labyrynth import Maze
-# import pers
 from Renderer import Renderer
 from tkinter import *
+from pers import Pers
+from PIL import Image, ImageTk
 from time import *
-from testPers import *
+#from testPers import *
 
 options = {
     'intensity': 0.1,
@@ -23,7 +24,7 @@ class GUI:
         self.x = 50000
         self.y = 50000
         self.root = Tk()
-        self.canvas = Canvas(self.root, width=800, height=800, background="bisque")
+        self.canvas = Canvas(self.root, width=800, height=800)
         self.ren = Renderer(self)
         self.time = 0
 
@@ -62,13 +63,11 @@ class GUI:
         self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(-50000, -50000, gain=1)
         persTile = self.maze.get(0, 0, 0).tiles[5][5]
-        self.pers = TestPers(persTile.realx, persTile.realy, persTile)
-        rect = self.canvas.create_rectangle(self.pers.x, self.pers.y, self.pers.x + 10, self.pers.y + 10, fill='red')
-
+        self.pers = Pers("pers1", persTile.realx, persTile.realy, persTile)
+        self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.skin)
         pers = self.pers
         speed = pers.speed
         pers.chunk = self.maze.get(-1, -1, 0)
-        print(self.maze.getTile(0, 0, 0))
 
         def onKeyLeft(event):
 
@@ -79,17 +78,18 @@ class GUI:
                 if (tile.connections[1]):
 
                     pers.tile = tile.connections[1]
-                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    #self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
                 else:
                     move = False
             if move:
                 self.canvas.scan_mark(0, 0)
                 self.canvas.scan_dragto(int(speed / 10), 0)
-                self.canvas.move(rect, -speed, 0)
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.bot_skin)
+                self.canvas.move(self.skin, -speed, 0)
                 pers.x -= speed
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
-
                 self.addNeighbours(tile.chunk)
                 self.renderNeighbours(tile.chunk)
 
@@ -100,14 +100,17 @@ class GUI:
 
                 if (tile.connections[2]):
                     pers.tile = tile.connections[2]
-                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    #self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
                 else:
                     move = False
             if move:
                 self.canvas.scan_mark(0, 0)
                 self.canvas.scan_dragto(int(-speed / 10), 0)
-                self.canvas.move(rect, speed, 0)
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.skin)
+                self.canvas.move(self.skin, speed, 0)
                 pers.x += speed
+
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
 
@@ -121,13 +124,15 @@ class GUI:
 
                 if (tile.connections[3]):
                     pers.tile = tile.connections[3]
-                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    #self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
                 else:
                     move = False
             if move:
                 self.canvas.scan_mark(0, 0)
                 self.canvas.scan_dragto(0, int(-speed / 10))
-                self.canvas.move(rect, 0, speed)
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.transpose_skin)
+                self.canvas.move(self.skin, 0, speed)
                 pers.y += speed
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
@@ -142,13 +147,15 @@ class GUI:
 
                 if (tile.connections[0]):
                     pers.tile = tile.connections[0]
-                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    #self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
                 else:
                     move = False
             if move:
                 self.canvas.scan_mark(0, 0)
                 self.canvas.scan_dragto(0, int(speed / 10))
-                self.canvas.move(rect, 0, -speed)
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.bot_transpose_skin)
+                self.canvas.move(self.skin, 0, -speed)
                 pers.y -= speed
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
