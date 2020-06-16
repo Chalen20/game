@@ -51,7 +51,7 @@ class GUI:
             for j in self.maze.chunks[i]:
                 for t in self.maze.chunks[i][j]:
                     if t==0:
-                        print(self.maze.chunks[i][j][t].y)
+                        
                         ren.renderChunk(self.maze.chunks[i][j][t])
     
 class Renderer:
@@ -100,8 +100,17 @@ class Maze:
         self.chunks[0]={}
         self.chunks[0][0]={}
         self.chunks[0][0][0]={}
+        self.unoMap={}
+        self.unoMap[0]={}
+        self.unoMap[0][0]={}
+        self.unoMap[0][0][0]={}
+        
+        
     def addChunk(self,x,y,z):
-        c=Chunk(self.chunkOptions,x,y,z)
+        if(self.get(x,y,z)):
+            return
+        #print(x,y,z)
+        c=Chunk(self.chunkOptions,x,y,z,self)
         southN=self.get(x,y-1,z)
         northN=self.get(x,y+1,z)
         westN=self.get(x+1,y,z)
@@ -138,9 +147,26 @@ class Maze:
         if not z in self.chunks[x][y]:
             return False
         return self.chunks[x][y][z]
+
+    def addTile(self,x,y,z,item):
+        if not x in self.unoMap:
+            self.unoMap[x]={}
+        if not y in self.unoMap[x]:
+            self.unoMap[x][y]={}
+        self.unoMap[x][y][z]=item  
+
+    def getTile(self,x,y,z):
+        if not x in self.unoMap:
+            return False
+        if not y in self.unoMap[x]:
+            return False
+        if not z in self.unoMap[x][y]:
+            return False
+        return self.unoMap[x][y][z]
 class Chunk:
-    def __init__(self,options,x,y,z):
-        print(y)
+    def __init__(self,options,x,y,z,maze):
+        self.drawings=[]
+        self.rendered=False
         self.x=x
         self.y=y
         self.z=z
@@ -153,7 +179,14 @@ class Chunk:
         for i in range(options['chunk_size']):
             self.tiles.append([])
             for j in range(options['chunk_size']):
-                self.tiles[i].append(Tile(i,j,x,y));
+                tile=Tile(i,j,x,y,self)
+                self.tiles[i].append(tile);
+                x1=self.x*(self.size)+i
+                y2=self.y*(self.size)+j
+                z3=self.z
+                if(x1==0 and y2==0 and z3==0):
+                    print(x1,y2,z3)
+                maze.addTile(x1,y2,z3,tile)
                 if(i>0):
                     self.tiles[i][j].addNeighbour(EAST,self.tiles[i-1][j])
                 if(j>0):
@@ -162,6 +195,7 @@ class Chunk:
     #def generateExits(self,southExit,eastExit,westExit,northExit):
     #        self.self.chunkExits=[southExit,eastExit,westExit,northExit]
     def connect(self,chunk,direction):
+        
         exits=0
         def genEx(x,y,exits):
             blocked=False
@@ -171,6 +205,7 @@ class Chunk:
                     break
             if(blocked and random()>self.block_chance):
                 blocked=False
+            #print(blocked,self.block_chance)
             for t in range(self.size):
                 cx=x
                 cy=y
@@ -178,12 +213,12 @@ class Chunk:
                     cy=t
                     oy=t
                 else:
-                    oy=chunk.size-cy-1
+                    oy=chunk.size-1-cy
                 if(x is False):
                     cx=t
                     ox=t
                 else:
-                    ox=chunk.size-cx-1
+                    ox=chunk.size-1-cx
                     
                 i=self.tiles[cx][cy]
                 i.addNeighbour(direction,chunk.tiles[ox][oy])
@@ -205,11 +240,15 @@ class Chunk:
             
         
 class Tile:
-    def __init__(self,x,y,cx,cy):
+    def __init__(self,x,y,cx,cy,chunk):
+        self.visible=False
+        self.chunk=chunk
         self.x=x
         self.y=y
         self.chunk_x=cx
         self.chunk_y=cy
+        self.mazex=cx*(self.chunk.size)+x
+        self.mazey=cy*(self.chunk.size)+y
         self.connections =[False,False,False,False]
         self.neighbours =[False,False,False,False]
     def addNeighbour(self,direction,tile):
