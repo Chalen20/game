@@ -45,6 +45,7 @@ class Start_window:
         self.selected_pers = Image.open("img/Pers1.png")
         self.selected_pers = self.selected_pers.resize((350, 350), Image.ANTIALIAS)
         self.selected_pers = ImageTk.PhotoImage(self.selected_pers)
+        self.selected_pers_name = "pers1"
         self.canvas.create_image(250, 150, image=self.selected_pers)
         self.play = Image.open("img/play.png")
         self.play = ImageTk.PhotoImage(self.play)
@@ -92,6 +93,7 @@ class Start_window:
         self.pers1_canv.image = pers1_icon
         self.pers1_canv.bind("<Button-1>", partial(self.click_color_config, self.pers1_canv, "darkred"))
         self.pers1_canv.tag_bind(self.pers1, "<Button-3>", self.properties_pers1)
+        self.pers1_canv.name = "pers1"
 
         pers2_icon = Image.open("img/Pers4.png")
         self.pers2_canv.icon = pers2_icon
@@ -101,6 +103,7 @@ class Start_window:
         self.pers2_canv.image = pers2_icon
         self.pers2_canv.bind("<Button-1>", partial(self.click_color_config, self.pers2_canv, "lightblue"))
         self.pers2_canv.tag_bind(self.pers2, "<Button-3>", self.properties_pers2)
+        self.pers2_canv.name = "pers2"
 
         pers3_icon = Image.open("img/Pers5.png")
         self.pers3_canv.icon = pers3_icon
@@ -110,6 +113,7 @@ class Start_window:
         self.pers3_canv.image = pers3_icon
         self.pers3_canv.bind("<Button-1>", partial(self.click_color_config, self.pers3_canv, "orange"))
         self.pers3_canv.tag_bind(self.pers3, "<Button-3>", self.properties_pers3)
+        self.pers3_canv.name = "pers3"
 
         pers4_icon = Image.open("img/Pers8.png")
         self.pers4_canv.icon = pers4_icon
@@ -120,6 +124,7 @@ class Start_window:
         self.pers4_canv.bind('<Button-1>', partial(self.click_color_config, self.pers4_canv, "lightgreen"))
         self.canvas.tag_bind(self.menu, '<Button-1>', self.close_choice_pers)
         self.pers4_canv.tag_bind(self.pers4, "<Button-3>", self.properties_pers4)
+        self.pers4_canv.name = "pers4"
 
     def click_color_config(self, widget, color, event):
         self.pers1_canv.config(bg="red")
@@ -128,6 +133,7 @@ class Start_window:
         self.pers4_canv.config(bg="green")
         widget.config(bg=color)
         self.selected_pers = widget.icon
+        self.selected_pers_name = widget.name
 
     def close_choice_pers(self, event):
         if self.menu:
@@ -141,12 +147,14 @@ class Start_window:
         self.canvas.tag_bind(self.menu_canv, '<Button-1>', self.pers_choice)
         if not self.selected_pers:
             self.selected_pers = self.pers1_canv.icon
+            self.selected_pers_name = self.pers1_canv.name
         self.selected_pers = self.selected_pers.resize((350, 350), Image.ANTIALIAS)
         self.selected_pers = ImageTk.PhotoImage(self.selected_pers)
         self.canvas.create_image(250, 150, image=self.selected_pers)
         self.play = Image.open("img/play.png")
         self.play = ImageTk.PhotoImage(self.play)
         self.play_button = self.canvas.create_image(240, 350, image=self.play)
+        self.canvas.tag_bind(self.play_button, "<Button-1>", self.start_f)
 
     def properties_pers1(self, event):
         self.pers1_canv.delete(self.pers1)
@@ -293,5 +301,6 @@ class Start_window:
         self.pers4_canv.tag_bind(self.pers4, "<Button-3>", self.properties_pers4)
 
     def start_f(self, event):
-        gui = GUI(self.selected_pers)
+        self.window.destroy()
+        gui = GUI(self.selected_pers_name)
 Start_window()
