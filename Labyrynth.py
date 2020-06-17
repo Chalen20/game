@@ -241,6 +241,7 @@ class Chunk:
         
 class Tile:
     def __init__(self,x,y,cx,cy,chunk):
+        self.room=False
         self.visible=False
         self.chunk=chunk
         self.x=x
@@ -308,6 +309,9 @@ class CollectiveBrain:
         for i in range(sizex):
             for j in range(sizey):
                 nt=self.chunk.tiles[x+i][y+j]
+                nt.room=room
+                room.tiles.append(nt)
+                #nt=self.chunk.tiles[x+i][y+j]
                 nt.connect(self.chunk.tiles[x+i-1][y+j])
                 nt.connect(self.chunk.tiles[x+i][y+j-1])
                 
