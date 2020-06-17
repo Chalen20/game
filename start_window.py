@@ -302,5 +302,5 @@ class Start_window:
 
     def start_f(self, event):
         self.window.destroy()
-        gui = GUI(self.selected_pers_name)
+        gui = GUI(self.selected_pers)
 Start_window()
