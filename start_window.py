@@ -293,5 +293,6 @@ class Start_window:
         self.pers4_canv.tag_bind(self.pers4, "<Button-3>", self.properties_pers4)
 
     def start_f(self, event):
+        self.window.destroy()
         gui = GUI(self.selected_pers)
 Start_window()
