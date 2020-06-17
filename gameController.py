@@ -19,7 +19,7 @@ options = {
 
 class GUI:
 
-    def __init__(self):
+    def __init__(self, name):
         self.size = 150
         self.x = 50000
         self.y = 50000
@@ -27,6 +27,7 @@ class GUI:
         self.canvas = Canvas(self.root, width=800, height=800)
         self.ren = Renderer(self)
         self.time = 0
+        self.name = name
 
         self.visibility = []
         self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
@@ -63,7 +64,7 @@ class GUI:
         self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(-50000, -50000, gain=1)
         persTile = self.maze.get(0, 0, 0).tiles[3][3]
-        self.pers = Pers("pers1", persTile.realx, persTile.realy, persTile)
+        self.pers = Pers(self.name, persTile.realx, persTile.realy, persTile)
         self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.skin)
         pers = self.pers
         speed = pers.speed
@@ -228,7 +229,7 @@ class GameController:
         self.time += 0.05
 
 
-gui = GUI()
+#gui = GUI("pers1")
 
 # -------------gameCycle----------------
 stop = False

@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 from functools import partial
 from tkinter.ttk import *
 from gameController import GUI
-class Start_window():
+class Start_window:
     def __init__(self):
         self.window = Tk()
         self.window.title("Game")
@@ -293,5 +293,5 @@ class Start_window():
         self.pers4_canv.tag_bind(self.pers4, "<Button-3>", self.properties_pers4)
 
     def start_f(self, event):
-        gui = GUI()
+        gui = GUI(self.selected_pers)
 Start_window()
