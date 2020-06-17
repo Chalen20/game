@@ -40,7 +40,7 @@ class Renderer:
             self.addWall(x+size, y, x+size-5, y+size)
         if not tile.connections[3]:
             self.addWall(x, y+size, x+size, y+size-5)
-        self.chunk.drawings.append(self.canvas.create_image(x-50,y-50,image=self.tile_bg))
+        self.chunk.drawings.append(self.canvas.create_image(x+self.size/2,y+self.size/2,image=self.tile_bg))
         self.canvas.lower(self.chunk.drawings[-1])
     def addWall(self, x1, y1, x2, y2):
         self.chunk.drawings.append(self.canvas.create_rectangle(x1, y1, x2, y2,fill='red'))
