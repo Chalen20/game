@@ -19,7 +19,7 @@ options = {
 
 class GUI:
 
-    def __init__(self, name):
+    def __init__(self, name, visib):
         self.size = 150
         self.x = 50000
         self.y = 50000
@@ -28,6 +28,7 @@ class GUI:
         self.ren = Renderer(self)
         self.time = 0
         self.name = name
+        self.visib = visib
 
         self.visibility = []
         self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
@@ -69,7 +70,8 @@ class GUI:
         pers = self.pers
         speed = pers.speed
         pers.chunk = self.maze.get(0, 0, 0)
-        self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+        if not visib:
+            self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
         def onKeyLeft(event):
 
             tile = pers.tile
@@ -79,7 +81,8 @@ class GUI:
                 if (tile.connections[1]):
 
                     pers.tile = tile.connections[1]
-                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    if not visib:
+                        self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
                 else:
                     move = False
             if move:
@@ -101,7 +104,8 @@ class GUI:
 
                 if (tile.connections[2]):
                     pers.tile = tile.connections[2]
-                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    if not visib:
+                        self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
                 else:
                     move = False
             if move:
@@ -125,7 +129,8 @@ class GUI:
 
                 if (tile.connections[3]):
                     pers.tile = tile.connections[3]
-                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    if not visib:
+                        self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
                 else:
                     move = False
             if move:
@@ -148,7 +153,8 @@ class GUI:
 
                 if (tile.connections[0]):
                     pers.tile = tile.connections[0]
-                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    if not visib:
+                        self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
                 else:
                     move = False
             if move:

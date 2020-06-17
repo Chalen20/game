@@ -18,6 +18,8 @@ class Start_window:
         self.window.resizable(False, False)
         self.canvas = Canvas(self.window, height=500, width=500)
         self.canvas.pack()
+        self.visibility_cvar1 = BooleanVar()
+        self.visibility_cvar1.set(0)
 
         img = PhotoImage(file='img/start_window_last.png')
         img2 = PhotoImage(file='img/start.png')
@@ -65,8 +67,6 @@ class Start_window:
         self.settings_frame.place(x=0, y=0)
         self.frame = Frame(self.settings_frame, width=450, height=500)
         self.frame.grid(column=0, row=0)
-        self.visibility_cvar1 = BooleanVar()
-        self.visibility_cvar1.set(0)
         self.checkbutton_visibility = Checkbutton(self.frame, text="visibility", variable=self.visibility_cvar1, onvalue=1, offvalue=0)
         self.checkbutton_visibility.pack()
         self.canvas.tag_bind(self.gears_button_close, "<Button-1>", self.close_settings)
@@ -78,7 +78,6 @@ class Start_window:
             self.canvas.tag_bind(self.gears_button, "<Button-1>", self.settings)
         if self.settings_frame:
             self.settings_frame.destroy()
-        print(self.visibility_cvar1.get())
 
     def pers_choice(self, event):
         self.canvas.delete(self.menu)
@@ -330,5 +329,6 @@ class Start_window:
 
     def start_f(self, event):
         self.window.destroy()
-        gui = GUI(self.selected_pers_name)
+        self.visibility_cvar1 = self.visibility_cvar1.get()
+        gui = GUI(self.selected_pers_name, self.visibility_cvar1)
 Start_window()
