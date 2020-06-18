@@ -186,8 +186,8 @@ class Pers():
     def die(self):
         self.health = 0
         self.hunger = 100
-        self.skin = self.skin.rotate(90)
         self.isDied = True
+        print("die")
 
     def take_damage(self, damage):
         if self.health + self.armor < damage:
@@ -205,7 +205,7 @@ class Pers():
         if self.satiety < self.speed_of_hunger_change:
             self.die()
             return
-        self.satiety += self.speed_of_hunger_change
+        self.satiety -= self.speed_of_hunger_change
         if self.satiety > 70:
             self.speed_of_hunger_change_timer = 13
         elif self.satiety > 40:

@@ -3,7 +3,8 @@ from Renderer import Renderer
 from tkinter import *
 from pers import Pers
 from PIL import Image, ImageTk
-from time import *
+from health import Health
+import time, threading
 #from testPers import *
 
 options = {
@@ -73,8 +74,24 @@ class GUI:
         self.right_steps_counter = 0
         if not visib:
             self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
-        def onKeyLeft(event):
+        self.health = Health(self.canvas, pers.health, persTile.realx + 250, persTile.realy - 420, persTile, "red",
+                             200, 200)
+        self.satiety = Health(self.canvas, pers.satiety, persTile.realx + 270, persTile.realy - 380, persTile,
+                              'yellow', 150, 100)
+        def hung():
+            if not self.pers.isDied:
+                self.pers.starvation()
+                try:
+                    self.satiety.change(self.pers.satiety)
+                except:
+                    return
+                threading.Timer(self.pers.speed_of_hunger_change_timer, hung).start()
+            else:
+                return
 
+        hung()
+
+        def onKeyLeft(event):
             tile = pers.tile
             move = True
             if (tile.realx > pers.x - speed):
@@ -84,6 +101,10 @@ class GUI:
                     pers.tile = tile.connections[1]
                     if not visib:
                         self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                        self.canvas.lift(self.health.rect)
+                        self.canvas.lift(self.health.form)
+                        self.canvas.lift(self.satiety.rect)
+                        self.canvas.lift(self.satiety.form)
                 else:
                     move = False
             if move:
@@ -102,7 +123,13 @@ class GUI:
                                                          image=self.pers.back_skin_animation_left_leg)
                 self.right_steps_counter += 1
                 self.canvas.move(self.skin, -speed, 0)
+                self.canvas.move(self.health.form, -speed, 0)
+                self.canvas.move(self.health.rect, -speed, 0)
+                self.canvas.move(self.satiety.form, -speed, 0)
+                self.canvas.move(self.satiety.rect, -speed, 0)
                 pers.x -= speed
+                self.health.x -= speed
+                self.satiety.x -= speed
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
                 self.addNeighbours(tile.chunk)
@@ -117,6 +144,10 @@ class GUI:
                     pers.tile = tile.connections[2]
                     if not visib:
                         self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                        self.canvas.lift(self.health.rect)
+                        self.canvas.lift(self.health.form)
+                        self.canvas.lift(self.satiety.rect)
+                        self.canvas.lift(self.satiety.form)
                 else:
                     move = False
             if move:
@@ -133,7 +164,13 @@ class GUI:
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_left_leg)
                 self.right_steps_counter += 1
                 self.canvas.move(self.skin, speed, 0)
+                self.canvas.move(self.health.form, speed, 0)
+                self.canvas.move(self.health.rect, speed, 0)
+                self.canvas.move(self.satiety.form, speed, 0)
+                self.canvas.move(self.satiety.rect, speed, 0)
                 pers.x += speed
+                self.health.x += speed
+                self.satiety.x += speed
 
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
@@ -150,6 +187,10 @@ class GUI:
                     pers.tile = tile.connections[3]
                     if not visib:
                         self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                        self.canvas.lift(self.health.rect)
+                        self.canvas.lift(self.health.form)
+                        self.canvas.lift(self.satiety.rect)
+                        self.canvas.lift(self.satiety.form)
                 else:
                     move = False
             if move:
@@ -168,7 +209,13 @@ class GUI:
                                                          image=self.pers.transpose_front_skin_animation_left_leg)
                 self.right_steps_counter += 1
                 self.canvas.move(self.skin, 0, speed)
+                self.canvas.move(self.health.form, 0, speed)
+                self.canvas.move(self.health.rect, 0, speed)
+                self.canvas.move(self.satiety.form, 0, speed)
+                self.canvas.move(self.satiety.rect, 0, speed)
                 pers.y += speed
+                self.health.y += speed
+                self.satiety.y += speed
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
 
@@ -184,6 +231,10 @@ class GUI:
                     pers.tile = tile.connections[0]
                     if not visib:
                         self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                        self.canvas.lift(self.health.rect)
+                        self.canvas.lift(self.health.form)
+                        self.canvas.lift(self.satiety.rect)
+                        self.canvas.lift(self.satiety.form)
                 else:
                     move = False
             if move:
@@ -202,7 +253,13 @@ class GUI:
                                                          image=self.pers.transpose_back_skin_animation_left_leg)
                 self.right_steps_counter += 1
                 self.canvas.move(self.skin, 0, -speed)
+                self.canvas.move(self.health.form, 0, -speed)
+                self.canvas.move(self.health.rect, 0, -speed)
+                self.canvas.move(self.satiety.form, 0, -speed)
+                self.canvas.move(self.satiety.rect, 0, -speed)
                 pers.y -= speed
+                self.health.y -= speed
+                self.satiety.y -= speed
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
 
