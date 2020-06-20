@@ -48,25 +48,22 @@ class Renderer:
     def renderVisibility(self,tile,vis,tiles):
         #print(tile)
         t= tile
+        self.gui.visible=[[],[]]
+        self.gui.visible.append(t)
+        
         for i in vis:
             self.canvas.delete(i)
-        while(tile.connections[0]):
-            tile=tile.connections[0]
-            tile.visible=True
-        tile=t
-        while(tile.connections[1]):
-            tile=tile.connections[1]
-            tile.visible=True
-        tile=t
-        while(tile.connections[2]):
-            tile=tile.connections[2]
-            tile.visible=True
-        tile=t
-        while(tile.connections[3]):
-            tile=tile.connections[3]
-            tile.visible=True
-        #print(t.mazey)
-        tile=t
+            #vis.remove(i)
+        for i in range(0,4):
+            while(tile.connections[i]):
+                tile=tile.connections[i]
+                tile.visible=True
+                self.gui.visible[0].append(tile)
+            if not tile==t:
+                 self.gui.visible[1].append(tile)
+                 print(tile.x,tile.y)
+            tile=t
+
         tile.visible=True
         #a=tiles.getTile(0,0,0)
         if(tile.room):
