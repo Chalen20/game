@@ -16,6 +16,9 @@ class Pers():
         front_skin_animation2 = front_skin_animation2.resize((100, 100), Image.ANTIALIAS)
         transpose_front_skin_animation2 = front_skin_animation2.transpose(Image.FLIP_LEFT_RIGHT)
 
+        front_died_skin1 = front_skin1.rotate(90)
+        transpose_front_died_skin1 = front_died_skin1.transpose(Image.FLIP_LEFT_RIGHT)
+
         back_skin1 = Image.open("img/Pers1_bottom_view.png")
         back_skin1 = back_skin1.resize((100, 100), Image.ANTIALIAS)
         transpose_back_skin1 = back_skin1.transpose(Image.FLIP_LEFT_RIGHT)
@@ -27,6 +30,9 @@ class Pers():
         back_skin_animation2 = Image.open("img/Pers1_bottom_view_animation2.png")
         back_skin_animation2 = back_skin_animation2.resize((100, 100), Image.ANTIALIAS)
         transpose_back_skin_animation2 = back_skin_animation2.transpose(Image.FLIP_LEFT_RIGHT)
+
+        back_died_skin1 = back_skin1.rotate(90)
+        transpose_back_died_skin1 = back_died_skin1.transpose(Image.FLIP_LEFT_RIGHT)
 
         front_skin2 = Image.open("img/Pers4.png")
         front_skin2 = front_skin2.resize((100, 100), Image.ANTIALIAS)
@@ -40,6 +46,9 @@ class Pers():
         front_skin_animation2_2 = front_skin_animation2_2.resize((100, 100), Image.ANTIALIAS)
         transpose_front_skin_animation2_2 = front_skin_animation2_2.transpose(Image.FLIP_LEFT_RIGHT)
 
+        front_died_skin2 = front_skin2.rotate(90)
+        transpose_front_died_skin2 = front_died_skin2.transpose(Image.FLIP_LEFT_RIGHT)
+
         back_skin2 = Image.open("img/Pers4_bottom_view.png")
         back_skin2 = back_skin2.resize((100, 100), Image.ANTIALIAS)
         transpose_back_skin2 = back_skin2.transpose(Image.FLIP_LEFT_RIGHT)
@@ -51,6 +60,9 @@ class Pers():
         back_skin_animation2_2 = Image.open("img/Pers4_bottom_view_animation2.png")
         back_skin_animation2_2 = back_skin_animation2_2.resize((100, 100), Image.ANTIALIAS)
         transpose_back_skin_animation2_2 = back_skin_animation2_2.transpose(Image.FLIP_LEFT_RIGHT)
+
+        back_died_skin2 = back_skin2.rotate(90)
+        transpose_back_died_skin2 = back_died_skin2.transpose(Image.FLIP_LEFT_RIGHT)
 
         front_skin3 = Image.open("img/Pers5.png")
         front_skin3 = front_skin3.resize((100, 100), Image.ANTIALIAS)
@@ -64,6 +76,9 @@ class Pers():
         front_skin_animation2_3 = front_skin_animation2_3.resize((100, 100), Image.ANTIALIAS)
         transpose_front_skin_animation2_3 = front_skin_animation2_3.transpose(Image.FLIP_LEFT_RIGHT)
 
+        front_died_skin3 = front_skin3.rotate(90)
+        transpose_front_died_skin3 = front_died_skin3.transpose(Image.FLIP_LEFT_RIGHT)
+
         back_skin3 = Image.open("img/Pers5_bottom_view.png")
         back_skin3 = back_skin3.resize((100, 100), Image.ANTIALIAS)
         transpose_back_skin3 = back_skin3.transpose(Image.FLIP_LEFT_RIGHT)
@@ -75,6 +90,9 @@ class Pers():
         back_skin_animation2_3 = Image.open("img/Pers5_bottom_view_animation2.png")
         back_skin_animation2_3 = back_skin_animation2_3.resize((100, 100), Image.ANTIALIAS)
         transpose_back_skin_animation2_3 = back_skin_animation2_3.transpose(Image.FLIP_LEFT_RIGHT)
+
+        back_died_skin3 = back_skin3.rotate(90)
+        transpose_back_died_skin3 = back_died_skin3.transpose(Image.FLIP_LEFT_RIGHT)
 
         front_skin4 = Image.open("img/Pers8.png")
         front_skin4 = front_skin4.resize((100, 100), Image.ANTIALIAS)
@@ -88,6 +106,9 @@ class Pers():
         front_skin_animation2_4 = front_skin_animation2_4.resize((100, 100), Image.ANTIALIAS)
         transpose_front_skin_animation2_4 = front_skin_animation2_4.transpose(Image.FLIP_LEFT_RIGHT)
 
+        front_died_skin4 = front_skin4.rotate(90)
+        transpose_front_died_skin4 = front_died_skin4.transpose(Image.FLIP_LEFT_RIGHT)
+
         back_skin4 = Image.open("img/Pers8_bottom_view.png")
         back_skin4 = back_skin4.resize((100, 100), Image.ANTIALIAS)
         transpose_back_skin4 = back_skin4.transpose(Image.FLIP_LEFT_RIGHT)
@@ -100,6 +121,9 @@ class Pers():
         back_skin_animation2_4 = back_skin_animation2_4.resize((100, 100), Image.ANTIALIAS)
         transpose_back_skin_animation2_4 = back_skin_animation2_4.transpose(Image.FLIP_LEFT_RIGHT)
 
+        back_died_skin4 = back_skin4.rotate(90)
+        transpose_back_died_skin4 = back_died_skin4.transpose(Image.FLIP_LEFT_RIGHT)
+
         allPers = {"pers1": [ImageTk.PhotoImage(front_skin1), ImageTk.PhotoImage(back_skin1), 16, 20, 100,
                              ImageTk.PhotoImage(transpose_front_skin1), ImageTk.PhotoImage(transpose_back_skin1),
                              ImageTk.PhotoImage(front_skin_animation1), ImageTk.PhotoImage(front_skin_animation2),
@@ -107,7 +131,9 @@ class Pers():
                              ImageTk.PhotoImage(transpose_front_skin_animation2),
                              ImageTk.PhotoImage(back_skin_animation1), ImageTk.PhotoImage(back_skin_animation2),
                              ImageTk.PhotoImage(transpose_back_skin_animation1),
-                             ImageTk.PhotoImage(transpose_back_skin_animation2)],
+                             ImageTk.PhotoImage(transpose_back_skin_animation2),
+                             ImageTk.PhotoImage(front_died_skin1), ImageTk.PhotoImage(transpose_front_died_skin1),
+                             ImageTk.PhotoImage(back_died_skin1), ImageTk.PhotoImage(transpose_back_died_skin1)],
                    "pers2": [ImageTk.PhotoImage(front_skin2), ImageTk.PhotoImage(back_skin2), 20, 20, 80,
                              ImageTk.PhotoImage(transpose_front_skin2), ImageTk.PhotoImage(transpose_back_skin2),
                              ImageTk.PhotoImage(front_skin_animation1_2), ImageTk.PhotoImage(front_skin_animation2_2),
@@ -115,7 +141,9 @@ class Pers():
                              ImageTk.PhotoImage(transpose_front_skin_animation2_2),
                              ImageTk.PhotoImage(back_skin_animation1_2), ImageTk.PhotoImage(back_skin_animation2_2),
                              ImageTk.PhotoImage(transpose_back_skin_animation1_2),
-                             ImageTk.PhotoImage(transpose_back_skin_animation2_2)],
+                             ImageTk.PhotoImage(transpose_back_skin_animation2_2),
+                             ImageTk.PhotoImage(front_died_skin2), ImageTk.PhotoImage(transpose_front_died_skin2),
+                             ImageTk.PhotoImage(back_died_skin2), ImageTk.PhotoImage(transpose_back_died_skin2)],
                    "pers3": [ImageTk.PhotoImage(front_skin3), ImageTk.PhotoImage(back_skin3), 12, 25, 110,
                              ImageTk.PhotoImage(transpose_front_skin3), ImageTk.PhotoImage(transpose_back_skin3),
                              ImageTk.PhotoImage(front_skin_animation1_3), ImageTk.PhotoImage(front_skin_animation2_3),
@@ -123,7 +151,9 @@ class Pers():
                              ImageTk.PhotoImage(transpose_front_skin_animation2_3),
                              ImageTk.PhotoImage(back_skin_animation1_3), ImageTk.PhotoImage(back_skin_animation2_3),
                              ImageTk.PhotoImage(transpose_back_skin_animation1_3),
-                             ImageTk.PhotoImage(transpose_back_skin_animation2_3)],
+                             ImageTk.PhotoImage(transpose_back_skin_animation2_3),
+                             ImageTk.PhotoImage(front_died_skin3), ImageTk.PhotoImage(transpose_front_died_skin3),
+                             ImageTk.PhotoImage(back_died_skin3), ImageTk.PhotoImage(transpose_back_died_skin3)],
                    "pers4": [ImageTk.PhotoImage(front_skin4), ImageTk.PhotoImage(back_skin4), 20, 10, 120,
                              ImageTk.PhotoImage(transpose_front_skin4), ImageTk.PhotoImage(transpose_back_skin4),
                              ImageTk.PhotoImage(front_skin_animation1_4), ImageTk.PhotoImage(front_skin_animation2_4),
@@ -131,16 +161,20 @@ class Pers():
                              ImageTk.PhotoImage(transpose_front_skin_animation2_4),
                              ImageTk.PhotoImage(back_skin_animation1_4), ImageTk.PhotoImage(back_skin_animation2_4),
                              ImageTk.PhotoImage(transpose_back_skin_animation1_4),
-                             ImageTk.PhotoImage(transpose_back_skin_animation2_4)]}
+                             ImageTk.PhotoImage(transpose_back_skin_animation2_4),
+                             ImageTk.PhotoImage(front_died_skin4), ImageTk.PhotoImage(transpose_front_died_skin4),
+                             ImageTk.PhotoImage(back_died_skin4), ImageTk.PhotoImage(transpose_back_died_skin4)]}
         self.x = x
         self.y = y
         self.tile = tile
         self.power = allPers[name][2]
         self.size = 5
         self.chunk = 0
+
         self.skin = allPers[name][0]
         self.transpose_skin = allPers[name][5]
         self.bot_transpose_skin = allPers[name][6]
+        self.now_skin = self.skin
 
         self.front_skin_animation_left_leg = allPers[name][7]
         self.front_skin_animation_right_leg = allPers[name][8]
@@ -151,6 +185,11 @@ class Pers():
         self.back_skin_animation_right_leg = allPers[name][12]
         self.transpose_back_skin_animation_left_leg = allPers[name][13]
         self.transpose_back_skin_animation_right_leg = allPers[name][14]
+
+        self.front_died_skin = allPers[name][15]
+        self.transpose_front_died_skin = allPers[name][16]
+        self.back_died_skin = allPers[name][17]
+        self.transpose_back_died_skin = allPers[name][18]
 
         self.items = []
         self.speed = allPers[name][3]
@@ -185,8 +224,75 @@ class Pers():
 
     def die(self):
         self.health = 0
-        self.hunger = 100
+        self.satiety = 0
         self.isDied = True
+        if self.now_skin == self.skin:
+            self.skin = self.front_died_skin
+            self.transpose_skin = self.front_died_skin
+            self.bot_transpose_skin = self.front_died_skin
+
+            self.front_skin_animation_left_leg = self.front_died_skin
+            self.front_skin_animation_right_leg = self.front_died_skin
+            self.transpose_front_skin_animation_left_leg = self.front_died_skin
+            self.transpose_front_skin_animation_right_leg = self.front_died_skin
+
+            self.back_skin_animation_left_leg = self.front_died_skin
+            self.back_skin_animation_right_leg = self.front_died_skin
+            self.transpose_back_skin_animation_left_leg = self.front_died_skin
+            self.transpose_back_skin_animation_right_leg = self.front_died_skin
+
+            self.bot_skin = self.front_died_skin
+
+        elif self.now_skin == self.transpose_skin:
+            self.skin = self.transpose_front_died_skin
+            self.transpose_skin = self.transpose_front_died_skin
+            self.bot_transpose_skin = self.transpose_front_died_skin
+
+            self.front_skin_animation_left_leg = self.transpose_front_died_skin
+            self.front_skin_animation_right_leg = self.transpose_front_died_skin
+            self.transpose_front_skin_animation_left_leg = self.transpose_front_died_skin
+            self.transpose_front_skin_animation_right_leg = self.transpose_front_died_skin
+
+            self.back_skin_animation_left_leg = self.transpose_front_died_skin
+            self.back_skin_animation_right_leg = self.transpose_front_died_skin
+            self.transpose_back_skin_animation_left_leg = self.transpose_front_died_skin
+            self.transpose_back_skin_animation_right_leg = self.transpose_front_died_skin
+
+            self.bot_skin = self.transpose_front_died_skin
+
+        elif self.now_skin == self.bot_skin:
+            self.skin = self.back_died_skin
+            self.transpose_skin = self.back_died_skin
+            self.bot_transpose_skin = self.back_died_skin
+
+            self.front_skin_animation_left_leg = self.back_died_skin
+            self.front_skin_animation_right_leg = self.back_died_skin
+            self.transpose_front_skin_animation_left_leg = self.back_died_skin
+            self.transpose_front_skin_animation_right_leg = self.back_died_skin
+
+            self.back_skin_animation_left_leg = self.back_died_skin
+            self.back_skin_animation_right_leg = self.back_died_skin
+            self.transpose_back_skin_animation_left_leg = self.back_died_skin
+            self.transpose_back_skin_animation_right_leg = self.back_died_skin
+
+            self.bot_skin = self.back_died_skin
+
+        else:
+            self.skin = self.transpose_back_died_skin
+            self.transpose_skin = self.transpose_back_died_skin
+            self.bot_transpose_skin = self.transpose_back_died_skin
+
+            self.front_skin_animation_left_leg = self.transpose_back_died_skin
+            self.front_skin_animation_right_leg = self.transpose_back_died_skin
+            self.transpose_front_skin_animation_left_leg = self.transpose_back_died_skin
+            self.transpose_front_skin_animation_right_leg = self.transpose_back_died_skin
+
+            self.back_skin_animation_left_leg = self.transpose_back_died_skin
+            self.back_skin_animation_right_leg = self.transpose_back_died_skin
+            self.transpose_back_skin_animation_left_leg = self.transpose_back_died_skin
+            self.transpose_back_skin_animation_right_leg = self.transpose_back_died_skin
+
+            self.bot_skin = self.transpose_back_died_skin
         print("die")
 
     def take_damage(self, damage):

@@ -1,8 +1,6 @@
-from tkinter import *
-from PIL import Image, ImageTk
 from functools import partial
 from tkinter.ttk import *
-from gameController import GUI
+from gameController import *
 from time import *
 class Start_window:
     def __init__(self):
@@ -21,8 +19,10 @@ class Start_window:
         self.visibility_cvar1 = BooleanVar()
         self.visibility_cvar1.set(0)
 
-        img = PhotoImage(file='img/start_window_last.png')
-        img2 = PhotoImage(file='img/start.png')
+        img = Image.open('img/start_window_last.png')
+        img = ImageTk.PhotoImage(img)
+        img2 = Image.open('img/start.png')
+        img2 = ImageTk.PhotoImage(img2)
 
         self.bg = self.canvas.create_image(0, 0, image=img, anchor=NW)
         self.start = self.canvas.create_image(75, 370/2, image=img2, anchor=NW)
