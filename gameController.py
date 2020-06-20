@@ -276,7 +276,7 @@ class GUI:
         self.mcb=MonsterCollectiveBrain(self)
         while(True):
             self.mcb.loop(self)
-            sleep(0.5)
+            sleep(0.01)
             self.root.update()
 
     def addNeighbours(self, chunk):

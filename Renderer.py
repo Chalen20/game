@@ -61,9 +61,9 @@ class Renderer:
                 self.gui.visible[0].append(tile)
             if not tile==t:
                  self.gui.visible[1].append(tile)
-                 print(tile.x,tile.y)
+                 
             tile=t
-
+        self.gui.visible[0].append(tile)
         tile.visible=True
         #a=tiles.getTile(0,0,0)
         if(tile.room):
