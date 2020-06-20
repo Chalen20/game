@@ -7,7 +7,7 @@ class Renderer:
         self.y = self.gui.y
         self.canvas = self.gui.canvas
         self.chunk=''
-        tile_bg = Image.open("img/patern.png")
+        tile_bg = Image.open("img/patern3.png")
         self.tile_bg=ImageTk.PhotoImage(tile_bg.resize((self.size, self.size), Image.ANTIALIAS))
     def renderChunk(self, chunk):
         self.chunk=chunk
