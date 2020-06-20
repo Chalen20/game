@@ -4,6 +4,7 @@ from tkinter import *
 from pers import Pers
 from health import Health
 import threading
+from time import  *
 from PIL import Image, ImageTk
 
 options = {
@@ -472,7 +473,11 @@ class GUI:
         self.root.bind('<Right>', onKeyRight)
         self.root.bind('<Up>', onKeyUp)
         self.root.bind('<Down>', onKeyDown)
-        self.root.mainloop()
+        #self.mcb=MonsterCollectiveBrain(self)
+        #while(True):
+        #    self.mcb.loop(self)
+        #    sleep(0.5)
+        #    self.root.update()
 
     def addNeighbours(self, chunk):
         x = chunk.x
