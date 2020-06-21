@@ -3,9 +3,10 @@ from Renderer import Renderer
 from tkinter import *
 from pers import Pers
 from health import Health
-import threading
-from time import  *
 from PIL import Image, ImageTk
+from monsters import MonsterCollectiveBrain
+from time import sleep
+from backpack import Backpack
 
 options = {
     'intensity': 0.1,
@@ -36,8 +37,8 @@ class GUI:
         self.visibility = []
         self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
         self.canvas.pack()
-        self.canvas.bind("<ButtonPress-1>", self.scroll_start)
-        self.canvas.bind("<B1-Motion>", self.scroll_move)
+        #self.canvas.bind("<ButtonPress-1>", self.scroll_start)
+        #self.canvas.bind("<B1-Motion>", self.scroll_move)
 
         options = {
             'intensity': 0.1,
@@ -116,16 +117,19 @@ class GUI:
             self.root.unbind('<Down>')
             self.isPaused = True
             close_menu(event)
-            self.backpack_window = self.canvas.create_rectangle(pers.x-400, pers.y-400, pers.x+210, pers.y+200,
-                                                                fill="yellow")
-            self.canvas.lift(self.backpack_window)
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
+            print(self.backpack_icon)
+            self.backback = Backpack(self.canvas, pers.x-400, pers.y-400)
+            print(self.backpack_icon)
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
+            print(self.backpack_icon)
 
         def close_backpack(event):
+            print(self.backpack_icon)
             play_func(event)
-            self.canvas.delete(self.backpack_window)
+            self.backback.remove()
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
+            print(self.backpack_icon)
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
 
         self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
@@ -180,8 +184,6 @@ class GUI:
             self.root.bind('<Right>', onKeyRight)
             self.root.bind('<Up>', onKeyUp)
             self.root.bind('<Down>', onKeyDown)
-            if self.hung_is_stop:
-                hung()
 
         def exit_func(event):
             self.root.destroy()
@@ -220,25 +222,6 @@ class GUI:
 
         self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
 
-        def hung():
-            if not self.pers.isDied and not self.isPaused:
-                self.pers.starvation()
-                self.hung_is_stop = False
-                if pers.isDied:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                         image=self.pers.skin)
-                try:
-                    self.satiety.change(self.pers.satiety)
-                except:
-                    return
-                threading.Timer(self.pers.speed_of_hunger_change_timer/13, hung).start()
-            else:
-                self.hung_is_stop = True
-                return
-
-        hung()
-
         def onKeyLeft(event):
             tile = pers.tile
             move = True
@@ -255,6 +238,7 @@ class GUI:
                         self.canvas.lift(self.satiety.form)
                         self.canvas.lift(self.menu_button)
                         self.canvas.lift(self.armor_icon)
+                        self.canvas.lift(self.backpack_icon)
                 else:
                     move = False
             if pers.isDied:
@@ -284,6 +268,7 @@ class GUI:
                 self.canvas.move(self.satiety.rect, -speed, 0)
                 self.canvas.move(self.menu_button, -speed, 0)
                 self.canvas.move(self.armor_icon, -speed, 0)
+                self.canvas.move(self.backpack_icon, -speed, 0)
                 pers.x -= speed
                 self.health.x -= speed
                 self.satiety.x -= speed
@@ -312,6 +297,7 @@ class GUI:
                         self.canvas.lift(self.satiety.form)
                         self.canvas.lift(self.menu_button)
                         self.canvas.lift(self.armor_icon)
+                        self.canvas.lift(self.backpack_icon)
                 else:
                     move = False
             if pers.isDied:
@@ -339,6 +325,7 @@ class GUI:
                 self.canvas.move(self.satiety.rect, speed, 0)
                 self.canvas.move(self.menu_button, speed, 0)
                 self.canvas.move(self.armor_icon, speed, 0)
+                self.canvas.move(self.backpack_icon, speed, 0)
                 pers.x += speed
                 self.health.x += speed
                 self.satiety.x += speed
@@ -368,6 +355,7 @@ class GUI:
                         self.canvas.lift(self.satiety.form)
                         self.canvas.lift(self.menu_button)
                         self.canvas.lift(self.armor_icon)
+                        self.canvas.lift(self.backpack_icon)
                 else:
                     move = False
             if pers.isDied:
@@ -397,6 +385,7 @@ class GUI:
                 self.canvas.move(self.satiety.rect, 0, speed)
                 self.canvas.move(self.menu_button, 0, speed)
                 self.canvas.move(self.armor_icon, 0, speed)
+                self.canvas.move(self.backpack_icon, 0, speed)
                 pers.y += speed
                 self.health.y += speed
                 self.satiety.y += speed
@@ -426,6 +415,7 @@ class GUI:
                         self.canvas.lift(self.satiety.form)
                         self.canvas.lift(self.menu_button)
                         self.canvas.lift(self.armor_icon)
+                        self.canvas.lift(self.backpack_icon)
                 else:
                     move = False
             if pers.isDied:
@@ -455,6 +445,7 @@ class GUI:
                 self.canvas.move(self.satiety.rect, 0, -speed)
                 self.canvas.move(self.menu_button, 0, -speed)
                 self.canvas.move(self.armor_icon, 0, -speed)
+                self.canvas.move(self.backpack_icon, 0, -speed)
                 pers.y -= speed
                 self.health.y -= speed
                 self.satiety.y -= speed
@@ -473,11 +464,35 @@ class GUI:
         self.root.bind('<Right>', onKeyRight)
         self.root.bind('<Up>', onKeyUp)
         self.root.bind('<Down>', onKeyDown)
-        self.mcb=MonsterCollectiveBrain(self)
-        while(True):
-            self.mcb.loop(self)
+        self.mcb = MonsterCollectiveBrain(self)
+
+        counter = 0
+
+        while True:
+            if not self.isPaused:
+                self.mcb.loop(self)
+            else:
+                pass
+            if counter == 1300:
+                if not self.pers.isDied and not self.isPaused:
+                    self.pers.starvation()
+                    self.hung_is_stop = False
+                    if pers.isDied:
+                        self.canvas.delete(self.skin)
+                        self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                             image=self.pers.skin)
+                    try:
+                        self.satiety.change(self.pers.satiety)
+                    except:
+                        return
+                else:
+                    self.hung_is_stop = True
+                    return
+                counter = 0
             sleep(0.01)
             self.root.update()
+            counter += 1
+            #print(counter)
 
     def addNeighbours(self, chunk):
         x = chunk.x
