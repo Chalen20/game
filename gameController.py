@@ -7,6 +7,7 @@ from PIL import Image, ImageTk
 from monsters import MonsterCollectiveBrain
 from time import sleep
 from backpack import Backpack
+from math import *
 
 options = {
     'intensity': 0.1,
@@ -108,7 +109,7 @@ class GUI:
         self.backpack = self.backpack.resize((75, 75), Image.ANTIALIAS)
         self.backpack = ImageTk.PhotoImage(self.backpack)
         self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=self.backpack)
-
+        self.recharge = 0
         def backpack_func(event):
             close_armor(event)
             self.root.unbind('<Left>')
@@ -133,7 +134,7 @@ class GUI:
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
 
         self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
-
+        self.mcb = MonsterCollectiveBrain(self)
         def armor_func(event):
             close_backpack(event)
             self.root.unbind('<Left>')
@@ -459,12 +460,44 @@ class GUI:
 
                 self.addNeighbours(tile.chunk)
                 self.renderNeighbours(tile.chunk)
-
+        def attack(event):
+            
+            if self.recharge>0:
+                return
+            self.recharge=0.2
+            attacky=event.y-500
+            attackx=event.x-500
+            vectlen=sqrt(attackx**2+attacky**2)
+            print(attackx,attacky)
+            if vectlen > 70:
+                const=70/vectlen
+            else:
+                const=1
+            attackx*=const
+            attacky*=const
+            attackx=self.pers.x+attackx
+            attacky=self.pers.y+attacky
+            
+            print(attackx,attacky)
+            circle=self.canvas.create_oval(attackx-self.pers.attackRange,attacky-self.pers.attackRange,attackx+self.pers.attackRange,attacky+self.pers.attackRange,fill='grey')
+            sleep(0.05)
+            def dele():
+                self.canvas.delete(circle)
+            self.canvas.after(100,dele)
+            
+            for i in self.mcb.monsters:
+                if sqrt((i.x-attackx)**2+(i.y-attacky)**2)<30:
+                    i.take_damage(pers.power)
+                    break
+            
+            
+            
         self.root.bind('<Left>', onKeyLeft)
         self.root.bind('<Right>', onKeyRight)
         self.root.bind('<Up>', onKeyUp)
         self.root.bind('<Down>', onKeyDown)
-        self.mcb = MonsterCollectiveBrain(self)
+        self.canvas.bind('<Button-1>', attack)
+        #self.mcb = MonsterCollectiveBrain(self)
 
         counter = 0
 
@@ -492,6 +525,8 @@ class GUI:
             sleep(0.01)
             self.root.update()
             counter += 1
+            if self.recharge!=0:
+                self.recharge-=0.01
             #print(counter)
 
     def addNeighbours(self, chunk):
