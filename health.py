@@ -23,5 +23,6 @@ class Health:
         self.canvas.delete(self.form)
         self.rect = self.canvas.create_rectangle(self.x, self.y, self.x + points * 1.75 * self.width/200,
                                                  self.y + 20 * self.height/200, fill=self.color)
+        print(self.canvas.coords(self.rect))
         self.form = self.canvas.create_image(self.x + 85 * self.width/200, self.y + 15*self.height/200,
                                              image=self.image)

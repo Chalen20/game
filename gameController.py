@@ -2,13 +2,10 @@ from Labyrynth import Maze
 from Renderer import Renderer
 from tkinter import *
 from pers import Pers
-from PIL import Image, ImageTk
-from time import *
-from monsters import *
 from health import Health
-import time, threading
-
-#from testPers import *
+import threading
+from time import  *
+from PIL import Image, ImageTk
 
 options = {
     'intensity': 0.1,
@@ -33,6 +30,8 @@ class GUI:
         self.time = 0
         self.name = name
         self.visib = visib
+        self.isPaused = False
+        self.hung_is_stop = True
 
         self.visibility = []
         self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
@@ -81,15 +80,161 @@ class GUI:
                              200, 200)
         self.satiety = Health(self.canvas, pers.satiety, persTile.realx + 270, persTile.realy - 380, persTile,
                               'yellow', 150, 100)
+        self.menu = Image.open("img/menu_button_game.png")
+        self.menu = self.menu.resize((100, 40), Image.ANTIALIAS)
+        self.menu = ImageTk.PhotoImage(self.menu)
+        self.menu_button = self.canvas.create_image(persTile.realx - 400, persTile.realy - 420, image=self.menu)
+        self.pause_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
+                                                       persTile.realx - 400, persTile.realy - 400)
+        self.play_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
+                                                       persTile.realx - 400, persTile.realy - 400)
+        self.back_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
+                                                       persTile.realx - 400, persTile.realy - 400)
+        self.exit_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
+                                                       persTile.realx - 400, persTile.realy - 400)
+        self.paused_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
+                                                      persTile.realx - 400, persTile.realy - 400)
+        self.backpack_window = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
+                                                            persTile.realx - 400, persTile.realy - 400)
+        self.armor_window = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
+                                                            persTile.realx - 400, persTile.realy - 400)
+        self.armor = Image.open("img/armor.png")
+        self.armor = self.armor.resize((75, 75), Image.ANTIALIAS)
+        self.armor = ImageTk.PhotoImage(self.armor)
+        self.armor_icon = self.canvas.create_image(pers.x - 460, pers.y - 200, image=self.armor)
+
+        self.backpack = Image.open("img/back_pack.png")
+        self.backpack = self.backpack.resize((75, 75), Image.ANTIALIAS)
+        self.backpack = ImageTk.PhotoImage(self.backpack)
+        self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=self.backpack)
+
+        def backpack_func(event):
+            close_armor(event)
+            self.root.unbind('<Left>')
+            self.root.unbind('<Right>')
+            self.root.unbind('<Up>')
+            self.root.unbind('<Down>')
+            self.isPaused = True
+            close_menu(event)
+            self.backpack_window = self.canvas.create_rectangle(pers.x-400, pers.y-400, pers.x+210, pers.y+200,
+                                                                fill="yellow")
+            self.canvas.lift(self.backpack_window)
+            self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
+            self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
+
+        def close_backpack(event):
+            play_func(event)
+            self.canvas.delete(self.backpack_window)
+            self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
+            self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
+
+        self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
+
+        def armor_func(event):
+            close_backpack(event)
+            self.root.unbind('<Left>')
+            self.root.unbind('<Right>')
+            self.root.unbind('<Up>')
+            self.root.unbind('<Down>')
+            self.isPaused = True
+            close_menu(event)
+            self.armor_window = self.canvas.create_rectangle(pers.x-400, pers.y-400, pers.x+210, pers.y+200, fill="red")
+            self.canvas.lift(self.armor_window)
+            self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
+            self.canvas.tag_bind(self.armor_icon, "<Button-1>", close_armor)
+
+        def close_armor(event):
+            play_func(event)
+            self.canvas.delete(self.armor_window)
+            self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
+            self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
+
+        self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
+
+        def close_menu(event):
+            self.canvas.delete(self.pause_icon)
+            self.canvas.delete(self.play_icon)
+            self.canvas.delete(self.back_icon)
+            self.canvas.delete(self.exit_icon)
+            self.canvas.tag_unbind(self.menu_button, "<Button-1>")
+            self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
+
+        def pause_func(event):
+            self.paused = Image.open("img/paused.png")
+            self.paused = ImageTk.PhotoImage(self.paused)
+            self.paused_icon = self.canvas.create_image(pers.x-70, pers.y-100, image=self.paused)
+            self.canvas.lift(self.paused_icon)
+            self.root.unbind('<Left>')
+            self.root.unbind('<Right>')
+            self.root.unbind('<Up>')
+            self.root.unbind('<Down>')
+            self.isPaused = True
+            close_menu(event)
+            self.canvas.tag_bind(self.paused_icon, "<Button-1>", play_func)
+
+        def play_func(event):
+            close_menu(event)
+            self.isPaused = False
+            self.canvas.delete(self.paused_icon)
+            self.root.bind('<Left>', onKeyLeft)
+            self.root.bind('<Right>', onKeyRight)
+            self.root.bind('<Up>', onKeyUp)
+            self.root.bind('<Down>', onKeyDown)
+            if self.hung_is_stop:
+                hung()
+
+        def exit_func(event):
+            self.root.destroy()
+
+        def menu_label(event):
+            self.pause = Image.open("img/pause.png")
+            self.pause = self.pause.resize((100, 40), Image.ANTIALIAS)
+            self.pause = ImageTk.PhotoImage(self.pause)
+            self.pause_icon = self.canvas.create_image(pers.x-340, pers.y-430, image=self.pause)
+
+            self.play = Image.open("img/play2.png")
+            self.play = self.play.resize((100, 40), Image.ANTIALIAS)
+            self.play = ImageTk.PhotoImage(self.play)
+            self.play_icon = self.canvas.create_image(pers.x - 340, pers.y - 470, image=self.play)
+
+            self.back = Image.open("img/back.png")
+            self.back = self.back.resize((100, 40), Image.ANTIALIAS)
+            self.back = ImageTk.PhotoImage(self.back)
+            self.back_icon = self.canvas.create_image(pers.x - 340, pers.y - 390, image=self.back)
+
+            self.exit = Image.open("img/exit.png")
+            self.exit = self.exit.resize((100, 40), Image.ANTIALIAS)
+            self.exit = ImageTk.PhotoImage(self.exit)
+            self.exit_icon = self.canvas.create_image(pers.x - 340, pers.y - 350, image=self.exit)
+
+            self.canvas.lift(self.pause_icon)
+            self.canvas.lift(self.play_icon)
+            self.canvas.lift(self.back_icon)
+            self.canvas.lift(self.exit_icon)
+            self.canvas.tag_unbind(self.menu_button, "<Button-1>")
+            self.canvas.tag_bind(self.menu_button, "<Button-1>", close_menu)
+
+            self.canvas.tag_bind(self.pause_icon, "<Button-1>", pause_func)
+            self.canvas.tag_bind(self.play_icon, "<Button-1>", play_func)
+            self.canvas.tag_bind(self.exit_icon, "<Button-1>", exit_func)
+
+        self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
+
         def hung():
-            if not self.pers.isDied:
+            if not self.pers.isDied and not self.isPaused:
                 self.pers.starvation()
+                self.hung_is_stop = False
+                if pers.isDied:
+                    self.canvas.delete(self.skin)
+                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                         image=self.pers.skin)
                 try:
                     self.satiety.change(self.pers.satiety)
                 except:
                     return
-                threading.Timer(self.pers.speed_of_hunger_change_timer, hung).start()
+                threading.Timer(self.pers.speed_of_hunger_change_timer/13, hung).start()
             else:
+                self.hung_is_stop = True
                 return
 
         hung()
@@ -108,8 +253,15 @@ class GUI:
                         self.canvas.lift(self.health.form)
                         self.canvas.lift(self.satiety.rect)
                         self.canvas.lift(self.satiety.form)
+                        self.canvas.lift(self.menu_button)
+                        self.canvas.lift(self.armor_icon)
                 else:
                     move = False
+            if pers.isDied:
+                move = False
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                     image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
                 self.canvas.scan_dragto(int(speed / 10), 0)
@@ -130,9 +282,16 @@ class GUI:
                 self.canvas.move(self.health.rect, -speed, 0)
                 self.canvas.move(self.satiety.form, -speed, 0)
                 self.canvas.move(self.satiety.rect, -speed, 0)
+                self.canvas.move(self.menu_button, -speed, 0)
+                self.canvas.move(self.armor_icon, -speed, 0)
                 pers.x -= speed
                 self.health.x -= speed
                 self.satiety.x -= speed
+                self.pers.now_skin = self.pers.bot_skin
+                self.canvas.delete(self.pause_icon)
+                self.canvas.delete(self.play_icon)
+                self.canvas.delete(self.back_icon)
+                self.canvas.delete(self.exit_icon)
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
                 self.addNeighbours(tile.chunk)
@@ -151,8 +310,15 @@ class GUI:
                         self.canvas.lift(self.health.form)
                         self.canvas.lift(self.satiety.rect)
                         self.canvas.lift(self.satiety.form)
+                        self.canvas.lift(self.menu_button)
+                        self.canvas.lift(self.armor_icon)
                 else:
                     move = False
+            if pers.isDied:
+                move = False
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                     image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
                 self.canvas.scan_dragto(int(-speed / 10), 0)
@@ -171,10 +337,16 @@ class GUI:
                 self.canvas.move(self.health.rect, speed, 0)
                 self.canvas.move(self.satiety.form, speed, 0)
                 self.canvas.move(self.satiety.rect, speed, 0)
+                self.canvas.move(self.menu_button, speed, 0)
+                self.canvas.move(self.armor_icon, speed, 0)
                 pers.x += speed
                 self.health.x += speed
                 self.satiety.x += speed
-
+                self.pers.now_skin = self.pers.skin
+                self.canvas.delete(self.pause_icon)
+                self.canvas.delete(self.play_icon)
+                self.canvas.delete(self.back_icon)
+                self.canvas.delete(self.exit_icon)
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
 
@@ -194,8 +366,15 @@ class GUI:
                         self.canvas.lift(self.health.form)
                         self.canvas.lift(self.satiety.rect)
                         self.canvas.lift(self.satiety.form)
+                        self.canvas.lift(self.menu_button)
+                        self.canvas.lift(self.armor_icon)
                 else:
                     move = False
+            if pers.isDied:
+                move = False
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                     image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
                 self.canvas.scan_dragto(0, int(-speed / 10))
@@ -216,9 +395,16 @@ class GUI:
                 self.canvas.move(self.health.rect, 0, speed)
                 self.canvas.move(self.satiety.form, 0, speed)
                 self.canvas.move(self.satiety.rect, 0, speed)
+                self.canvas.move(self.menu_button, 0, speed)
+                self.canvas.move(self.armor_icon, 0, speed)
                 pers.y += speed
                 self.health.y += speed
                 self.satiety.y += speed
+                self.pers.now_skin = self.pers.transpose_skin
+                self.canvas.delete(self.pause_icon)
+                self.canvas.delete(self.play_icon)
+                self.canvas.delete(self.back_icon)
+                self.canvas.delete(self.exit_icon)
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
 
@@ -238,8 +424,15 @@ class GUI:
                         self.canvas.lift(self.health.form)
                         self.canvas.lift(self.satiety.rect)
                         self.canvas.lift(self.satiety.form)
+                        self.canvas.lift(self.menu_button)
+                        self.canvas.lift(self.armor_icon)
                 else:
                     move = False
+            if pers.isDied:
+                move = False
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                     image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
                 self.canvas.scan_dragto(0, int(speed / 10))
@@ -260,9 +453,16 @@ class GUI:
                 self.canvas.move(self.health.rect, 0, -speed)
                 self.canvas.move(self.satiety.form, 0, -speed)
                 self.canvas.move(self.satiety.rect, 0, -speed)
+                self.canvas.move(self.menu_button, 0, -speed)
+                self.canvas.move(self.armor_icon, 0, -speed)
                 pers.y -= speed
                 self.health.y -= speed
                 self.satiety.y -= speed
+                self.pers.now_skin = self.pers.bot_transpose_skin
+                self.canvas.delete(self.pause_icon)
+                self.canvas.delete(self.play_icon)
+                self.canvas.delete(self.back_icon)
+                self.canvas.delete(self.exit_icon)
             if (pers.chunk != tile.chunk):
                 pers.chunk = tile.chunk
 
