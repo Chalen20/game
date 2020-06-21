@@ -7,7 +7,7 @@ class Monster():
         self.gui=gui
         front_skin1 = Image.open("img/Orc2.png")
         front_skin1 = front_skin1.resize((100, 100), Image.ANTIALIAS)
-        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", "health", 0.2, "arr_attack"]}
+        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 10, 0.4, "arr_attack"]}
         self.tile = tile
         self.skin = allMonsters[name][0]
         self.name = name
@@ -23,6 +23,8 @@ class Monster():
         self.target = None
         self.image = False
         self.lifespan=0
+        self.recharge=0
+        self.attack=5
     def attack(self):
         attack_value = randint(0.7 * allMonsters[self.name][5], 1.3 * allMonsters[self.name][5])
         return attack_value
@@ -111,11 +113,11 @@ class MonsterCollectiveBrain:
         #print(self.monsters[-1].target.x,self.monsters[-1].target.y)
     def loop(self,gui):
         #print(self.monsterCount)
-        if(not self.monsterCount>3):
+        if(not self.monsterCount>6):
             #print(self.monsterCount)
             #self.monsterCount+=1
             if len(gui.visible[1])-1>0:
-                tile = gui.visible[1][randint(0, floor(len(gui.visible[1])/2-1))]
+                tile = gui.visible[1][randint(0, floor(len(gui.visible[1])-1))]
                 con=tile.connections[randint(0,3)]
                 if con and not con in gui.visible[0]:
                     self.monsterCount+=1
@@ -128,12 +130,20 @@ class MonsterCollectiveBrain:
             if i.isDied:
                 self.monsters.remove(i)
                 self.monsterCount-=1
-            if i.tile in gui.visible[0]:
+            elif i.tile in gui.visible[0]:
                 #print('1')
                 i.move_toward(self.pers.x, self.pers.y)
+                
                 i.redraw(gui.canvas)
             else:
                 target=i.target
                 i.move_toward(target.realx+50,target.realy+50)
                 i.lifespan+=0.01
+            if(sqrt((i.x-self.pers.x)**2+(i.y-self.pers.y)**2)<30 and i.recharge<=0):
+                self.pers.take_damage(i.attack)
+                i.recharge=2
+                gui.health.change(-i.attack)
+            if(i.recharge!=0):
+                i.recharge-=0.01
+                
             #i.redraw(gui.canvas)
