@@ -120,7 +120,7 @@ class GUI:
             close_menu(event)
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
             print(self.backpack_icon)
-            self.backback = Backpack(self.root, self.canvas, pers.x-400, pers.y-400)
+            self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400)
             print(self.backpack_icon)
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
             print(self.backpack_icon)
