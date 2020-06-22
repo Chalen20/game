@@ -143,7 +143,6 @@ class Backpack:
             self.items.append(allItems["mushroom"])
         for i in range(10):
             self.items.append(allItems["kiwi"])
-        print(self.items)
         self.canvas = canvas
         self.x = x
         self.y = y
@@ -159,6 +158,8 @@ class Backpack:
         self.canvas2.place(x=0, y=0)
         self.canvas3 = Canvas(self.frame, width=200, height=200, bg="white")
         self.canvas3.place(x=400, y=100)
+        self.canvas4 = Canvas(self.frame, width=200, height=200, bg="white")
+        self.canvas4.place(x=400, y=300)
         if len(self.items) > 24:
             self.canvas2.configure(scrollregion=(0, 0, 400, ceil(len(self.items)/4*100 + 100)))
             self.canvas2.bind("<ButtonPress-1>", self.scroll_start)
@@ -216,4 +217,8 @@ class Backpack:
     def select_item(self, event, x):
         self.canvas3.delete(self.item)
         image = self.allItems[x][1]
+        throw_out = Image.open("img/throw_out.png")
+        throw_out = throw_out.resize((300, 200), Image.ANTIALIAS)
+        throw_out = ImageTk.PhotoImage(throw_out)
+        throw_out = self.canvas4.create_image(0, 0, image=throw_out)
         self.item = self.canvas3.create_image(100, 100, image=image)
