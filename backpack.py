@@ -166,8 +166,9 @@ class Backpack:
             self.canvas2.bind("<B1-Motion>", self.scroll_move)
         if len(self.items) > 24:
             for i in range(4):
-                for j in range(ceil(len(self.items)/4)):
-                    self.canvas2.create_rectangle(i * 100 + 5, j * 100 + 5, i * 100 + 95,
+                if ceil(len(self.items)/4) < 100:
+                    for j in range(ceil(len(self.items)/4)):
+                        self.canvas2.create_rectangle(i * 100 + 5, j * 100 + 5, i * 100 + 95,
                                                  j * 100 + 95, fill="orange", tag="rect")
         else:
             for i in range(4):
