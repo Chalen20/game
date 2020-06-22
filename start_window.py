@@ -2,6 +2,8 @@ from functools import partial
 from tkinter.ttk import *
 from gameController import *
 from time import *
+
+
 class Start_window:
     def __init__(self):
         self.window = Tk()
