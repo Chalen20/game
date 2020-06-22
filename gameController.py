@@ -460,6 +460,7 @@ class GUI:
 
                 self.addNeighbours(tile.chunk)
                 self.renderNeighbours(tile.chunk)
+
         def attack(event):
             
             if self.recharge>0:

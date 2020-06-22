@@ -21,6 +21,7 @@ class Health:
     def change(self, points):
         self.canvas.delete(self.rect)
         self.canvas.delete(self.form)
+        self.point = points
         self.rect = self.canvas.create_rectangle(self.x, self.y, self.x + points * 1.75 * self.width/200,
                                                  self.y + 20 * self.height/200, fill=self.color)
         print(self.canvas.coords(self.rect))

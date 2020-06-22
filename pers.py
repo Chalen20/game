@@ -144,7 +144,7 @@ class Pers():
                              ImageTk.PhotoImage(transpose_back_skin_animation2_2),
                              ImageTk.PhotoImage(front_died_skin2), ImageTk.PhotoImage(transpose_front_died_skin2),
                              ImageTk.PhotoImage(back_died_skin2), ImageTk.PhotoImage(transpose_back_died_skin2)],
-                   "pers3": [ImageTk.PhotoImage(front_skin3), ImageTk.PhotoImage(back_skin3), 12, 25, 110,
+                   "pers3": [ImageTk.PhotoImage(front_skin3), ImageTk.PhotoImage(back_skin3), 12, 30, 110,
                              ImageTk.PhotoImage(transpose_front_skin3), ImageTk.PhotoImage(transpose_back_skin3),
                              ImageTk.PhotoImage(front_skin_animation1_3), ImageTk.PhotoImage(front_skin_animation2_3),
                              ImageTk.PhotoImage(transpose_front_skin_animation1_3),
