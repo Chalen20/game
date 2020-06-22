@@ -96,7 +96,7 @@ class GUI:
                                                        persTile.realx - 400, persTile.realy - 400)
         self.paused_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                       persTile.realx - 400, persTile.realy - 400)
-        self.backpack_window = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
+        self.backback = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                             persTile.realx - 400, persTile.realy - 400)
         self.armor_window = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                             persTile.realx - 400, persTile.realy - 400)
@@ -120,7 +120,7 @@ class GUI:
             close_menu(event)
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
             print(self.backpack_icon)
-            self.backback = Backpack(self.canvas, pers.x-400, pers.y-400)
+            self.backback = Backpack(self.root, self.canvas, pers.x-400, pers.y-400)
             print(self.backpack_icon)
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
             print(self.backpack_icon)
@@ -460,6 +460,7 @@ class GUI:
 
                 self.addNeighbours(tile.chunk)
                 self.renderNeighbours(tile.chunk)
+
         def attack(event):
             
             if self.recharge>0:

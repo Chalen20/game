@@ -142,7 +142,8 @@ class MonsterCollectiveBrain:
             if(sqrt((i.x-self.pers.x)**2+(i.y-self.pers.y)**2)<30 and i.recharge<=0):
                 self.pers.take_damage(i.attack)
                 i.recharge=2
-                gui.health.change(-i.attack)
+                now_health = gui.health.point - i.attack
+                gui.health.change(now_health)
             if(i.recharge!=0):
                 i.recharge-=0.01
                 
