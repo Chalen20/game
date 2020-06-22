@@ -69,6 +69,7 @@ class Renderer:
         if(tile.room):
             for i in tile.room.tiles:
                 i.visible=True
+                self.gui.visible[0].append(i)
         #vis.append(self.canvas.create_rectangle(a.realx+100,a.realy+100,a.realx+100+self.size,a.realy+100+self.size,fill='black'))
         #print(a.realx,a.realy)
         for i in range(tile.mazex-4,tile.mazex+4):
