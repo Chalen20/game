@@ -266,6 +266,7 @@ class Room:
         self.deltax=deltax
         self.deltay=deltay
         self.chunk=chunk
+        self.isFree=True
         
 #---------------------------------------------------------------
 #CollectiveBrain(coordinate work of all labBuilders):

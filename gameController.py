@@ -45,7 +45,7 @@ class GUI:
             'intensity': 0.1,
             'lifespan': 8,
             'loopchance': 0.5,
-            'cavechance': 0.5,
+            'cavechance': 1,
             'chunk_size': 18,
             'block_chance': 0.9,
             'double_entrance': 0.2
