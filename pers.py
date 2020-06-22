@@ -211,9 +211,9 @@ class Pers():
             attack_value = randint(1, 5 + self.equipment["weapon"]["value"])
         return attack_value
 
-    def eat(self, item):
-        if "food" in item["uses"]:
-            self.hunger -= item["eating_value"]
+    #def eat(self, item):
+    #    if "food" in item["uses"]:
+    #        self.hunger -= item["eating_value"]
 
     def equip(self, item):
         if "weapon" in item["uses"]:
