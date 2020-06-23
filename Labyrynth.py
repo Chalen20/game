@@ -390,6 +390,6 @@ class Renderer:
             self.canvas.create_line(x+10,y,x+10,y+10)
         if not tile.connections[3]:
             self.canvas.create_line(x,y+10,x+10,y+10)
-GUI()
+#GUI()
   
 

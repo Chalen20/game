@@ -67,14 +67,10 @@ class Start_window:
         self.gears_button_close = self.canvas.create_image(475, 25, image=self.gears)
         self.settings_frame = Label(self.canvas, width=64)
         self.settings_frame.place(x=0, y=0)
-<<<<<<< HEAD
-        self.frame = Frame(self.settings_frame, width=450, height=500)
-        
-        self.frame.grid(column=0, row=0)
-=======
+
         self.frame = Frame(self.settings_frame, width=450, height=500, bg="lightblue")
         self.frame.grid(column=1, row=0)
->>>>>>> 6207c04c1b971997ad33a2daf88a34def0db2c99
+
         self.checkbutton_visibility = Checkbutton(self.frame, text="visibility", variable=self.visibility_cvar1, onvalue=1, offvalue=0)
         self.checkbutton_visibility.grid(column=1, row=0)
         self.intensivity = Label(self.frame, text="intensivity")
