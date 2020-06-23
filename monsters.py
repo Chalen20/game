@@ -11,13 +11,26 @@ class Monster():
         front_skin2 = Image.open("img/Orc3.png")
         front_skin2 = front_skin2.resize((100, 100), Image.ANTIALIAS)
 
+        front_skin1_animation = Image.open("img/Orc2_animation1.png")
+        front_skin1_animation = front_skin1_animation.resize((100, 100), Image.ANTIALIAS)
+        front_skin2_animation = Image.open("img/Orc3_animation1.png")
+        front_skin2_animation = front_skin2_animation.resize((100, 100), Image.ANTIALIAS)
+
+        front_skin1_animation2 = Image.open("img/Orc2_animaion2.png")
+        front_skin1_animation2 = front_skin1_animation2.resize((100, 100), Image.ANTIALIAS)
+        front_skin2_animation2 = Image.open("img/Orc3_animation2.png")
+        front_skin2_animation2 = front_skin2_animation2.resize((100, 100), Image.ANTIALIAS)
+
         front_skin3 = Image.open("img/full_chest.png")
         front_skin3 = front_skin3.resize((100, 100), Image.ANTIALIAS)
-        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 15, 0.8, "arr_attack"],
-                       'deadlyMonster':[ImageTk.PhotoImage(front_skin2), "dead_skin", "bot_skin", 5, 1.6, "arr_attack"],
-                       'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", "bot_skin", 1, 0, "arr_attack"]
-                        
-
+        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 15, 0.8, "arr_attack",
+                                        ImageTk.PhotoImage(front_skin1_animation),
+                                        ImageTk.PhotoImage(front_skin1_animation2)],
+                       'deadlyMonster':[ImageTk.PhotoImage(front_skin2), "dead_skin", "bot_skin", 5, 1.6, "arr_attack",
+                                        ImageTk.PhotoImage(front_skin2_animation),
+                                        ImageTk.PhotoImage(front_skin2_animation2)],
+                       'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", "bot_skin", 1, 0, "arr_attack",
+                                ImageTk.PhotoImage(front_skin3), ImageTk.PhotoImage(front_skin3)]
                        }
         self.tile = tile
         self.skin = allMonsters[name][0]
@@ -30,11 +43,16 @@ class Monster():
         self.bot_skin = allMonsters[name][2]
         self.x = tile.realx+50+random()*13
         self.y = tile.realy+50+random()*13
+
+        self.skin_animation = allMonsters[name][6]
+        self.skin_animation2 = allMonsters[name][7]
+
         self.isDied = False
         self.target = None
         self.image = False
         self.lifespan=0
         self.recharge=0
+        self.counter = 0
         #self.attack=5
         self.q =False
         
@@ -120,7 +138,12 @@ class Monster():
             except:
                 pass
         try:
-            self.image = canvas.create_image(self.x,self.y,image = self.skin)
+            if self.counter % 2 == 0:
+                self.image = canvas.create_image(self.x,self.y,image = self.skin)
+            elif self.counter % 4 == 1:
+                self.image = canvas.create_image(self.x, self.y, image=self.skin_animation)
+            elif self.counter % 4 == 3:
+                self.image = canvas.create_image(self.x, self.y, image=self.skin_animation2)
         except:
             pass
 
@@ -178,8 +201,8 @@ class MonsterCollectiveBrain:
             elif i.tile in gui.visible[0]:
                 #print('1')
                 i.move_toward(self.pers.x, self.pers.y)
-                
                 i.redraw(gui.canvas)
+                i.counter += 1
             else:
                 target=i.target
                 i.move_toward(target.realx+50,target.realy+50)
