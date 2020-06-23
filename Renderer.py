@@ -48,6 +48,7 @@ class Renderer:
     def renderVisibility(self,tile,vis,tiles):
         #print(tile)
         t= tile
+        c= t.chunk.z
         self.gui.visible=[[],[]]
         self.gui.visible.append(t)
         
@@ -74,7 +75,7 @@ class Renderer:
         #print(a.realx,a.realy)
         for i in range(tile.mazex-4,tile.mazex+4):
             for j in range(tile.mazey-4,tile.mazey+4):
-                a=tiles.getTile(i,j,0)
+                a=tiles.getTile(i,j,c)
                 if(a):
                     #print(a)
                     if(not a.visible):
