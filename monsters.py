@@ -1,6 +1,7 @@
 from random import *
-from math import *
+from math import*
 from PIL import Image, ImageTk
+from backpack import Backpack
 class Monster():
 
     def __init__(self, name,tile,gui):
@@ -15,6 +16,8 @@ class Monster():
         allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 15, 0.8, "arr_attack"],
                        'deadlyMonster':[ImageTk.PhotoImage(front_skin2), "dead_skin", "bot_skin", 5, 1.6, "arr_attack"],
                        'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", "bot_skin", 1, 0, "arr_attack"]
+                        
+
                        }
         self.tile = tile
         self.skin = allMonsters[name][0]
@@ -34,16 +37,23 @@ class Monster():
         self.recharge=0
         #self.attack=5
         self.q =False
-
+        
     def attack(self):
         #attack_value = randint(0.7 * allMonsters[self.name][5], 1.3 * allMonsters[self.name][5])
         return 5
 
     def die(self):
+        meat = Image.open("img/food/meat.png")
+        meat = meat.resize((100, 100), Image.ANTIALIAS)
+        meat_big = meat.resize((200, 200), Image.ANTIALIAS)
+        meat_big = ImageTk.PhotoImage(meat_big)
+        meat = ImageTk.PhotoImage(meat)
+        
         self.health = 0
         self.skin = self.died_skin
         self.isDied = True
-
+        if self.name=='chest':
+            self.gui.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
 
     def move_toward(self,x,y):
         gui=self.gui
@@ -147,10 +157,13 @@ class MonsterCollectiveBrain:
                     #print(2)
                     #self.monsterCount+=1
                     self.monsters.append(Monster(possible[randint(0,len(possible)-1)],i,gui))
+                    self.monsters[-1].target=i
                     if(random()<0.5):
                         self.monsters.append(Monster('chest',i,gui))
+                        self.monsters[-1].target=i
+                        self.monsters[-1].q=True
                     #print(con)
-                    self.monsters[-1].target=i
+                    #self.monsters[-1].target=i
                     
 
                     self.monsters[-1].q=True

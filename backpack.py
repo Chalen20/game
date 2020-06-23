@@ -2,8 +2,8 @@ from tkinter import *
 from math import *
 from PIL import Image, ImageTk
 class Backpack:
-    def __init__(self, root, canvas, pers, satiety, x, y):
-        self.items = []
+    def __init__(self, root, canvas, pers, satiety, x, y,gui):
+        self.items = gui.items
         apple = Image.open("img/food/Food_apple.png")
         apple = apple.resize((100, 100), Image.ANTIALIAS)
         apple_big = apple.resize((200, 200), Image.ANTIALIAS)
@@ -146,10 +146,10 @@ class Backpack:
         eat = eat.resize((50, 25), Image.ANTIALIAS)
         self.eat = ImageTk.PhotoImage(eat)
 
-        for i in range(10):
-            self.items.append(allItems["orange"])
-        for i in range(2):
-            self.items.append(allItems["mushroom"])
+        #for i in range(10):
+        #    self.items.append(allItems["orange"])
+        #for i in range(2):
+        #    self.items.append(allItems["mushroom"])
         self.canvas = canvas
         self.x = x
         self.y = y

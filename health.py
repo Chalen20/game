@@ -20,9 +20,9 @@ class Health:
         self.maxv=maxv
     def change(self, points):
         if points<0:
-            self.point=0
+            points=0
         if points>self.maxv:
-            self.point=self.maxv
+            points=self.maxv
         self.canvas.delete(self.rect)
         self.canvas.delete(self.form)
         self.point = points
