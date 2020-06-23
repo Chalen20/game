@@ -101,7 +101,7 @@ class Start_window:
         self.double_entrance.grid(column=0, row=6)
         self.double_entrance_ent = Entry(self.frame)
         self.double_entrance_ent.grid(column=1, row=6)
-        self.button = Button(self.frame, text="Ok")
+        self.button = Button(self.frame, text="Ok", command="close_settings")
         self.button.grid(column=1, row=7)
         self.canvas.tag_bind(self.gears_button_close, "<Button-1>", self.close_settings)
 
@@ -364,7 +364,5 @@ class Start_window:
     def start_f(self, event):
         self.window.destroy()
         self.visibility_cvar1 = self.visibility_cvar1.get()
-        gui = GUI(self.selected_pers_name, self.visibility_cvar1, int(self.intensivity_ent), int(self.lifespan_ent),
-                  int(self.loopchance_ent), int(self.cavechance_ent), int(self.chunk_size_ent), int(self.block_chance_ent),
-                  int(self.double_entrance_ent))
+        gui = GUI(self.selected_pers_name, self.visibility_cvar1)
 Start_window()
