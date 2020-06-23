@@ -12,8 +12,8 @@ class Monster():
 
         front_skin3 = Image.open("img/full_chest.png")
         front_skin3 = front_skin3.resize((100, 100), Image.ANTIALIAS)
-        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 15, 0.4, "arr_attack"],
-                       'deadlyMonster':[ImageTk.PhotoImage(front_skin2), "dead_skin", "bot_skin", 5, 0.8, "arr_attack"],
+        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 15, 0.8, "arr_attack"],
+                       'deadlyMonster':[ImageTk.PhotoImage(front_skin2), "dead_skin", "bot_skin", 5, 1.6, "arr_attack"],
                        'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", "bot_skin", 1, 0, "arr_attack"]
                         
 
@@ -183,4 +183,4 @@ class MonsterCollectiveBrain:
                 i.recharge-=0.01
                 
             #i.redraw(gui.canvas)
->>>>>>> 9e66c477080dcd67226062a67e8b57fce72a022f
+

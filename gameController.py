@@ -79,9 +79,9 @@ class GUI:
         if not visib:
             self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
         self.health = Health(self.canvas, pers.health, persTile.realx + 250, persTile.realy - 420, persTile, "red",
-                             200, 200)
+                             200, 200,self.pers.health)
         self.satiety = Health(self.canvas, pers.satiety, persTile.realx + 270, persTile.realy - 380, persTile,
-                              'yellow', 150, 100)
+                              'yellow', 150, 100,pers.satiety)
         self.menu = Image.open("img/menu_button_game.png")
         self.menu = self.menu.resize((100, 40), Image.ANTIALIAS)
         self.menu = ImageTk.PhotoImage(self.menu)
@@ -222,7 +222,7 @@ class GUI:
             self.canvas.tag_bind(self.exit_icon, "<Button-1>", exit_func)
 
         self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
-
+#----------------------------------------------------------------------------------
         def onKeyLeft(event):
             tile = pers.tile
             move = True
@@ -460,7 +460,7 @@ class GUI:
 
                 self.addNeighbours(tile.chunk)
                 self.renderNeighbours(tile.chunk)
-
+#----------------------------------------------------------------------
         def attack(event):
             
             if self.recharge>0:
@@ -570,7 +570,7 @@ class GUI:
         # print("to",event.x,event.y)
         self.canvas.scan_dragto(event.x, event.y, gain=1)
 
-
+#---------------------------------------------------------------------------
 class GameController:
     def __init__(self):
         self.gui = GUI()

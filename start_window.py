@@ -68,6 +68,7 @@ class Start_window:
         self.settings_frame = Label(self.canvas, width=64)
         self.settings_frame.place(x=0, y=0)
         self.frame = Frame(self.settings_frame, width=450, height=500)
+        
         self.frame.grid(column=0, row=0)
         self.checkbutton_visibility = Checkbutton(self.frame, text="visibility", variable=self.visibility_cvar1, onvalue=1, offvalue=0)
         self.checkbutton_visibility.pack()

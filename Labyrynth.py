@@ -18,62 +18,7 @@ from time import sleep
 #        }
 #
 #------------------------------------------------------------
-#Temporary Renderer
-#
-class GUI:
-    def __init__(self):
-        window=Tk()
-        canvas = Canvas(window,width=640,height=640,bg='white')
-        canvas.pack()
-        ren = Renderer(canvas)
-        options={
-            'intensity':0.1,
-            'lifespan':8,
-            'loopchance':0.5,
-            'cavechance':0.5,
-            'chunk_size':18,
-            'block_chance':0.9,
-            'double_entrance':0.2
-        }
-        self.maze=Maze(options)
-        self.maze.addChunk(0,0,0)
-        self.maze.addChunk(0,1,0)
-        self.maze.addChunk(1,1,0)
-        self.maze.addChunk(1,0,0)
-        self.maze.addChunk(1,2,0)
-        self.maze.addChunk(2,1,0)
-        self.maze.addChunk(1,2,0)
-        self.maze.addChunk(2,2,0)
-        self.maze.addChunk(0,2,0)
-        self.maze.addChunk(2,0,0)
-         
-        for i in self.maze.chunks:
-            for j in self.maze.chunks[i]:
-                for t in self.maze.chunks[i][j]:
-                    if t==0:
-                        
-                        ren.renderChunk(self.maze.chunks[i][j][t])
-    
-class Renderer:
-    def __init__(self,canvas):
-        self.canvas=canvas
-    def renderChunk(self,chunk):
-       for i in chunk.tiles:
-           for j in i:
-               self.renderTile(j,chunk.x,chunk.y)
-    def renderTile(self,tile,cx,cy):
-        
-        size =10
-        x = tile.x*10+180*cx
-        y = tile.y*10+180*cy
-        if not tile.connections[0]:
-            self.canvas.create_line(x,y,x+10,y)
-        if not tile.connections[1]:
-            self.canvas.create_line(x,y,x,y+10)
-        if not tile.connections[2]:
-            self.canvas.create_line(x+10,y,x+10,y+10)
-        if not tile.connections[3]:
-            self.canvas.create_line(x,y+10,x+10,y+10)
+
 #------------------------------------------------------------
 #Maze:
 #   Chunk(every chunk has the same tile numeration but ech chunk has it`s own x y z):
@@ -389,5 +334,62 @@ class LabBuilder:
         die = self.died
         self.died=False
         return die       
-
+#------------------------------------------------------------
+#Temporary Renderer
+#
+class GUI:
+    def __init__(self):
+        window=Tk()
+        canvas = Canvas(window,width=640,height=640,bg='white')
+        canvas.pack()
+        ren = Renderer(canvas)
+        options={
+            'intensity':0.1,
+            'lifespan':8,
+            'loopchance':0.5,
+            'cavechance':0.5,
+            'chunk_size':18,
+            'block_chance':0.9,
+            'double_entrance':0.2
+        }
+        self.maze=Maze(options)
+        self.maze.addChunk(0,0,0)
+        self.maze.addChunk(0,1,0)
+        self.maze.addChunk(1,1,0)
+        self.maze.addChunk(1,0,0)
+        self.maze.addChunk(1,2,0)
+        self.maze.addChunk(2,1,0)
+        self.maze.addChunk(1,2,0)
+        self.maze.addChunk(2,2,0)
+        self.maze.addChunk(0,2,0)
+        self.maze.addChunk(2,0,0)
+         
+        for i in self.maze.chunks:
+            for j in self.maze.chunks[i]:
+                for t in self.maze.chunks[i][j]:
+                    if t==0:
+                        
+                        ren.renderChunk(self.maze.chunks[i][j][t])
+class Renderer:
+    def __init__(self,canvas):
+        self.canvas=canvas
+    def renderChunk(self,chunk):
+       for i in chunk.tiles:
+           for j in i:
+               self.renderTile(j,chunk.x,chunk.y)
+    def renderTile(self,tile,cx,cy):
+        
+        size =10
+        x = tile.x*10+180*cx
+        y = tile.y*10+180*cy
+        if not tile.connections[0]:
+            self.canvas.create_line(x,y,x+10,y)
+        if not tile.connections[1]:
+            self.canvas.create_line(x,y,x,y+10)
+        if not tile.connections[2]:
+            self.canvas.create_line(x+10,y,x+10,y+10)
+        if not tile.connections[3]:
+            self.canvas.create_line(x,y+10,x+10,y+10)
+GUI()
+  
 
