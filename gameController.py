@@ -61,6 +61,16 @@ class GUI:
         self.maze.addChunk(0, 1, 0)
         self.maze.addChunk(-1, -1, 0)
 
+        self.maze.addChunk(0, 0, 1)
+        self.maze.addChunk(0, -1, 1)
+        self.maze.addChunk(1, -1, 1)
+        self.maze.addChunk(-1, 0, 1)
+        self.maze.addChunk(-1, 1, 1)
+        self.maze.addChunk(1, 1, 1)
+        self.maze.addChunk(1, 0, 1)
+        self.maze.addChunk(0, 1, 1)
+        self.maze.addChunk(-1, -1, 1)
+
         self.canvas.create_rectangle(0, 0, 20, 20, outline="black", fill='black')
         for i in self.maze.chunks:
             for j in self.maze.chunks[i]:
@@ -234,6 +244,9 @@ class GUI:
             self.canvas.tag_bind(self.exit_icon, "<Button-1>", exit_func)
 
         self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
+       
+        
+            
 #----------------------------------------------------------------------------------
         def onKeyLeft(event):
             tile = pers.tile
@@ -412,7 +425,7 @@ class GUI:
 
                 self.addNeighbours(tile.chunk)
                 self.renderNeighbours(tile.chunk)
-
+        
         def onKeyUp(event):
             move = True
             tile = pers.tile
@@ -541,7 +554,15 @@ class GUI:
             if self.recharge!=0:
                 self.recharge-=0.01
             #print(counter)
-
+    def level(self,lvl):
+            self.pers.tile=self.maze.getTile(self.pers.tile.x,self.pers.tile.y,lvl)
+            self.canvas.delete('all')
+            for i in self.maze.chunks:
+                for j in self.maze.chunks[i]:
+                    for t in self.maze.chunks[i][j]:
+                        if t == 1:
+                            self.ren.renderChunk(self.maze.chunks[i][j][t])
+            self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
     def addNeighbours(self, chunk):
         x = chunk.x
         y = chunk.y
