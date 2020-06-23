@@ -22,7 +22,8 @@ options = {
 
 class GUI:
 
-    def __init__(self, name, visib):
+    def __init__(self, name, visib, intensity, lifespan, loopchance, cavechange,
+                 chunk_size, block_change, double_entrace):
         self.size = 150
         self.x = 50000
         self.y = 50000
@@ -36,19 +37,26 @@ class GUI:
         self.hung_is_stop = True
 
         self.visibility = []
+        self.intensity = intensity
+        self.lifespan = lifespan
+        self.loopchangee = loopchance
+        self.cavechange = cavechange
+        self.chunk_size = chunk_size
+        self.block_change = block_change
+        self.double_entrace = double_entrace
         self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
         self.canvas.pack()
         #self.canvas.bind("<ButtonPress-1>", self.scroll_start)
         #self.canvas.bind("<B1-Motion>", self.scroll_move)
 
         options = {
-            'intensity': 0.1,
-            'lifespan': 8,
-            'loopchance': 0.5,
-            'cavechance': 1,
-            'chunk_size': 18,
-            'block_chance': 0.9,
-            'double_entrance': 0.2
+            'intensity': self.intensity,
+            'lifespan': self.lifespan,
+            'loopchance': self.loopchangee,
+            'cavechance': self.cavechange,
+            'chunk_size': self.chunk_size,
+            'block_chance': self.block_change,
+            'double_entrance': self.double_entrace
         }
         self.maze = Maze(options)
         self.maze.addChunk(0, 0, 0)
