@@ -1,13 +1,8 @@
 from random import *
 from math import*
 from PIL import Image, ImageTk
-<<<<<<< HEAD
-||||||| 859bd1c
-from backpack import Backpack
-=======
 from backpack import Backpack
 from copy import copy, deepcopy
->>>>>>> e74df698274064d736a9e462aca4da1b2adc6892
 class Monster():
 
     def __init__(self, name,tile,gui,*args):
@@ -21,12 +16,6 @@ class Monster():
         front_skin2 = Image.open("img/Orc3.png")
         front_skin2 = front_skin2.resize((100, 100), Image.ANTIALIAS)
 
-<<<<<<< HEAD
-||||||| 859bd1c
-<<<<<<< HEAD
-=======
-
->>>>>>> e74df698274064d736a9e462aca4da1b2adc6892
         front_skin1_animation = Image.open("img/Orc2_animation1.png")
         front_skin1_animation = front_skin1_animation.resize((100, 100), Image.ANTIALIAS)
         front_skin2_animation = Image.open("img/Orc3_animation1.png")
@@ -39,12 +28,6 @@ class Monster():
 
         front_skin4 = Image.open("img/portal.png")
         front_skin4 = front_skin4.resize((100, 100), Image.ANTIALIAS)
-<<<<<<< HEAD
-
-||||||| 859bd1c
-        
->>>>>>> ec4a22739e20416282f6e6bf84b5c0e358aba9ca
-=======
         
         front_skin5 = Image.open("img/Orc1.png")
         front_skin5 = front_skin5.resize((100, 100), Image.ANTIALIAS)
@@ -54,48 +37,16 @@ class Monster():
 
         front_skin7 = Image.open("img/portal.png")
         front_skin7 = front_skin7.resize((20, 20), Image.ANTIALIAS)
-        
->>>>>>> e74df698274064d736a9e462aca4da1b2adc6892
+
         front_skin3 = Image.open("img/full_chest.png")
         front_skin3 = front_skin3.resize((100, 100), Image.ANTIALIAS)
-<<<<<<< HEAD
-        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 15, 0.8, "arr_attack",
-||||||| 859bd1c
-<<<<<<< HEAD
-        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 15, 0.8, "arr_attack",
-=======
+
 
         allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", 30, 30, 0.8, 10,
->>>>>>> e74df698274064d736a9e462aca4da1b2adc6892
                                         ImageTk.PhotoImage(front_skin1_animation),
                                         ImageTk.PhotoImage(front_skin1_animation2), False],
                        'deadlyMonster':[ImageTk.PhotoImage(front_skin2), "dead_skin", 30, 5, 1.6, 5,
                                         ImageTk.PhotoImage(front_skin2_animation),
-<<<<<<< HEAD
-                                        ImageTk.PhotoImage(front_skin2_animation2)],
-                       'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", "bot_skin", 1, 0, "arr_attack",
-                                ImageTk.PhotoImage(front_skin3), ImageTk.PhotoImage(front_skin3)],
-                       'portal':[ImageTk.PhotoImage(front_skin4), "dead_skin", "bot_skin", 1, 0, "arr_attack",
-                                 ImageTk.PhotoImage(front_skin4), ImageTk.PhotoImage(front_skin4)]
-||||||| 859bd1c
-                                        ImageTk.PhotoImage(front_skin2_animation2)],
-                       'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", "bot_skin", 1, 0, "arr_attack",
-                                ImageTk.PhotoImage(front_skin3), ImageTk.PhotoImage(front_skin3)]
-||||||| 7870ef4
-        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 15, 0.8, "arr_attack"],
-                       'deadlyMonster':[ImageTk.PhotoImage(front_skin2), "dead_skin", "bot_skin", 5, 1.6, "arr_attack"],
-                       'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", "bot_skin", 1, 0, "arr_attack"]
-                        
-
-=======
-        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", "bot_skin", 15, 0.8, "arr_attack"],
-                       'deadlyMonster':[ImageTk.PhotoImage(front_skin2), "dead_skin", "bot_skin", 5, 1.6, "arr_attack"],
-                       'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", "bot_skin", 1, 0, "arr_attack"],
-                       'portal':[ImageTk.PhotoImage(front_skin4), "dead_skin", "bot_skin", 1, 0, "arr_attack"]
-,                        
-
->>>>>>> ec4a22739e20416282f6e6bf84b5c0e358aba9ca
-=======
                                         ImageTk.PhotoImage(front_skin2_animation2), False],
                        'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", 0, 1, 0, 0,
                                 ImageTk.PhotoImage(front_skin3), ImageTk.PhotoImage(front_skin3), False],
@@ -107,8 +58,6 @@ class Monster():
                                  ImageTk.PhotoImage(front_skin6), ImageTk.PhotoImage(front_skin6), False],
                        'fireball':[ImageTk.PhotoImage(front_skin7), "dead_skin", 5, 1, 2, 5,
                                  ImageTk.PhotoImage(front_skin7), ImageTk.PhotoImage(front_skin7), True]
-                        
->>>>>>> e74df698274064d736a9e462aca4da1b2adc6892
                        }
         self.tile = tile
         self.skin = allMonsters[name][0]

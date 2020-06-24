@@ -8,6 +8,7 @@ from monsters import MonsterCollectiveBrain
 from time import sleep
 from backpack import Backpack
 from math import *
+from ammunition import Ammunition
 
 options = {
     'intensity': 0.1,
@@ -106,8 +107,7 @@ class GUI:
                                                        persTile.realx - 400, persTile.realy - 400)
         self.paused_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                       persTile.realx - 400, persTile.realy - 400)
-        self.armor_window = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
-                                                            persTile.realx - 400, persTile.realy - 400)
+        self.armor_window = Ammunition(self.root, self.canvas, self.pers, pers.x-400, pers.y-400)
         self.armor = Image.open("img/armor.png")
         self.armor = self.armor.resize((75, 75), Image.ANTIALIAS)
         self.armor = ImageTk.PhotoImage(self.armor)
@@ -131,7 +131,8 @@ class GUI:
         self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=self.backpack)
         self.recharge = 0
         def backpack_func(event):
-            close_armor(event)
+            if self.armor_window.is_Open:
+                close_armor(event)
             self.root.unbind('<Left>')
             self.root.unbind('<Right>')
             self.root.unbind('<Up>')
@@ -164,14 +165,15 @@ class GUI:
             self.root.unbind('<Down>')
             self.isPaused = True
             close_menu(event)
-            self.armor_window = self.canvas.create_rectangle(pers.x-400, pers.y-400, pers.x+210, pers.y+200, fill="red")
+            self.armor_window = Ammunition(self.root, self.canvas, self.pers, pers.x-400, pers.y-400)
+            self.armor_window.start()
             self.canvas.lift(self.armor_window)
             self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
             self.canvas.tag_bind(self.armor_icon, "<Button-1>", close_armor)
 
         def close_armor(event):
             play_func(event)
-            self.canvas.delete(self.armor_window)
+            self.armor_window.remove()
             self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
             self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
 
