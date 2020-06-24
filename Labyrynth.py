@@ -299,10 +299,12 @@ class LabBuilder:
         if len(possible)==0:
             if(len(self.memory)==0):
                self.died=True
-            self.currentTile=self.memory.pop(len(self.memory)-1)
-            self.x=self.currentTile.x
-            self.y=self.currentTile.y
-
+            try:
+                self.currentTile=self.memory.pop(len(self.memory)-1)
+                self.x=self.currentTile.x
+                self.y=self.currentTile.y
+            except:
+                pass
         else:
             tile=possible[randint(0,len(possible)-1)]
             if len(possible)>1 and random()<self.intensity:
@@ -345,13 +347,13 @@ class GUI:
         canvas.pack()
         ren = Renderer(canvas)
         options={
-            'intensity':0.1,
-            'lifespan':8,
-            'loopchance':0.5,
-            'cavechance':0.5,
-            'chunk_size':18,
-            'block_chance':0.9,
-            'double_entrance':0.2
+            'intensity':1,
+            'lifespan':18,
+            'loopchance':0,
+            'cavechance':0,
+            'chunk_size':32,
+            'block_chance':0,
+            'double_entrance':0
         }
         self.maze=Maze(options)
         self.maze.addChunk(0,0,0)

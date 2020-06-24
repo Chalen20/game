@@ -527,6 +527,7 @@ class GUI:
         counter = 0
 
         while True:
+            #self.canvas.lift(self.backpack_icon)
             if not self.isPaused:
                 self.mcb.loop(self)
             else:
@@ -552,7 +553,9 @@ class GUI:
             counter += 1
             if self.recharge!=0:
                 self.recharge-=0.01
-            #print(counter)
+            self.canvas.lift(self.backpack_icon)
+            self.canvas.lift(self.menu)
+            self.canvas.lift(self.backpack)
     def level(self,lvl):
             self.pers.tile=self.maze.getTile(self.pers.tile.x,self.pers.tile.y,lvl)
             self.canvas.delete('all')
@@ -562,6 +565,7 @@ class GUI:
                         if t == 1:
                             self.ren.renderChunk(self.maze.chunks[i][j][t])
             self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+            #self.canvas.lift(self.backpack_icon)
     def addNeighbours(self, chunk):
         x = chunk.x
         y = chunk.y
