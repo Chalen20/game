@@ -9,6 +9,7 @@ from time import sleep
 from backpack import Backpack
 from math import *
 from ammunition import Ammunition
+from item import ItemController
 
 from random import *
 options = {
@@ -112,7 +113,6 @@ class GUI:
                                                        persTile.realx - 400, persTile.realy - 400)
         self.paused_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                       persTile.realx - 400, persTile.realy - 400)
-        self.armor_window = Ammunition(self.root, self.canvas, self.pers, pers.x-400, pers.y-400)
         self.armor = Image.open("img/armor.png")
         self.armor = self.armor.resize((75, 75), Image.ANTIALIAS)
         self.armor = ImageTk.PhotoImage(self.armor)
@@ -127,6 +127,10 @@ class GUI:
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
+
+        self.ammunition = []
+        self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
+        self.armor_window = Ammunition(self.root, self.canvas, self.pers, pers.x-400, pers.y-400, self)
 
         self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x - 400, pers.y - 400, self)
         
@@ -148,6 +152,8 @@ class GUI:
             self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400,self)
             self.backback.start()
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
+            ic = ItemController()
+            print(ic.get())
 
         def close_backpack(event):
             play_func(event)
@@ -167,7 +173,7 @@ class GUI:
             self.root.unbind('<Down>')
             self.isPaused = True
             close_menu(event)
-            self.armor_window = Ammunition(self.root, self.canvas, self.pers, pers.x-400, pers.y-400)
+            self.armor_window = Ammunition(self.root, self.canvas, self.pers, pers.x-400, pers.y-400, self)
             self.armor_window.start()
             self.canvas.lift(self.armor_window)
             self.canvas.tag_unbind(self.armor_icon, "<Button-1>")

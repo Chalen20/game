@@ -2,7 +2,7 @@ from tkinter import *
 from math import *
 from PIL import Image, ImageTk
 class Ammunition:
-    def __init__(self, root, canvas, pers, x, y):
+    def __init__(self, root, canvas, pers, x, y, gui):
         watermelon = Image.open("img/food/Food_watermelon.png")
         watermelon = watermelon.resize((100, 100), Image.ANTIALIAS)
         watermelon_big = watermelon.resize((200, 200), Image.ANTIALIAS)
@@ -15,7 +15,7 @@ class Ammunition:
         allItems = {
                     "watermelon": [watermelon, watermelon_big, "watermelon", "shield", 15, 0.035, True],
                 }
-        self.amunition = []
+        self.amunition = gui.ammunition
         for i in range(10):
             self.amunition.append(allItems["watermelon"])
         self.x = x
@@ -25,7 +25,7 @@ class Ammunition:
         self.pers = pers
         self.is_Open = False
         self.allItems = allItems
-        self.equiped = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
+        self.equiped = gui.equipment
 
     def start(self):
         self.build_amunition()
