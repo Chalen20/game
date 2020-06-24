@@ -50,13 +50,13 @@ class Monster():
                                         ImageTk.PhotoImage(front_skin2_animation2), False],
                        'chest':[ImageTk.PhotoImage(front_skin3), "dead_skin", 0, 1, 0, 0,
                                 ImageTk.PhotoImage(front_skin3), ImageTk.PhotoImage(front_skin3), False],
-                       'portal':[ImageTk.PhotoImage(front_skin4), "dead_skin", 0, 100000, 0, 0,
+                       'portal':[ImageTk.PhotoImage(front_skin4), "dead_skin", 30, 100000, 0, 0,
                                  ImageTk.PhotoImage(front_skin4), ImageTk.PhotoImage(front_skin4), False],
                        'death':[ImageTk.PhotoImage(front_skin5), "dead_skin", 20, 1, 0.6, 50,
                                  ImageTk.PhotoImage(front_skin5), ImageTk.PhotoImage(front_skin5), False],
                        'mage':[ImageTk.PhotoImage(front_skin6), "dead_skin", 200, 1, 0.6, 0,
                                  ImageTk.PhotoImage(front_skin6), ImageTk.PhotoImage(front_skin6), False],
-                       'fireball':[ImageTk.PhotoImage(front_skin7), "dead_skin", 5, 1, 2, 5,
+                       'fireball':[ImageTk.PhotoImage(front_skin7), "dead_skin", 30, 1, 2, 5,
                                  ImageTk.PhotoImage(front_skin7), ImageTk.PhotoImage(front_skin7), True]
                         
                        }
@@ -82,7 +82,8 @@ class Monster():
         self.recharge=0
         self.counter = 0
         #self.attack=5
-        self.q =False
+        self.q = name=='portal'
+        
         
     def attack(self,pers,mcb):
         class Point:
@@ -208,6 +209,10 @@ class MonsterCollectiveBrain:
         #self.monsters.append(Monster("deathMonster",self.maze.getTile(3,3,0),gui))
         self.monsters[-1].target=self.monsters[-1].tile
         #print(self.monsters[-1].target.x,self.monsters[-1].target.y)
+    def addPortal(self,tile,gui,lvl):
+        self.monsters.append(Monster('portal',tile,gui,lvl))
+        self.monsters[-1].target=tile
+        self.monsters[-1].q=True
     def loop(self,gui):
         lvl=self.pers.tile.chunk.z
         possible = {0:['deathMonster','deadlyMonster','mage'],
@@ -242,7 +247,7 @@ class MonsterCollectiveBrain:
                     self.monsters.append(Monster(possible[randint(0,len(possible)-1)],i,gui,lvl))
                     self.monsters[-1].target=i
                     if(random()<0.5):
-                        self.monsters.append(Monster('chest',i,gui))
+                        self.monsters.append(Monster('chest',i,gui,lvl))
                         self.monsters[-1].target=i
                         self.monsters[-1].q=True
                     #print(con)
@@ -287,11 +292,12 @@ class MonsterCollectiveBrain:
                 if(not i.q):
                     i.lifespan+=0.01
             if(sqrt((i.x-self.pers.x)**2+(i.y-self.pers.y)**2)<i.attackRange and i.recharge<=0):
-                if(i.name=='portal'):
-                    if i.tile.chunk.z==0:
-                        gui.level(1)
-                    if i.tile.chunk.z==1:
-                        gui.level(0)
+                if(i.name =='portal'):
+                    print(1)
+                    value = i.tile.chunk.z
+                    self.monsterCount=0
+                    gui.level((value+1)%5)
+                        
                 attack= i.attack(self.pers,self)     
                 self.pers.take_damage(attack)
                 i.recharge=2

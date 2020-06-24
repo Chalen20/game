@@ -4,11 +4,12 @@ from tkinter import *
 from pers import Pers
 from health import Health
 from PIL import Image, ImageTk
-from monsters import MonsterCollectiveBrain
+from monsters import *
 from time import sleep
 from backpack import Backpack
 from math import *
 
+from random import *
 options = {
     'intensity': 0.1,
     'lifespan': 8,
@@ -22,12 +23,16 @@ options = {
 
 class GUI:
 
-    def __init__(self, name, visib):
+
+    def __init__(self, name, visib,on):
         self.size = 150
         self.x = 50000
         self.y = 50000
         self.root = Tk()
+        self.root.grab_set()
+        self.root.focus_force()
         self.canvas = Canvas(self.root, width=800, height=800)
+        #self.canvas.focus_set()
         self.ren = Renderer(self)
         self.time = 0
         self.name = name
@@ -140,11 +145,11 @@ class GUI:
             self.isPaused = True
             close_menu(event)
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
-            print(self.backpack_icon)
+            #print(self.backpack_icon)
             self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400,self)
-            print(self.backpack_icon)
+            #print(self.backpack_icon)
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
-            print(self.backpack_icon)
+            #print(self.backpack_icon)
 
         def close_backpack(event):
             #print(self.backpack_icon)
@@ -154,7 +159,7 @@ class GUI:
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
             #print(self.backpack_icon)
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
-            
+            self.isPaused = False
         self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
         self.mcb = MonsterCollectiveBrain(self)
         def armor_func(event):
@@ -177,14 +182,14 @@ class GUI:
             self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
 
         self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
-
+        #self.canvas.tag_bind(self.menu_button,"<Button-1>",
         def close_menu(event):
             self.canvas.delete(self.pause_icon)
             self.canvas.delete(self.play_icon)
             self.canvas.delete(self.back_icon)
             self.canvas.delete(self.exit_icon)
-            self.canvas.tag_unbind(self.menu_button, "<Button-1>")
-            self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
+            self.canvas.tag_bind(self.menu_button, "<Button-1>",menu_label)
+        #self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
 
         def pause_func(event):
             self.paused = Image.open("img/paused.png")
@@ -207,10 +212,14 @@ class GUI:
             self.root.bind('<Right>', onKeyRight)
             self.root.bind('<Up>', onKeyUp)
             self.root.bind('<Down>', onKeyDown)
-
+            self.isPaused = False
         def exit_func(event):
             self.root.destroy()
-
+        def back_func(event):
+            #print(self)
+            self.root.destroy()
+            on()
+            #del self
         def menu_label(event):
             self.pause = Image.open("img/pause.png")
             self.pause = self.pause.resize((100, 40), Image.ANTIALIAS)
@@ -242,10 +251,10 @@ class GUI:
             self.canvas.tag_bind(self.pause_icon, "<Button-1>", pause_func)
             self.canvas.tag_bind(self.play_icon, "<Button-1>", play_func)
             self.canvas.tag_bind(self.exit_icon, "<Button-1>", exit_func)
-
-        self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
+            #self.canvas.tag_bind(self.exit_icon, "<Button-1>", exit_func)
+            self.canvas.tag_bind(self.back_icon, "<Button-1>", back_func)
        
-        
+        self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
             
 #----------------------------------------------------------------------------------
         def onKeyLeft(event):
@@ -494,7 +503,7 @@ class GUI:
             attacky=event.y-500
             attackx=event.x-500
             vectlen=sqrt(attackx**2+attacky**2)
-            print(attackx,attacky)
+            #print(attackx,attacky)
             if vectlen > 70:
                 const=70/vectlen
             else:
@@ -504,7 +513,7 @@ class GUI:
             attackx=self.pers.x+attackx
             attacky=self.pers.y+attacky
             
-            print(attackx,attacky)
+            #print(attackx,attacky)
             circle=self.canvas.create_oval(attackx-self.pers.attackRange,attacky-self.pers.attackRange,attackx+self.pers.attackRange,attacky+self.pers.attackRange,fill='grey')
             sleep(0.05)
             def dele():
@@ -528,6 +537,14 @@ class GUI:
         counter = 0
 
         while True:
+            try:
+                #self.root.lift(self.backpack_icon)
+                #self.root.lift(self.menu_button)
+                #self.root.lift(self.backpack)
+                if not self.root.winfo_exists():
+                    break
+            except:
+                break
             #self.canvas.lift(self.backpack_icon)
             if not self.isPaused:
                 self.mcb.loop(self)
@@ -554,19 +571,38 @@ class GUI:
             counter += 1
             if self.recharge!=0:
                 self.recharge-=0.01
-            self.canvas.lift(self.backpack_icon)
-            self.canvas.lift(self.menu)
-            self.canvas.lift(self.backpack)
+            try:
+                self.canvas.lift(self.backpack_icon)
+                self.canvas.lift(self.menu)
+                self.canvas.lift(self.backpack)
+            except:
+                break
     def level(self,lvl):
+            x = self.pers.tile.chunk.x
+            y = self.pers.tile.chunk.y
+            z = self.pers.tile.chunk.z
+            
+            maze = self.maze
+            maze.addChunk(x, y, lvl)
             self.pers.tile=self.maze.getTile(self.pers.tile.x,self.pers.tile.y,lvl)
-            self.canvas.delete('all')
-            for i in self.maze.chunks:
-                for j in self.maze.chunks[i]:
-                    for t in self.maze.chunks[i][j]:
-                        if t == 1:
-                            self.ren.renderChunk(self.maze.chunks[i][j][t])
+            for i in self.canvas.find_all():
+                if(i!=self.backpack_icon and i!=self.menu_button and i!= self.armor_icon):
+                    self.canvas.delete(i)
+            self.satiety.change(self.satiety.point)
+            self.addNeighbours(maze.get(x , y, lvl))
+            self.renderNeighbours(maze.get(x , y, lvl))
             self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+            #self.mcb.addPortal(self.pers.tile.neighbours[0],self,lvl)
+            #monsters.append(Monster('portal',self.pers.tile.neighbours[0],self))
+         
+            #self.mcb.monsters[-1].target=self.pers.tile
             #self.canvas.lift(self.backpack_icon)
+            
+            self.canvas.lift(self.backpack_icon)
+            self.canvas.lift(self.menu_button)
+            self.canvas.lift(self.armor_icon)
+            
+            #self.canvas.lift(self.backpack)
     def addNeighbours(self, chunk):
         x = chunk.x
         y = chunk.y
@@ -597,6 +633,15 @@ class GUI:
         self.ren.renderChunk(self.maze.get(x - 1, y, z))
         self.ren.renderChunk(self.maze.get(x - 1, y - 1, z))
         self.ren.renderChunk(chunk)
+        if(chunk.portaled=='mayBe'):
+            if(random()<0.5):
+                random1=randint(2,chunk.size-2)
+                random2=randint(2,chunk.size-2)
+                tile = chunk.tiles[random1][random2]
+                print('portal',random1,random2)
+                self.mcb.monsters.append(Monster('portal',tile,self))
+                self.mcb.monsters[-1].target=tile
+            chunk.portaled='Already'
 
     def scroll_start(self, event):
         # print("from",event.x,event.y)
