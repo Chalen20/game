@@ -364,5 +364,4 @@ class Start_window:
     def start_f(self, event):
         self.window.destroy()
         self.visibility_cvar1 = self.visibility_cvar1.get()
-        gui = GUI(self.selected_pers_name, self.visibility_cvar1)
-Start_window()
+        gui = GUI(self.selected_pers_name, self.visibility_cvar1, Start_window)

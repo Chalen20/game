@@ -110,6 +110,7 @@ class Maze:
         return self.unoMap[x][y][z]
 class Chunk:
     def __init__(self,options,x,y,z,maze):
+        self.portaled="mayBe"
         self.drawings=[]
         self.rendered=False
         self.x=x
@@ -129,8 +130,8 @@ class Chunk:
                 x1=self.x*(self.size)+i
                 y2=self.y*(self.size)+j
                 z3=self.z
-                if(x1==0 and y2==0 and z3==0):
-                    print(x1,y2,z3)
+                #if(x1==0 and y2==0 and z3==0):
+                    #print(x1,y2,z3)
                 maze.addTile(x1,y2,z3,tile)
                 if(i>0):
                     self.tiles[i][j].addNeighbour(EAST,self.tiles[i-1][j])
