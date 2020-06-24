@@ -2,7 +2,7 @@ from tkinter import *
 from math import *
 from PIL import Image, ImageTk
 class Backpack:
-    def __init__(self, root, canvas, pers, satiety, x, y,gui):
+    def __init__(self, root, canvas, pers, satiety, x, y, gui):
         self.items = gui.items
         apple = Image.open("img/food/Food_apple.png")
         apple = apple.resize((100, 100), Image.ANTIALIAS)
@@ -157,8 +157,12 @@ class Backpack:
         self.root = root
         self.pers = pers
         self.satiety = satiety
+        self.is_Open = False
+
+    def start(self):
         self.build_backpack()
         self.buildItems()
+        self.is_Open = True
 
     def build_backpack(self):
         self.frame = Frame(self.root, width=600, height=600, bg="green")
@@ -193,13 +197,7 @@ class Backpack:
 
     def remove(self):
         self.frame.destroy()
-
-    def delete_spaces(self, items):
-        items2 = []
-        for i in items:
-            if i != "":
-                items2.append(i)
-        return items2
+        self.is_Open = False
 
     def buildItems(self):
         if len(self.items) <= 4:

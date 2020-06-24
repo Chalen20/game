@@ -106,25 +106,24 @@ class GUI:
                                                        persTile.realx - 400, persTile.realy - 400)
         self.paused_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                       persTile.realx - 400, persTile.realy - 400)
-        self.backback = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
-                                                            persTile.realx - 400, persTile.realy - 400)
         self.armor_window = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                             persTile.realx - 400, persTile.realy - 400)
         self.armor = Image.open("img/armor.png")
         self.armor = self.armor.resize((75, 75), Image.ANTIALIAS)
         self.armor = ImageTk.PhotoImage(self.armor)
         self.armor_icon = self.canvas.create_image(pers.x - 460, pers.y - 200, image=self.armor)
-        
 
         meat = Image.open("img/food/meat.png")
         meat = meat.resize((100, 100), Image.ANTIALIAS)
         meat_big = meat.resize((200, 200), Image.ANTIALIAS)
         meat_big = ImageTk.PhotoImage(meat_big)
         meat = ImageTk.PhotoImage(meat)
-        self.items=[]
+        self.items = []
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
+
+        self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x - 400, pers.y - 400, self)
         
         self.backpack = Image.open("img/back_pack.png")
         self.backpack = self.backpack.resize((75, 75), Image.ANTIALIAS)
@@ -142,23 +141,23 @@ class GUI:
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
             print(self.backpack_icon)
             self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400,self)
+            self.backback.start()
             print(self.backpack_icon)
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
             print(self.backpack_icon)
 
         def close_backpack(event):
-            #print(self.backpack_icon)
             play_func(event)
-            self.items=self.backback.items
+            self.items = self.backback.items
             self.backback.remove()
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
-            #print(self.backpack_icon)
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
             
         self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
         self.mcb = MonsterCollectiveBrain(self)
         def armor_func(event):
-            close_backpack(event)
+            if self.backback.is_Open:
+                close_backpack(event)
             self.root.unbind('<Left>')
             self.root.unbind('<Right>')
             self.root.unbind('<Up>')
