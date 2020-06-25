@@ -6,6 +6,7 @@ class Renderer:
         self.x = self.gui.x
         self.y = self.gui.y
         self.canvas = self.gui.canvas
+        self.mini = self.gui.minimap.canvas
         self.chunk=''
         tile_bg = Image.open("img/patern3.png")
         self.tile_bg=ImageTk.PhotoImage(tile_bg.resize((self.size, self.size), Image.ANTIALIAS))
@@ -43,8 +44,16 @@ class Renderer:
         self.chunk.drawings.append(self.canvas.create_image(x+self.size/2,y+self.size/2,image=self.tile_bg))
         self.canvas.lower(self.chunk.drawings[-1])
     def addWall(self, x1, y1, x2, y2):
+        
         self.chunk.drawings.append(self.canvas.create_rectangle(x1, y1, x2, y2,fill='red'))
         self.canvas.lower(self.chunk.drawings[-1])
+        #print(x1,x2,y1,y2)
+        self.chunk.drawings.append(self.mini.create_line(int(x1/10), int(y1/10), int(x2/10), int(y1/10), width=2,fill='black'))
+        self.canvas.lower(self.chunk.drawings[-1])
+        #self.mini.create_line(-5000, -5000, -4950, -4950, width=2,fill='black')
+        #self.mini.create_rectangle(0,0, 20, 20,fill='red')
+
+        
     def renderVisibility(self,tile,vis,tiles):
         #print(tile)
         t= tile

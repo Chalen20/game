@@ -11,6 +11,7 @@ from math import *
 from ammunition import Ammunition
 from item import *
 from random import *
+
 options = {
     'intensity': 0.1,
     'lifespan': 8,
@@ -20,7 +21,19 @@ options = {
     'block_chance': 0,
     'double_entrance': 0.2
 }
-
+class MiniMap:
+    def __init__(self,gui):
+        self.gui = gui
+    def toggle(self):
+        self.frame = Frame(self.gui.root, width=180, height=180, bg="green")
+        self.frame.place(x=0, y=0)
+        self.canvas = Canvas(self.frame, width=180, height=180, bg="#ccccaa")
+        self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
+        self.canvas.place(x=0, y=0)
+        self.canvas.scan_mark(0, 0)
+        self.canvas.scan_dragto(-5000, -5000, gain=1)
+    def turnoff(self):
+        self.frame.destroy()
 
 class GUI:
 
@@ -34,6 +47,8 @@ class GUI:
         self.root.focus_force()
         self.canvas = Canvas(self.root, width=800, height=800)
         #self.canvas.focus_set()
+        self.minimap = MiniMap(self)
+        self.minimap.toggle()
         self.ren = Renderer(self)
         self.time = 0
         self.name = name
@@ -46,7 +61,7 @@ class GUI:
         self.canvas.pack()
         #self.canvas.bind("<ButtonPress-1>", self.scroll_start)
         #self.canvas.bind("<B1-Motion>", self.scroll_move)
-
+        
         options = {
             'intensity': 0.1,
             'lifespan': 8,
@@ -76,6 +91,8 @@ class GUI:
         self.maze.addChunk(1, 0, 1)
         self.maze.addChunk(0, 1, 1)
         self.maze.addChunk(-1, -1, 1)
+
+        self.allMonsters = allMonsters()
 
         self.canvas.create_rectangle(0, 0, 20, 20, outline="black", fill='black')
         for i in self.maze.chunks:
@@ -267,7 +284,7 @@ class GUI:
             self.canvas.tag_bind(self.back_icon, "<Button-1>", back_func)
        
         self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
-            
+        
 #----------------------------------------------------------------------------------
         def onKeyLeft(event):
             tile = pers.tile
@@ -295,7 +312,7 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(int(self.speed / 10), 0)
+                self.canvas.scan_dragto(self.speed, 0, gain=1)
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
@@ -412,7 +429,7 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(0, int(-self.speed / 10))
+                self.canvas.scan_dragto(0, -self.speed,gain=1)
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
@@ -472,7 +489,7 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(0, int(self.speed / 10))
+                self.canvas.scan_dragto(0, self.speed, gain=1)
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y,

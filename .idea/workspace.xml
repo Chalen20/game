@@ -20,13 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="140083b3-f6a0-488f-ba57-8ee2b39b7cb1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ammunition.py" beforeDir="false" afterPath="$PROJECT_DIR$/ammunition.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backpack.py" beforeDir="false" afterPath="$PROJECT_DIR$/backpack.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/minimap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gameController.py" beforeDir="false" afterPath="$PROJECT_DIR$/gameController.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/health.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/item.py" beforeDir="false" afterPath="$PROJECT_DIR$/item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pers.py" beforeDir="false" afterPath="$PROJECT_DIR$/pers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/monsters.py" beforeDir="false" afterPath="$PROJECT_DIR$/monsters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/start_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/start_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

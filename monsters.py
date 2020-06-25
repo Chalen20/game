@@ -4,14 +4,8 @@ from PIL import Image, ImageTk
 from backpack import Backpack
 from copy import copy, deepcopy
 from time import sleep
-class Monster():
-
-    def __init__(self, name,tile,gui,*args):
-        self.gui=gui
-        if(len(args)>0):
-            self.lvl=args[0]
-        else:
-            self.lvl=0
+class allMonsters():
+    def __init__(self):
         front_skin1 = Image.open("img/Orc2.png")
         front_skin1 = front_skin1.resize((100, 100), Image.ANTIALIAS)
         front_skin2 = Image.open("img/Orc3.png")
@@ -43,7 +37,7 @@ class Monster():
         front_skin3 = front_skin3.resize((100, 100), Image.ANTIALIAS)
 
 
-        allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", 30, 30, 0.8, 10,
+        self.allMonsters = {"deathMonster": [ImageTk.PhotoImage(front_skin1), "dead_skin", 30, 30, 0.8, 10,
                                         ImageTk.PhotoImage(front_skin1_animation),
                                         ImageTk.PhotoImage(front_skin1_animation2), False],
                        'deadlyMonster':[ImageTk.PhotoImage(front_skin2), "dead_skin", 30, 5, 1.6, 5,
@@ -59,7 +53,16 @@ class Monster():
                                  ImageTk.PhotoImage(front_skin6), ImageTk.PhotoImage(front_skin6), False],
                        'fireball':[ImageTk.PhotoImage(front_skin7), "dead_skin", 30, 1, 2, 5,
                                  ImageTk.PhotoImage(front_skin7), ImageTk.PhotoImage(front_skin7), True]
-                       }
+        }
+class Monster():
+
+    def __init__(self, name,tile,gui,*args):
+        self.gui=gui
+        if(len(args)>0):
+            self.lvl=args[0]
+        else:
+            self.lvl=0
+        allMonsters=gui.allMonsters.allMonsters
         self.tile = tile
         self.skin = allMonsters[name][0]
         self.name = name
@@ -188,7 +191,7 @@ class Monster():
             try:
                 canvas.delete(self.image)
             except:
-                pass
+                print('error')
         try:
             if self.counter % 8 < 4:
                 self.image = canvas.create_image(self.x,self.y,image = self.skin)
@@ -198,6 +201,8 @@ class Monster():
                 self.image = canvas.create_image(self.x, self.y, image=self.skin_animation2)
         except:
             pass
+        if(self.isDied):
+            canvas.delete(self.image)
 
 class MonsterCollectiveBrain:
     #possible = ['deathMonster','deadlyMonster','deathMonster']
@@ -278,6 +283,7 @@ class MonsterCollectiveBrain:
             if i.isDied:
                 #print(i.missile)
                 self.monsters.remove(i)
+                gui.canvas.delete(i.image)
                 if(not i.q and not i.missile):
                     self.monsterCount-=1
                 if(i.missile):
@@ -285,7 +291,7 @@ class MonsterCollectiveBrain:
                         attack= i.attack(self.pers,self)     
                         self.pers.take_damage(attack)
                         
-                        now_health = gui.health.point - attack
+                        now_health = self.pers.health
                         gui.health.change(now_health)
                 if(i.tag):
                     i.tag.monsters.remove(i)
@@ -313,14 +319,14 @@ class MonsterCollectiveBrain:
             if(sqrt((i.x-self.pers.x)**2+(i.y-self.pers.y)**2)<i.attackRange and i.recharge<=0):
                 if(i.name =='portal'):
                     print(1)
-                    value = i.tile.chunk.z
+                    value = i.lvl
                     self.monsterCount=0
                     gui.level((value+1)%5)
                         
                 attack= i.attack(self.pers,self)     
                 self.pers.take_damage(attack)
                 i.recharge=2
-                now_health = gui.health.point - attack
+                now_health = self.pers.health
                 gui.health.change(now_health)
             if(i.recharge!=0):
                 i.recharge-=0.01
