@@ -243,8 +243,8 @@ class MonsterCollectiveBrain:
                 #print(self.monsterCount)
                 tile = gui.visible[1][randint(0, floor(len(gui.visible[1])-1))]
                 con=tile.connections[randint(0,3)]
-                if con and not con in gui.visible[0] and not con.chunk.cleared:
-                    sleep(0.01)
+                if con and not con in gui.visible[0]:
+                    #sleep(0.01)
                     self.monsterCount+=1
                     self.monsters.append(Monster(possible[randint(0,len(possible)-1)],con,gui,lvl))
                     #print(con)
@@ -264,7 +264,7 @@ class MonsterCollectiveBrain:
                     self.monsters[-1].target=i
                     self.monsters[-1].q=True
                     self.monsters[-1].tag=self.pers.tile.room
-                    self.pers.tile.room.monsters.append(self.monsters[-1])
+                    #self.pers.tile.room.monsters.append(self.monsters[-1])
                     if(random()<0.5):
                         self.monsters.append(Monster('chest',i,gui,lvl))
                         self.monsters[-1].target=i
@@ -293,11 +293,11 @@ class MonsterCollectiveBrain:
                         
                         now_health = self.pers.health
                         gui.health.change(now_health)
-                if(i.tag):
-                    i.tag.monsters.remove(i)
-                    if len(i.tag.monsters)==0:
-                        i.tag.chunk.cleared=True
-                        print(i.tag.chunk.x,i.tag.chunk.y,'cleared')
+                #if(i.tag):
+                #    i.tag.monsters.remove(i)
+                #    if len(i.tag.monsters)==0:
+                #        i.tag.chunk.cleared=True
+                #        print(i.tag.chunk.x,i.tag.chunk.y,'cleared')
             elif i.tile in gui.visible[0]:
                 #print('1')
                 if(i.missile):
