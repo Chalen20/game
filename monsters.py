@@ -33,6 +33,9 @@ class allMonsters():
         front_skin7 = Image.open("img/portal.png")
         front_skin7 = front_skin7.resize((20, 20), Image.ANTIALIAS)
 
+        front_skin8 = Image.open("img/Orc4.png")
+        front_skin8 = front_skin8.resize((120, 120), Image.ANTIALIAS)
+
         front_skin3 = Image.open("img/full_chest.png")
         front_skin3 = front_skin3.resize((100, 100), Image.ANTIALIAS)
 
@@ -52,7 +55,9 @@ class allMonsters():
                        'mage':[ImageTk.PhotoImage(front_skin6), "dead_skin", 200, 1, 0.6, 0,
                                  ImageTk.PhotoImage(front_skin6), ImageTk.PhotoImage(front_skin6), False],
                        'fireball':[ImageTk.PhotoImage(front_skin7), "dead_skin", 30, 1, 2, 5,
-                                 ImageTk.PhotoImage(front_skin7), ImageTk.PhotoImage(front_skin7), True]
+                                 ImageTk.PhotoImage(front_skin7), ImageTk.PhotoImage(front_skin7), True],
+                       'miniboss':[ImageTk.PhotoImage(front_skin8), "dead_skin", 200, 100, 0.6, 0,
+                                 ImageTk.PhotoImage(front_skin8), ImageTk.PhotoImage(front_skin8), False]
         }
 class Monster():
 
@@ -99,6 +104,39 @@ class Monster():
             mcb.monsters[-1].target=Point(copy(pers.x),copy(pers.y))
             mcb.monsters[-1].x=self.x
             mcb.monsters[-1].y=self.y
+            
+        if self.name == 'miniboss':
+            mcb.monsters.append(Monster('fireball',self.tile,self.gui,self.lvl))
+                    #print(con)
+            mcb.monsters[-1].target=Point(copy(pers.x),copy(pers.y))
+            mcb.monsters[-1].x=self.x
+            mcb.monsters[-1].y=self.y
+        
+            mcb.monsters.append(Monster('fireball',self.tile,self.gui,self.lvl))
+                    #print(con)
+            mcb.monsters[-1].target=Point(copy(pers.x)+30,copy(pers.y))
+            mcb.monsters[-1].x=self.x
+            mcb.monsters[-1].y=self.y
+        
+            mcb.monsters.append(Monster('fireball',self.tile,self.gui,self.lvl))
+                    #print(con)
+            mcb.monsters[-1].target=Point(copy(pers.x),copy(pers.y)+30)
+            mcb.monsters[-1].x=self.x
+            mcb.monsters[-1].y=self.y
+        
+            mcb.monsters.append(Monster('fireball',self.tile,self.gui,self.lvl))
+                    #print(con)
+            mcb.monsters[-1].target=Point(copy(pers.x)-30,copy(pers.y))
+            mcb.monsters[-1].x=self.x
+            mcb.monsters[-1].y=self.y
+        
+            mcb.monsters.append(Monster('fireball',self.tile,self.gui,self.lvl))
+                    #print(con)
+            mcb.monsters[-1].target=Point(copy(pers.x),copy(pers.y)-30)
+            mcb.monsters[-1].x=self.x
+            mcb.monsters[-1].y=self.y
+
+            
         attack_value = self.power + randint(0,self.lvl)*(1+self.lvl*0.7)
         return attack_value
 
@@ -227,14 +265,18 @@ class MonsterCollectiveBrain:
         self.monsters[-1].q=True
     def loop(self,gui):
         lvl=self.pers.tile.chunk.z
-        possible = {0:['deathMonster','deadlyMonster','mage'],
+        possible = {0:['deathMonster','deadlyMonster','mage','miniboss'],
                     1:['deathMonster','deadlyMonster','death','deathMonster'],
                     2:['deathMonster','deadlyMonster','death','mage','deadlyMonster'],
                     3:['deathMonster','deadlyMonster','death','mage','deadlyMonster'],
                     4:['deathMonster','deadlyMonster','death','mage','deadlyMonster'],
                     5:['deathMonster','deadlyMonster','death','mage','deadlyMonster']
                     }
-        possible=possible[lvl]
+        
+        if(lvl>5):
+            possible=possible[5]
+        else:
+            possible=possible[lvl]
         #print(self.monsterCount)
         if(not self.monsterCount>3+lvl):
             #print(self.monsterCount)
@@ -321,10 +363,11 @@ class MonsterCollectiveBrain:
                     print(1)
                     value = i.lvl
                     self.monsterCount=0
-                    if(value<4):
-                        gui.level(value+1)
-                    else:
-                        gui.paused=True
+                    #if(value<4):
+                    gui.level(value+1)
+                        #else:
+                        #self.pers.speed=0
+                        #gui.paused=True
                         
                 attack= i.attack(self.pers,self)     
                 self.pers.take_damage(attack)

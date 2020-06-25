@@ -197,14 +197,17 @@ class GUI:
                 # self.root.lift(self.menu_button)
                 # self.root.lift(self.backpack)
                 if not self.root.winfo_exists():
+                    #print('smert2')
                     break
             except:
+                #print('smert3')
                 break
-            # self.canvas.lift(self.backpack_icon)
+            self.canvas.lift(self.backpack_icon)
             if not self.isPaused:
                 self.mcb.loop(self)
             else:
-                pass
+                #print("TRUE")
+                a=5+5
             if counter == 1300:
                 if not self.pers.isDied and not self.isPaused:
                     self.pers.starvation()
@@ -216,7 +219,7 @@ class GUI:
                     try:
                         self.satiety.change(self.pers.satiety)
                     except:
-                        print("satiety error")
+                        pass
                 else:
                     self.hung_is_stop = True
                 counter = 0
@@ -230,6 +233,7 @@ class GUI:
                 self.canvas.lift(self.menu)
                 self.canvas.lift(self.backpack)
             except:
+                #print('smert')
                 break
 
         #self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400,self)
@@ -671,6 +675,7 @@ class GUI:
          
             #self.mcb.monsters[-1].target=self.pers.tile
             #self.canvas.lift(self.backpack_icon)
+
             self.canvas.delete(self.backpack_icon)
             self.canvas.delete(self.menu_button)
             self.canvas.delete(self.armor_icon)
@@ -686,6 +691,7 @@ class GUI:
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", self.backpack_func)
             self.armor_icon = self.canvas.create_image(self.pers.x - 460, self.pers.y - 200, image=self.armor)
             self.canvas.tag_bind(self.armor_icon, "<Button-1>", self.armor_func)
+
             self.canvas.lift(self.backpack_icon)
             self.canvas.lift(self.menu_button)
             self.canvas.lift(self.armor_icon)
