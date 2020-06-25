@@ -219,7 +219,6 @@ class GUI:
                         print("satiety error")
                 else:
                     self.hung_is_stop = True
-                    return
                 counter = 0
             sleep(0.01)
             self.root.update()
