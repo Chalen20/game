@@ -9,7 +9,7 @@ from time import sleep
 from backpack import Backpack
 from math import *
 from ammunition import Ammunition
-
+from item import *
 from random import *
 options = {
     'intensity': 0.1,
@@ -112,9 +112,8 @@ class GUI:
                                                        persTile.realx - 400, persTile.realy - 400)
         self.paused_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                      persTile.realx - 400, persTile.realy - 400)
-        self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
-        self.ammunition=[]
-        self.armor_window = Ammunition(self.root,self)
+        
+       
         self.armor = Image.open("img/armor.png")
         self.armor = self.armor.resize((75, 75), Image.ANTIALIAS)
         self.armor = ImageTk.PhotoImage(self.armor)
@@ -129,16 +128,17 @@ class GUI:
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
-        allItems = ItemController()
+        self.allItems = ItemController()
+        allItems=self.allItems
         allItems = allItems.getAll()
         self.ammunition = []
         self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
         self.armor_window = Ammunition(self.root, self, allItems)
         self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)  
-        backpack = Image.open("img/back_pack.png")
-        backpack =  backpack.resize((75, 75), Image.ANTIALIAS)
-        backpack = ImageTk.PhotoImage(backpack)
-        self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=backpack)
+        self.backpack = Image.open("img/back_pack.png")
+        self.backpack =  self.backpack.resize((75, 75), Image.ANTIALIAS)
+        self.backpack = ImageTk.PhotoImage(self.backpack)
+        self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=self.backpack)
         self.recharge = 0
 
         #self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400,self)
@@ -461,7 +461,7 @@ class GUI:
                         self.canvas.lift(self.armor_icon)
                         self.canvas.lift(self.backpack_icon)
                 else:
-                    move = False7
+                    move = False
             if pers.isDied:
                 move = False
                 self.canvas.delete(self.skin)
@@ -637,7 +637,7 @@ class GUI:
         x = chunk.x
         y = chunk.y
         z = chunk.z
-
+        print(chunk.x,chunk.y,chunk.cleared)
         self.ren.renderChunk(self.maze.get(x + 1, y, z))
         self.ren.renderChunk(self.maze.get(x, y + 1, z))
         self.ren.renderChunk(self.maze.get(x + 1, y + 1, z))
@@ -654,7 +654,7 @@ class GUI:
                 random2=randint(2,chunk.size-2)
                 tile = chunk.tiles[random1][random2]
                 print('portal',random1,random2)
-                self.mcb.monsters.append(Monster('portal',tile,self))
+                self.mcb.monsters.append(Monster('portal',tile,self,chunk.z))
                 self.mcb.monsters[-1].target=tile
             chunk.portaled='Already'
 

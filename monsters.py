@@ -3,6 +3,7 @@ from math import*
 from PIL import Image, ImageTk
 from backpack import Backpack
 from copy import copy, deepcopy
+from time import sleep
 class Monster():
 
     def __init__(self, name,tile,gui,*args):
@@ -62,7 +63,7 @@ class Monster():
         self.tile = tile
         self.skin = allMonsters[name][0]
         self.name = name
-        self.speed = allMonsters[name][4]*(1+self.lvl*0.5)
+        self.speed = allMonsters[name][4]*(1+self.lvl*0.05)
         self.health = allMonsters[name][3]
         self.died_skin = allMonsters[name][1]
         self.faced_north = True
@@ -109,7 +110,11 @@ class Monster():
         self.skin = self.died_skin
         self.isDied = True
         if self.name=='chest':
-            self.gui.backpack.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
+            ic = self.gui.allItems
+            item = ic.get()
+            self.gui.items.append(item)
+            if item[3] != "food" and item[3] != "poition":
+                self.gui.ammunition.append(item)
 
     def move_toward(self,x,y,*args):
         if(sqrt((x-self.x)**2+(y-self.y)**2)<self.attackRange-3):
@@ -130,26 +135,29 @@ class Monster():
         tile=self.tile
         self.x+=velx
         self.y+=vely
-        if (tile.realy + gui.size  < self.y):
-                if (tile.connections[3]):
+        try:
+            if (tile.realy + gui.size  < self.y):
+                    if (tile.connections[3]):
 
-                    self.tile = self.tile.connections[3]
-                    #print(self.tile.x,self.tile.y)
-        if (tile.realy > self.y):
-                if (tile.connections[0]):
+                        self.tile = self.tile.connections[3]
+                        #print(self.tile.x,self.tile.y)
+            if (tile.realy > self.y):
+                    if (tile.connections[0]):
 
-                    self.tile = self.tile.connections[0]
-                    #print(self.tile.x,self.tile.y)
-        if (tile.realx + gui.size < self.x):
-                if (tile.connections[2]):
+                        self.tile = self.tile.connections[0]
+                        #print(self.tile.x,self.tile.y)
+            if (tile.realx + gui.size < self.x):
+                    if (tile.connections[2]):
 
-                    self.tile = self.tile.connections[2]
-                    #print(self.tile.x,self.tile.y)
-        if (tile.realx > self.x):
-                if (tile.connections[1]):
+                        self.tile = self.tile.connections[2]
+                        #print(self.tile.x,self.tile.y)
+            if (tile.realx > self.x):
+                    if (tile.connections[1]):
 
-                    self.tile = self.tile.connections[1]
-                    #print(self.tile.x,self.tile.y)
+                        self.tile = self.tile.connections[1]
+                        #print(self.tile.x,self.tile.y)
+        except:
+            print(self.name,self.tile)
             
 
 
@@ -216,10 +224,10 @@ class MonsterCollectiveBrain:
         lvl=self.pers.tile.chunk.z
         possible = {0:['deathMonster','deadlyMonster','mage'],
                     1:['deathMonster','deadlyMonster','death','deathMonster'],
-                    2:['deathMonster','deadlyMonster','deathMonster'],
-                    3:['deathMonster','deadlyMonster','deathMonster'],
-                    4:['deathMonster','deadlyMonster','deathMonster'],
-                    5:['deathMonster','deadlyMonster','deathMonster']
+                    2:['deathMonster','deadlyMonster','death','mage','deadlyMonster'],
+                    3:['deathMonster','deadlyMonster','death','mage','deadlyMonster'],
+                    4:['deathMonster','deadlyMonster','death','mage','deadlyMonster'],
+                    5:['deathMonster','deadlyMonster','death','mage','deadlyMonster']
                     }
         possible=possible[lvl]
         #print(self.monsterCount)
@@ -231,6 +239,7 @@ class MonsterCollectiveBrain:
                 tile = gui.visible[1][randint(0, floor(len(gui.visible[1])-1))]
                 con=tile.connections[randint(0,3)]
                 if con and not con in gui.visible[0] and not con.chunk.cleared:
+                    sleep(0.01)
                     self.monsterCount+=1
                     self.monsters.append(Monster(possible[randint(0,len(possible)-1)],con,gui,lvl))
                     #print(con)
@@ -282,6 +291,7 @@ class MonsterCollectiveBrain:
                     i.tag.monsters.remove(i)
                     if len(i.tag.monsters)==0:
                         i.tag.chunk.cleared=True
+                        print(i.tag.chunk.x,i.tag.chunk.y,'cleared')
             elif i.tile in gui.visible[0]:
                 #print('1')
                 if(i.missile):
