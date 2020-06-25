@@ -77,6 +77,8 @@ class GUI:
         self.maze.addChunk(0, 1, 1)
         self.maze.addChunk(-1, -1, 1)
 
+        self.allMonsters = allMonsters()
+
         self.canvas.create_rectangle(0, 0, 20, 20, outline="black", fill='black')
         for i in self.maze.chunks:
             for j in self.maze.chunks[i]:
