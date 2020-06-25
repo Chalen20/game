@@ -106,6 +106,8 @@ class GUI:
                     if t == 0:
                         self.ren.renderChunk(self.maze.chunks[i][j][t])
         self.canvas.scan_mark(0, 0)
+        self.canvas.scan_dragto(100000, 100000, gain=1)
+        self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(-50000, -50000, gain=1)
         persTile = self.maze.get(0, 0, 0).tiles[3][3]
         self.pers = Pers(self.name, persTile.realx+50, persTile.realy+50, persTile, self)
@@ -378,11 +380,8 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
-<<<<<<< HEAD
-                self.canvas.scan_dragto(-speed, 0,gain=1)
-=======
-                self.canvas.scan_dragto(int(-self.speed / 10), 0)
->>>>>>> d0cd2669e0ada216a43581212fbc25c37e4a5693
+                self.canvas.scan_dragto(-self.speed, 0,gain=1)
+
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_right_leg)
@@ -626,13 +625,26 @@ class GUI:
             except:
                 break
     def level(self,lvl):
-            x = self.pers.tile.chunk.x
-            y = self.pers.tile.chunk.y
-            z = self.pers.tile.chunk.z
-            
+            self.canvas.scan_mark(0, 0)
+            self.canvas.scan_dragto(100000, 100000, gain=1)
+            self.canvas.scan_mark(0, 0)
+            self.canvas.scan_dragto(-50000, -50000, gain=1)
+            #persTile = self.maze.get(0, 0, lvl).tiles[3][3]
+            options = {
+                'intensity': 0.1,
+                'lifespan': 8,
+                'loopchance': 0.5,
+                'cavechance': 1,
+                'chunk_size': 18,
+                'block_chance': 0.9,
+                'double_entrance': 0.2
+            }
+            self.maze=Maze(options)
             maze = self.maze
-            maze.addChunk(x, y, lvl)
-            self.pers.tile=self.maze.getTile(self.pers.tile.x,self.pers.tile.y,lvl)
+            maze.addChunk(0, 0, lvl)
+            persTile = self.maze.get(0, 0, lvl).tiles[3][3]
+            self.pers.tile=persTile
+            
             #self.canvas.create_rectangle(self.pers.tile.realx,self.pers.tile.realy,self.pers.tile.realx+150,self.pers.tile.realy+150,fill='red)
             self.minimap.canvas.delete('all')
             
@@ -641,10 +653,12 @@ class GUI:
                 if(i!=self.backpack_icon and i!=self.menu_button and i!= self.armor_icon):
                     self.canvas.delete(i)
             self.satiety.change(self.satiety.point)
-            self.addNeighbours(maze.get(x , y, lvl))
-            self.renderNeighbours(maze.get(x , y, lvl))
+            self.addNeighbours(maze.get(0 , 0, lvl))
+            self.renderNeighbours(maze.get(0 , 0, lvl))
             self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
             self.mcb.addPortal(self.pers.tile.neighbours[0],self,lvl)
+            self.pers.x=self.pers.tile.realx+50
+            self.pers.y=self.pers.tile.realy+50
             #self.mcb.monsters.append(Monster('portal',self.pers.tile.neighbours[0],self,lvl))
          
             #self.mcb.monsters[-1].target=self.pers.tile
@@ -656,7 +670,7 @@ class GUI:
             tx = self.pers.tile.realx/10
             ty = self.pers.tile.realy/10
             self.minimap.pers = self.minimap.canvas.create_rectangle(tx+3,ty+3,tx+13,ty+13, fill ='red')
-            self.canvas.create_rectangle(self.pers.tile.realx,self.pers.tile.realy,self.pers.tile.realx+150,self.pers.tile.realy+150,fill='red')
+            #self.canvas.create_rectangle(self.pers.tile.realx,self.pers.tile.realy,self.pers.tile.realx+150,self.pers.tile.realy+150,fill='red')
             #self.canvas.lift(self.backpack)
     def addNeighbours(self, chunk):
         x = chunk.x
