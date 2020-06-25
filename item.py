@@ -1,5 +1,6 @@
 from random import *
 from PIL import Image, ImageTk
+from copy import deepcopy
 
 class Food:
     def __init__(self, skin, bigSkin, name, item, satiety, *args):
@@ -12,7 +13,6 @@ class Food:
         if (len(args) > 0):
             self.canRott = True
             self.rotteRate = args[0]
-            # self.rottness=100
         else:
             self.canRott = False
             self.rotteRate = 0

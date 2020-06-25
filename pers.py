@@ -3,7 +3,7 @@ from time import *
 from PIL import Image, ImageTk
 
 class Pers():
-    def __init__(self, name, x, y, tile):
+    def __init__(self, name, x, y, tile, gui):
         front_skin1 = Image.open("img/Pers1.png")
         front_skin1 = front_skin1.resize((100, 100), Image.ANTIALIAS)
         transpose_front_skin1 = front_skin1.transpose(Image.FLIP_LEFT_RIGHT)
@@ -164,6 +164,7 @@ class Pers():
                              ImageTk.PhotoImage(transpose_back_skin_animation2_4),
                              ImageTk.PhotoImage(front_died_skin4), ImageTk.PhotoImage(transpose_front_died_skin4),
                              ImageTk.PhotoImage(back_died_skin4), ImageTk.PhotoImage(transpose_back_died_skin4)]}
+        self.gui = gui
         self.x = x
         self.y = y
         self.tile = tile
@@ -195,32 +196,24 @@ class Pers():
         self.speed = allPers[name][3]
         self.health = allPers[name][4]
         self.satiety = 100
-        self.speed_of_hunger_change = 5
         self.armor = 0
-        self.equipment = {}
-        self.equipment['weapon'] = None
-        self.equipment['armor'] = None
+        self.speed_of_hunger_change = 5
         self.bot_skin = allPers[name][1]
         self.speed_of_hunger_change_timer = 13
         self.isDied = False
 
+    def armore(self):
+        for i in self.gui.equipment:
+            print(i[3])
+
+
     def attack(self):
-        if not self.equipment["weapon"]:
+        if not self.gui.equipment["weapon"] == []:
             attack_value = randint(1, 5)
         else:
-            attack_value = randint(1, 5 + self.equipment["weapon"]["value"])
+            attack_value = randint(1, 5 + self.gui.equipment["weapon"][4])
+            self.armore()
         return attack_value
-
-    #def eat(self, item):
-    #    if "food" in item["uses"]:
-    #        self.hunger -= item["eating_value"]
-
-    def equip(self, item):
-        if "weapon" in item["uses"]:
-            self.equipment["weapon"] = item
-        elif "armor" in item["uses"]:
-            self.equipment['armor'] = item
-            self.armor += item["value"]
 
     def die(self):
         self.health = 0
@@ -296,7 +289,7 @@ class Pers():
         print("die")
 
     def take_damage(self, damage):
-        if self.health + self.armor < damage:
+        if self.health < damage:
             self.die()
             return
         elif self.armor != 0 and self.armor < damage:
@@ -306,7 +299,6 @@ class Pers():
             self.armor -= damage
         else:
             self.health -= damage
-        #print(self.health)
     def starvation(self):
         if self.satiety < self.speed_of_hunger_change:
             self.die()

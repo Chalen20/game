@@ -87,7 +87,7 @@ class GUI:
         self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(-50000, -50000, gain=1)
         persTile = self.maze.get(0, 0, 0).tiles[3][3]
-        self.pers = Pers(self.name, persTile.realx+50, persTile.realy+50, persTile)
+        self.pers = Pers(self.name, persTile.realx+50, persTile.realy+50, persTile, self)
         self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.skin)
         pers = self.pers
         speed = pers.speed
@@ -127,8 +127,9 @@ class GUI:
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
-        allItems = ItemController()
-        allItems = allItems.getAll()
+        self.allItems = ItemController()
+        allItems = self.allItems.getAll()
+        item = self.allItems.get()
 
         self.ammunition = []
         self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}

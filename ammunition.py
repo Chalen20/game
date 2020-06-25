@@ -122,7 +122,7 @@ class Ammunition:
             self.equiped['mail'] = self.allItems[y]
         elif tag == "hands":
             self.canvas3.create_image(100, 350, image=image)
-            self.equiped['pants'] = self.allItems[y]
+            self.equiped['hands'] = self.allItems[y]
         elif tag == "boots":
             self.canvas3.create_image(100, 450, image=image)
             self.equiped['boots'] = self.allItems[y]
