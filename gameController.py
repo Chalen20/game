@@ -39,6 +39,10 @@ class MiniMap:
         self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(x, y, gain=15)
         self.canvas.move(self.pers,-x*15,-y*15)
+    def lifter(self):
+        self.frame.lift()
+    def lowerer(self):
+        self.frame.lower()
     
 class GUI:
 
@@ -54,13 +58,13 @@ class GUI:
         #self.canvas.focus_set()
         self.minimap = MiniMap(self)
         self.minimap.toggle()
+        self.minimap.lowerer()
         self.ren = Renderer(self)
         self.time = 0
         self.name = name
         self.visib = visib
         self.isPaused = False
         self.hung_is_stop = True
-
         self.visibility = []
         self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
         self.canvas.pack()
@@ -155,7 +159,7 @@ class GUI:
         item = self.allItems.get()
 
         self.ammunition = []
-        self.items.append(allItems["potion_blue1"])
+        self.items.append(allItems["potion2"])
         self.items.append(allItems["mail7"])
         self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
         self.armor_window = Ammunition(self.root, self, allItems)
@@ -378,11 +382,7 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
-<<<<<<< HEAD
-                self.canvas.scan_dragto(-speed, 0,gain=1)
-=======
-                self.canvas.scan_dragto(int(-self.speed / 10), 0)
->>>>>>> d0cd2669e0ada216a43581212fbc25c37e4a5693
+                self.canvas.scan_dragto(-self.speed, 0, gain=1)
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_right_leg)
@@ -564,7 +564,7 @@ class GUI:
             
             for i in self.mcb.monsters:
                 if sqrt((i.x-attackx)**2+(i.y-attacky)**2)<30:
-                    i.take_damage(pers.power)
+                    i.take_damage(self.pers.power)
                     break
             
             
