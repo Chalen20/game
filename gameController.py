@@ -182,11 +182,18 @@ class GUI:
         self.root.bind('<Down>', self.onKeyDown)
         self.canvas.bind('<Button-1>', self.attack)
         # self.mcb = MonsterCollectiveBrain(self)
-
+        self.a=False
         counter = 0
 
         while True:
             if (self.pers.isDied):
+                if(not self.a):
+                    paused = Image.open("img/game_over.png")
+                    paused = ImageTk.PhotoImage(paused)
+                    paused_icon = self.canvas.create_image(self.pers.x-70, self.pers.y-100, image=paused)
+                    canvas.lift(paused_icon)
+                    self.a=True
+                
                 self.canvas.delete(self.skin)
                 self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
                                                      image=self.pers.skin)
@@ -219,11 +226,12 @@ class GUI:
                     try:
                         self.satiety.change(self.pers.satiety)
                     except:
+                        pass
                         #print("satiety error")
                 else:
                     self.hung_is_stop = True
                     #print("satiety error")
-                counter = 0
+                    counter = 0
             sleep(0.01)
             self.root.update()
             counter += 1

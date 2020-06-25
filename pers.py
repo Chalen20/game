@@ -124,7 +124,7 @@ class Pers():
         back_died_skin4 = back_skin4.rotate(90)
         transpose_back_died_skin4 = back_died_skin4.transpose(Image.FLIP_LEFT_RIGHT)
 
-        allPers = {"pers1": [ImageTk.PhotoImage(front_skin1), ImageTk.PhotoImage(back_skin1), 160, 20, 100000,
+        allPers = {"pers1": [ImageTk.PhotoImage(front_skin1), ImageTk.PhotoImage(back_skin1), 16, 20, 100,
                              ImageTk.PhotoImage(transpose_front_skin1), ImageTk.PhotoImage(transpose_back_skin1),
                              ImageTk.PhotoImage(front_skin_animation1), ImageTk.PhotoImage(front_skin_animation2),
                              ImageTk.PhotoImage(transpose_front_skin_animation1),
