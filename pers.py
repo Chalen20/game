@@ -202,17 +202,25 @@ class Pers():
         self.speed_of_hunger_change_timer = 13
         self.isDied = False
 
-    def armore(self):
-        for i in self.gui.equipment:
-            print(i[3])
-
+    def armor_value(self):
+        value = 0
+        if self.gui.equipment["shield"] != []:
+            value += self.gui.equipment["shield"][4]
+        if self.gui.equipment["helmet"] != []:
+            value += self.gui.equipment["helmet"][4]
+        if self.gui.equipment["mail"] != []:
+            value += self.gui.equipment["mail"][4]
+        if self.gui.equipment["hands"] != []:
+            value += self.gui.equipment["hands"][4]
+        if self.gui.equipment["boots"] != []:
+            value += self.gui.equipment["boots"][4]
+        return value
 
     def attack(self):
         if not self.gui.equipment["weapon"] == []:
-            attack_value = randint(1, 5)
+            attack_value = randint(1, self.power)
         else:
-            attack_value = randint(1, 5 + self.gui.equipment["weapon"][4])
-            self.armore()
+            attack_value = randint(1, self.power + self.gui.equipment["weapon"][4])
         return attack_value
 
     def die(self):
@@ -286,19 +294,20 @@ class Pers():
             self.transpose_back_skin_animation_right_leg = self.transpose_back_died_skin
 
             self.bot_skin = self.transpose_back_died_skin
-        print("die")
 
     def take_damage(self, damage):
-        if self.health < damage:
+        if self.armor_value() != 0 and self.health < damage * (275-self.armor_value())/275:
             self.die()
             return
-        elif self.armor != 0 and self.armor < damage:
-            self.armor = 0
-            self.health -= damage - self.armor
-        elif self.armor != 0 and self.armor > damage:
-            self.armor -= damage
+        elif self.armor_value() == 0 and self.health < damage:
+            self.die()
+            return
+        elif self.armor_value() != 0:
+            self.health -= damage * (275-self.armor_value())/275
         else:
             self.health -= damage
+        print(self.health)
+
     def starvation(self):
         if self.satiety < self.speed_of_hunger_change:
             self.die()

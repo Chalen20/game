@@ -88,17 +88,17 @@ class Ammunition:
         for i in self.equiped:
             if self.equiped[i] != []:
                 if i == "weapon":
-                    self.canvas3.create_image(50, 250, image=self.equiped[i][0])
+                    self.canvas3.create_image(50, 250, image=self.equiped[i][0], tag="weapon")
                 elif i == "shield":
-                    self.canvas3.create_image(150, 250, image=self.equiped[i][0])
+                    self.canvas3.create_image(150, 250, image=self.equiped[i][0], tag="shield")
                 elif i == "helmet":
-                    self.canvas3.create_image(100, 50, image=self.equiped[i][0])
+                    self.canvas3.create_image(100, 50, image=self.equiped[i][0], tag="helmet")
                 elif i == "mail":
-                    self.canvas3.create_image(100, 150, image=self.equiped[i][0])
+                    self.canvas3.create_image(100, 150, image=self.equiped[i][0], tag="mail")
                 elif i == "hands":
-                    self.canvas3.create_image(100, 350, image=self.equiped[i][0])
+                    self.canvas3.create_image(100, 350, image=self.equiped[i][0], tag="hands")
                 elif i == "boots":
-                    self.canvas3.create_image(100, 450, image=self.equiped[i][0])
+                    self.canvas3.create_image(100, 450, image=self.equiped[i][0], tag="boots")
 
     def select_item(self, event, x):
         equip = self.canvas3.create_image(100, 540, image=self.equip)
@@ -109,22 +109,28 @@ class Ammunition:
         image = self.allItems[y][0]
         tag = self.allItems[y][3]
         if tag == "weapon":
-            self.canvas3.create_image(50, 250, image=image)
+            self.canvas3.delete("weapon")
+            self.canvas3.create_image(50, 250, image=image, tag="weapon")
             self.equiped['weapon'] = self.allItems[y]
         elif tag == "shield":
-            self.canvas3.create_image(150, 250, image=image)
+            self.canvas3.delete("shield")
+            self.canvas3.create_image(150, 250, image=image, tag="shield")
             self.equiped['shield'] = self.allItems[y]
         elif tag == "helmet":
-            self.canvas3.create_image(100, 50, image=image)
+            self.canvas3.delete("helmet")
+            self.canvas3.create_image(100, 50, image=image, tag="helmet")
             self.equiped['helmet'] = self.allItems[y]
         elif tag == "mail":
-            self.canvas3.create_image(100, 150, image=image)
+            self.canvas3.delete("mail")
+            self.canvas3.create_image(100, 150, image=image, tag="mail")
             self.equiped['mail'] = self.allItems[y]
         elif tag == "hands":
-            self.canvas3.create_image(100, 350, image=image)
+            self.canvas3.delete("hands")
+            self.canvas3.create_image(100, 350, image=image, tag="hands")
             self.equiped['hands'] = self.allItems[y]
         elif tag == "boots":
-            self.canvas3.create_image(100, 450, image=image)
+            self.canvas3.delete("boots")
+            self.canvas3.create_image(100, 450, image=image, tag="boots")
             self.equiped['boots'] = self.allItems[y]
 
     def scroll_move(self, event):
