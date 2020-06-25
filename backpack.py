@@ -1,9 +1,12 @@
 from tkinter import *
 from math import *
 from PIL import Image, ImageTk
+from ammunition import Ammunition
+from item import ItemController
 class Backpack:
-    def __init__(self, root, canvas, pers, satiety, x, y, gui):
+    def __init__(self, root, pers, satiety, gui):
         self.items = gui.items
+        self.gui = gui
         apple = Image.open("img/food/Food_apple.png")
         apple = apple.resize((100, 100), Image.ANTIALIAS)
         apple_big = apple.resize((200, 200), Image.ANTIALIAS)
@@ -137,6 +140,8 @@ class Backpack:
                     "varenics": [varenics, varenics_big, "varenics", "food", 50, 0.04, True],
                     "watermelon": [watermelon, watermelon_big, "watermelon", "food", 15, 0.035, True],
                     "meat": [meat, meat_big, "meat", "food", 20, 0.04, True]}
+        allItems = ItemController()
+        allItems = allItems.getAll()
 
         throw_out = Image.open("img/throw_out.png")
         throw_out = throw_out.resize((100, 50), Image.ANTIALIAS)
@@ -146,13 +151,10 @@ class Backpack:
         eat = eat.resize((50, 25), Image.ANTIALIAS)
         self.eat = ImageTk.PhotoImage(eat)
 
-        #for i in range(10):
-        #    self.items.append(allItems["orange"])
-        #for i in range(2):
-        #    self.items.append(allItems["mushroom"])
-        self.canvas = canvas
-        self.x = x
-        self.y = y
+        equip = Image.open("img/equip.png")
+        equip = equip.resize((150, 50), Image.ANTIALIAS)
+        self.equip = ImageTk.PhotoImage(equip)
+
         self.allItems = allItems
         self.root = root
         self.pers = pers
@@ -231,7 +233,15 @@ class Backpack:
         if self.allItems[y][3] == "food":
             eat = self.canvas4.create_image(150, 50, image=self.eat)
             self.canvas4.tag_bind(eat, "<Button-1>", lambda event, z=x: self.eat_func(event, z))
+        elif self.allItems[y][3] == "helmet" or self.allItems[y][3] == "mail" or self.allItems[y][3] == "hands" or\
+                self.allItems[y][3] == "boots" or self.allItems[y][3] == "shield":
+            equip = self.canvas4.create_image(150, 50, image=self.equip)
+            self.canvas4.tag_bind(equip, "<Button-1>", lambda event, z=x: self.equip_func(event, z))
         self.canvas4.tag_bind(throw_out, "<Button-1>", lambda event, z=x: self.throw_out_func(event, z))
+
+    def equip_func(self, event, x):
+        self.armor_window = Ammunition(self.root, self.gui)
+        self.armor_window.equip_func(event, x)
 
     def throw_out_func(self, event, x):
         del self.items[x]
