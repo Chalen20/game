@@ -178,6 +178,7 @@ class GUI:
             self.armor_window.remove()
             self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
             self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
+            self.isPaused = False
 
         self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
         #self.canvas.tag_bind(self.menu_button,"<Button-1>",
@@ -187,6 +188,7 @@ class GUI:
             self.canvas.delete(self.back_icon)
             self.canvas.delete(self.exit_icon)
             self.canvas.tag_bind(self.menu_button, "<Button-1>",menu_label)
+            
         #self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
 
         def pause_func(event):
@@ -535,6 +537,12 @@ class GUI:
         counter = 0
 
         while True:
+            if(self.pers.isDied):
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                     image=self.pers.skin)
+                self.isPaused = True
+                
             try:
                 #self.root.lift(self.backpack_icon)
                 #self.root.lift(self.menu_button)

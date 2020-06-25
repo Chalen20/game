@@ -116,6 +116,7 @@ class Chunk:
         self.x=x
         self.y=y
         self.z=z
+        self.cleared=False
         self.size=options['chunk_size']
         self.block_chance=options['block_chance']
         self.e_chance=options['double_entrance']

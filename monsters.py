@@ -62,7 +62,7 @@ class Monster():
         self.tile = tile
         self.skin = allMonsters[name][0]
         self.name = name
-        self.speed = allMonsters[name][4]
+        self.speed = allMonsters[name][4]*(1+self.lvl*0.5)
         self.health = allMonsters[name][3]
         self.died_skin = allMonsters[name][1]
         self.faced_north = True
@@ -82,7 +82,7 @@ class Monster():
         self.counter = 0
         #self.attack=5
         self.q = name=='portal'
-        
+        self.tag=False
         
     def attack(self,pers,mcb):
         class Point:
@@ -230,21 +230,27 @@ class MonsterCollectiveBrain:
                 #print(self.monsterCount)
                 tile = gui.visible[1][randint(0, floor(len(gui.visible[1])-1))]
                 con=tile.connections[randint(0,3)]
-                if con and not con in gui.visible[0]:
+                if con and not con in gui.visible[0] and not con.chunk.cleared:
                     self.monsterCount+=1
                     self.monsters.append(Monster(possible[randint(0,len(possible)-1)],con,gui,lvl))
                     #print(con)
                     self.monsters[-1].target=tile
                     pass
-        if self.pers.tile.room:
-            #print(1)
+        if self.pers.tile.room  and self.pers.tile.room.isFree:
+            #print(1
+            self.pers.tile.room.monsters=[]
             for i in self.pers.tile.room.tiles:
                 #print(1)
-                if(random()<0.4 and self.pers.tile.room.isFree):
+                self.pers.tile
+                if(random()<0.4):
                     #print(2)
                     #self.monsterCount+=1
+                    #self.pers.tile.room.monsters=[]
                     self.monsters.append(Monster(possible[randint(0,len(possible)-1)],i,gui,lvl))
                     self.monsters[-1].target=i
+                    self.monsters[-1].q=True
+                    self.monsters[-1].tag=self.pers.tile.room
+                    self.pers.tile.room.monsters.append(self.monsters[-1])
                     if(random()<0.5):
                         self.monsters.append(Monster('chest',i,gui,lvl))
                         self.monsters[-1].target=i
@@ -253,7 +259,7 @@ class MonsterCollectiveBrain:
                     #self.monsters[-1].target=i
                     
 
-                    self.monsters[-1].q=True
+                   
             self.pers.tile.room.isFree=False
         for i in self.monsters:
             if i.lvl != lvl:
@@ -272,6 +278,10 @@ class MonsterCollectiveBrain:
                         
                         now_health = gui.health.point - attack
                         gui.health.change(now_health)
+                if(i.tag):
+                    i.tag.monsters.remove(i)
+                    if len(i.tag.monsters)==0:
+                        i.tag.chunk.cleared=True
             elif i.tile in gui.visible[0]:
                 #print('1')
                 if(i.missile):
