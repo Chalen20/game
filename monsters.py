@@ -321,7 +321,10 @@ class MonsterCollectiveBrain:
                     print(1)
                     value = i.lvl
                     self.monsterCount=0
-                    gui.level((value+1)%5)
+                    if(value<4):
+                        gui.level(value+1)
+                    else:
+                        gui.paused=True
                         
                 attack= i.attack(self.pers,self)     
                 self.pers.take_damage(attack)

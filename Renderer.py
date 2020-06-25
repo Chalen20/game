@@ -48,7 +48,7 @@ class Renderer:
         self.chunk.drawings.append(self.canvas.create_rectangle(x1, y1, x2, y2,fill='red'))
         self.canvas.lower(self.chunk.drawings[-1])
         #print(x1,x2,y1,y2)
-        self.chunk.drawings.append(self.mini.create_line(int(x1/10), int(y1/10), int(x2/10), int(y1/10), width=2,fill='black'))
+        self.chunk.drawings.append(self.mini.create_line(int(x1/10), int(y1/10), int(x2/10), int(y2/10), width=2,fill='black'))
         self.canvas.lower(self.chunk.drawings[-1])
         #self.mini.create_line(-5000, -5000, -4950, -4950, width=2,fill='black')
         #self.mini.create_rectangle(0,0, 20, 20,fill='red')

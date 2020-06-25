@@ -25,16 +25,21 @@ class MiniMap:
     def __init__(self,gui):
         self.gui = gui
     def toggle(self):
-        self.frame = Frame(self.gui.root, width=180, height=180, bg="green")
-        self.frame.place(x=0, y=0)
-        self.canvas = Canvas(self.frame, width=180, height=180, bg="#ccccaa")
+        self.frame = Frame(self.gui.root, width=150, height=150, bg="green")
+        self.frame.place(x=650, y=650)
+        self.canvas = Canvas(self.frame, width=150, height=150, bg="#ccccaa")
         self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
         self.canvas.place(x=0, y=0)
         self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(-5000, -5000, gain=1)
+        self.pers = self.canvas.create_rectangle(5048,5048,5057,5057, fill ='red')
     def turnoff(self):
         self.frame.destroy()
-
+    def drag(self,x,y):
+        self.canvas.scan_mark(0, 0)
+        self.canvas.scan_dragto(x, y, gain=15)
+        self.canvas.move(self.pers,-x*15,-y*15)
+    
 class GUI:
 
 
@@ -300,6 +305,7 @@ class GUI:
                         self.canvas.lift(self.menu_button)
                         self.canvas.lift(self.armor_icon)
                         self.canvas.lift(self.backpack_icon)
+                        self.minimap.drag(1, 0)
                 else:
                     move = False
             if pers.isDied:
@@ -359,6 +365,7 @@ class GUI:
                         self.canvas.lift(self.menu_button)
                         self.canvas.lift(self.armor_icon)
                         self.canvas.lift(self.backpack_icon)
+                        self.minimap.drag(-1, 0)
                 else:
                     move = False
             if pers.isDied:
@@ -368,7 +375,7 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(int(-speed / 10), 0)
+                self.canvas.scan_dragto(-speed, 0,gain=1)
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_right_leg)
@@ -417,6 +424,7 @@ class GUI:
                         self.canvas.lift(self.menu_button)
                         self.canvas.lift(self.armor_icon)
                         self.canvas.lift(self.backpack_icon)
+                        self.minimap.drag(0, -1)
                 else:
                     move = False
             if pers.isDied:
@@ -477,6 +485,7 @@ class GUI:
                         self.canvas.lift(self.menu_button)
                         self.canvas.lift(self.armor_icon)
                         self.canvas.lift(self.backpack_icon)
+                        self.minimap.drag(0, 1)
                 else:
                     move = False
             if pers.isDied:
@@ -617,6 +626,10 @@ class GUI:
             maze = self.maze
             maze.addChunk(x, y, lvl)
             self.pers.tile=self.maze.getTile(self.pers.tile.x,self.pers.tile.y,lvl)
+            #self.canvas.create_rectangle(self.pers.tile.realx,self.pers.tile.realy,self.pers.tile.realx+150,self.pers.tile.realy+150,fill='red)
+            self.minimap.canvas.delete('all')
+            
+            #self.minimap.pers = self.minimap.canvas.create_rectangle(5048,5048,5057,5057, fill ='red')
             for i in self.canvas.find_all():
                 if(i!=self.backpack_icon and i!=self.menu_button and i!= self.armor_icon):
                     self.canvas.delete(i)
@@ -624,8 +637,8 @@ class GUI:
             self.addNeighbours(maze.get(x , y, lvl))
             self.renderNeighbours(maze.get(x , y, lvl))
             self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
-            #self.mcb.addPortal(self.pers.tile.neighbours[0],self,lvl)
-            #monsters.append(Monster('portal',self.pers.tile.neighbours[0],self))
+            self.mcb.addPortal(self.pers.tile.neighbours[0],self,lvl)
+            #self.mcb.monsters.append(Monster('portal',self.pers.tile.neighbours[0],self,lvl))
          
             #self.mcb.monsters[-1].target=self.pers.tile
             #self.canvas.lift(self.backpack_icon)
@@ -633,7 +646,10 @@ class GUI:
             self.canvas.lift(self.backpack_icon)
             self.canvas.lift(self.menu_button)
             self.canvas.lift(self.armor_icon)
-            
+            tx = self.pers.tile.realx/10
+            ty = self.pers.tile.realy/10
+            self.minimap.pers = self.minimap.canvas.create_rectangle(tx+3,ty+3,tx+13,ty+13, fill ='red')
+            self.canvas.create_rectangle(self.pers.tile.realx,self.pers.tile.realy,self.pers.tile.realx+150,self.pers.tile.realy+150,fill='red')
             #self.canvas.lift(self.backpack)
     def addNeighbours(self, chunk):
         x = chunk.x
@@ -671,8 +687,7 @@ class GUI:
                 random2=randint(2,chunk.size-2)
                 tile = chunk.tiles[random1][random2]
                 print('portal',random1,random2)
-                self.mcb.monsters.append(Monster('portal',tile,self,chunk.z))
-                self.mcb.monsters[-1].target=tile
+                self.mcb.addPortal(self.pers.tile.neighbours[0],self,chunk.z)
             chunk.portaled='Already'
 
     def scroll_start(self, event):
