@@ -9,7 +9,6 @@ from time import sleep
 from backpack import Backpack
 from math import *
 from ammunition import Ammunition
-from item import ItemController
 
 from random import *
 options = {
@@ -112,7 +111,10 @@ class GUI:
         self.exit_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                        persTile.realx - 400, persTile.realy - 400)
         self.paused_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
-                                                      persTile.realx - 400, persTile.realy - 400)
+                                                     persTile.realx - 400, persTile.realy - 400)
+        self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
+        self.ammunition=[]
+        self.armor_window = Ammunition(self.root,self)
         self.armor = Image.open("img/armor.png")
         self.armor = self.armor.resize((75, 75), Image.ANTIALIAS)
         self.armor = ImageTk.PhotoImage(self.armor)
@@ -129,19 +131,17 @@ class GUI:
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         allItems = ItemController()
         allItems = allItems.getAll()
-
         self.ammunition = []
         self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
         self.armor_window = Ammunition(self.root, self, allItems)
-
-        self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)
-        
-        self.backpack = Image.open("img/back_pack.png")
-        self.backpack = self.backpack.resize((75, 75), Image.ANTIALIAS)
-        self.backpack = ImageTk.PhotoImage(self.backpack)
-        self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=self.backpack)
+        self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)  
+        backpack = Image.open("img/back_pack.png")
+        backpack =  backpack.resize((75, 75), Image.ANTIALIAS)
+        backpack = ImageTk.PhotoImage(backpack)
+        self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=backpack)
         self.recharge = 0
 
+        #self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400,self)
         def backpack_func(event):
             if self.armor_window.is_Open:
                 close_armor(event)
@@ -152,20 +152,21 @@ class GUI:
             self.isPaused = True
             close_menu(event)
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
+
             self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)
+
             self.backback.start()
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
 
         def close_backpack(event):
             play_func(event)
-            self.items = self.backback.items
+            
             self.backback.remove()
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
             self.isPaused = False
         self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
         self.mcb = MonsterCollectiveBrain(self)
-
         def armor_func(event):
             if self.backback.is_Open:
                 close_backpack(event)
@@ -460,7 +461,7 @@ class GUI:
                         self.canvas.lift(self.armor_icon)
                         self.canvas.lift(self.backpack_icon)
                 else:
-                    move = False
+                    move = False7
             if pers.isDied:
                 move = False
                 self.canvas.delete(self.skin)
@@ -532,6 +533,8 @@ class GUI:
                 if sqrt((i.x-attackx)**2+(i.y-attacky)**2)<30:
                     i.take_damage(pers.power)
                     break
+            
+            
             
         self.root.bind('<Left>', onKeyLeft)
         self.root.bind('<Right>', onKeyRight)

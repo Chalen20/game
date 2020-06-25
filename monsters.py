@@ -3,7 +3,6 @@ from math import*
 from PIL import Image, ImageTk
 from backpack import Backpack
 from copy import copy, deepcopy
-from item import ItemController
 class Monster():
 
     def __init__(self, name,tile,gui,*args):
@@ -109,13 +108,8 @@ class Monster():
         self.health = 0
         self.skin = self.died_skin
         self.isDied = True
-        if self.name == 'chest':
-            ic = ItemController()
-            item = ic.get()
-            self.gui.items.append(item)
-            if item[3] != "food" and item[3] != "poition":
-                self.gui.ammunition.append(item)
-            #[meat, meat_big, "meat", "food", 20, 0.04, True]
+        if self.name=='chest':
+            self.gui.backpack.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
 
     def move_toward(self,x,y,*args):
         if(sqrt((x-self.x)**2+(y-self.y)**2)<self.attackRange-3):
@@ -156,6 +150,8 @@ class Monster():
 
                     self.tile = self.tile.connections[1]
                     #print(self.tile.x,self.tile.y)
+            
+
 
     def move_top(self):
         if not self.faced_north:

@@ -8,6 +8,7 @@ class Backpack:
         self.gui = gui
         self.allItems = allItems
 
+
         throw_out = Image.open("img/throw_out.png")
         throw_out = throw_out.resize((100, 50), Image.ANTIALIAS)
         self.throw_out = ImageTk.PhotoImage(throw_out)
