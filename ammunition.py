@@ -13,7 +13,7 @@ class Ammunition:
         self.is_Open = False
         self.allItems = allItems
         self.equiped = gui.equipment
-
+        self.gui=gui
     def start(self):
         self.build_amunition()
         self.is_Open = True
@@ -139,3 +139,4 @@ class Ammunition:
     def remove(self):
         self.frame.destroy()
         self.is_Open = False
+        self.gui.isPaused=True

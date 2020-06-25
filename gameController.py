@@ -668,7 +668,7 @@ class GUI:
          
             #self.mcb.monsters[-1].target=self.pers.tile
             #self.canvas.lift(self.backpack_icon)
-            
+            self.canvas.move(self.backpack_icon,10,150)
             self.canvas.lift(self.backpack_icon)
             self.canvas.lift(self.menu_button)
             self.canvas.lift(self.armor_icon)
