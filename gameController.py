@@ -108,18 +108,19 @@ class GUI:
         self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(-50000, -50000, gain=1)
         persTile = self.maze.get(0, 0, 0).tiles[3][3]
-        self.pers = Pers(self.name, persTile.realx+50, persTile.realy+50, persTile)
+        self.pers = Pers(self.name, persTile.realx+50, persTile.realy+50, persTile, self)
         self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.skin)
         pers = self.pers
         speed = pers.speed
+        self.speed = speed
         pers.chunk = self.maze.get(0, 0, 0)
         self.right_steps_counter = 0
         if not visib:
             self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
         self.health = Health(self.canvas, pers.health, persTile.realx + 250, persTile.realy - 420, persTile, "red",
-                             200, 200,self.pers.health)
+                             200, 200, self.pers.health)
         self.satiety = Health(self.canvas, pers.satiety, persTile.realx + 270, persTile.realy - 380, persTile,
-                              'yellow', 150, 100,pers.satiety)
+                              'yellow', 150, 100, pers.satiety)
         self.menu = Image.open("img/menu_button_game.png")
         self.menu = self.menu.resize((100, 40), Image.ANTIALIAS)
         self.menu = ImageTk.PhotoImage(self.menu)
@@ -134,7 +135,6 @@ class GUI:
                                                        persTile.realx - 400, persTile.realy - 400)
         self.paused_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                      persTile.realx - 400, persTile.realy - 400)
-        
        
         self.armor = Image.open("img/armor.png")
         self.armor = self.armor.resize((75, 75), Image.ANTIALIAS)
@@ -151,14 +151,17 @@ class GUI:
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.allItems = ItemController()
-        allItems=self.allItems
-        allItems = allItems.getAll()
+        allItems = self.allItems.getAll()
+        item = self.allItems.get()
+
         self.ammunition = []
+        self.items.append(allItems["potion_blue1"])
+        self.items.append(allItems["mail7"])
         self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
         self.armor_window = Ammunition(self.root, self, allItems)
         self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)  
         self.backpack = Image.open("img/back_pack.png")
-        self.backpack =  self.backpack.resize((75, 75), Image.ANTIALIAS)
+        self.backpack = self.backpack.resize((75, 75), Image.ANTIALIAS)
         self.backpack = ImageTk.PhotoImage(self.backpack)
         self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=self.backpack)
         self.recharge = 0
@@ -291,7 +294,7 @@ class GUI:
         def onKeyLeft(event):
             tile = pers.tile
             move = True
-            if (tile.realx > pers.x - speed):
+            if (tile.realx > pers.x - self.speed):
 
                 if (tile.connections[1]):
 
@@ -315,7 +318,7 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(speed, 0, gain=1)
+                self.canvas.scan_dragto(self.speed, 0, gain=1)
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
@@ -328,17 +331,17 @@ class GUI:
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
                                                          image=self.pers.back_skin_animation_left_leg)
                 self.right_steps_counter += 1
-                self.canvas.move(self.skin, -speed, 0)
-                self.canvas.move(self.health.form, -speed, 0)
-                self.canvas.move(self.health.rect, -speed, 0)
-                self.canvas.move(self.satiety.form, -speed, 0)
-                self.canvas.move(self.satiety.rect, -speed, 0)
-                self.canvas.move(self.menu_button, -speed, 0)
-                self.canvas.move(self.armor_icon, -speed, 0)
-                self.canvas.move(self.backpack_icon, -speed, 0)
-                pers.x -= speed
-                self.health.x -= speed
-                self.satiety.x -= speed
+                self.canvas.move(self.skin, -self.speed, 0)
+                self.canvas.move(self.health.form, -self.speed, 0)
+                self.canvas.move(self.health.rect, -self.speed, 0)
+                self.canvas.move(self.satiety.form, -self.speed, 0)
+                self.canvas.move(self.satiety.rect, -self.speed, 0)
+                self.canvas.move(self.menu_button, -self.speed, 0)
+                self.canvas.move(self.armor_icon, -self.speed, 0)
+                self.canvas.move(self.backpack_icon, -self.speed, 0)
+                pers.x -= self.speed
+                self.health.x -= self.speed
+                self.satiety.x -= self.speed
                 self.pers.now_skin = self.pers.bot_skin
                 self.canvas.delete(self.pause_icon)
                 self.canvas.delete(self.play_icon)
@@ -352,7 +355,7 @@ class GUI:
         def onKeyRight(event):
             move = True
             tile = pers.tile
-            if (tile.realx + self.size - pers.size < pers.x + speed):
+            if (tile.realx + self.size - pers.size < pers.x + self.speed):
 
                 if (tile.connections[2]):
                     pers.tile = tile.connections[2]
@@ -375,7 +378,11 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
+<<<<<<< HEAD
                 self.canvas.scan_dragto(-speed, 0,gain=1)
+=======
+                self.canvas.scan_dragto(int(-self.speed / 10), 0)
+>>>>>>> d0cd2669e0ada216a43581212fbc25c37e4a5693
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_right_leg)
@@ -386,17 +393,17 @@ class GUI:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_left_leg)
                 self.right_steps_counter += 1
-                self.canvas.move(self.skin, speed, 0)
-                self.canvas.move(self.health.form, speed, 0)
-                self.canvas.move(self.health.rect, speed, 0)
-                self.canvas.move(self.satiety.form, speed, 0)
-                self.canvas.move(self.satiety.rect, speed, 0)
-                self.canvas.move(self.menu_button, speed, 0)
-                self.canvas.move(self.armor_icon, speed, 0)
-                self.canvas.move(self.backpack_icon, speed, 0)
-                pers.x += speed
-                self.health.x += speed
-                self.satiety.x += speed
+                self.canvas.move(self.skin, self.speed, 0)
+                self.canvas.move(self.health.form, self.speed, 0)
+                self.canvas.move(self.health.rect, self.speed, 0)
+                self.canvas.move(self.satiety.form, self.speed, 0)
+                self.canvas.move(self.satiety.rect, self.speed, 0)
+                self.canvas.move(self.menu_button, self.speed, 0)
+                self.canvas.move(self.armor_icon, self.speed, 0)
+                self.canvas.move(self.backpack_icon, self.speed, 0)
+                pers.x += self.speed
+                self.health.x += self.speed
+                self.satiety.x += self.speed
                 self.pers.now_skin = self.pers.skin
                 self.canvas.delete(self.pause_icon)
                 self.canvas.delete(self.play_icon)
@@ -411,7 +418,7 @@ class GUI:
         def onKeyDown(event):
             move = True
             tile = pers.tile
-            if (tile.realy + self.size - pers.size < pers.y + speed):
+            if (tile.realy + self.size - pers.size < pers.y + self.speed):
 
                 if (tile.connections[3]):
                     pers.tile = tile.connections[3]
@@ -434,7 +441,7 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(0, -speed,gain=1)
+                self.canvas.scan_dragto(0, -self.speed,gain=1)
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
@@ -447,17 +454,17 @@ class GUI:
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
                                                          image=self.pers.transpose_front_skin_animation_left_leg)
                 self.right_steps_counter += 1
-                self.canvas.move(self.skin, 0, speed)
-                self.canvas.move(self.health.form, 0, speed)
-                self.canvas.move(self.health.rect, 0, speed)
-                self.canvas.move(self.satiety.form, 0, speed)
-                self.canvas.move(self.satiety.rect, 0, speed)
-                self.canvas.move(self.menu_button, 0, speed)
-                self.canvas.move(self.armor_icon, 0, speed)
-                self.canvas.move(self.backpack_icon, 0, speed)
-                pers.y += speed
-                self.health.y += speed
-                self.satiety.y += speed
+                self.canvas.move(self.skin, 0, self.speed)
+                self.canvas.move(self.health.form, 0, self.speed)
+                self.canvas.move(self.health.rect, 0, self.speed)
+                self.canvas.move(self.satiety.form, 0, self.speed)
+                self.canvas.move(self.satiety.rect, 0, self.speed)
+                self.canvas.move(self.menu_button, 0, self.speed)
+                self.canvas.move(self.armor_icon, 0, self.speed)
+                self.canvas.move(self.backpack_icon, 0, self.speed)
+                pers.y += self.speed
+                self.health.y += self.speed
+                self.satiety.y += self.speed
                 self.pers.now_skin = self.pers.transpose_skin
                 self.canvas.delete(self.pause_icon)
                 self.canvas.delete(self.play_icon)
@@ -472,7 +479,7 @@ class GUI:
         def onKeyUp(event):
             move = True
             tile = pers.tile
-            if (tile.realy > pers.y - speed):
+            if (tile.realy > pers.y - self.speed):
 
                 if (tile.connections[0]):
                     pers.tile = tile.connections[0]
@@ -495,7 +502,7 @@ class GUI:
                                                      image=self.pers.skin)
             if move:
                 self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(0, speed, gain=1)
+                self.canvas.scan_dragto(0, self.speed, gain=1)
                 if self.right_steps_counter % 4 == 0:
                     self.canvas.delete(self.skin)
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
@@ -508,17 +515,17 @@ class GUI:
                     self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
                                                          image=self.pers.transpose_back_skin_animation_left_leg)
                 self.right_steps_counter += 1
-                self.canvas.move(self.skin, 0, -speed)
-                self.canvas.move(self.health.form, 0, -speed)
-                self.canvas.move(self.health.rect, 0, -speed)
-                self.canvas.move(self.satiety.form, 0, -speed)
-                self.canvas.move(self.satiety.rect, 0, -speed)
-                self.canvas.move(self.menu_button, 0, -speed)
-                self.canvas.move(self.armor_icon, 0, -speed)
-                self.canvas.move(self.backpack_icon, 0, -speed)
-                pers.y -= speed
-                self.health.y -= speed
-                self.satiety.y -= speed
+                self.canvas.move(self.skin, 0, -self.speed)
+                self.canvas.move(self.health.form, 0, -self.speed)
+                self.canvas.move(self.health.rect, 0, -self.speed)
+                self.canvas.move(self.satiety.form, 0, -self.speed)
+                self.canvas.move(self.satiety.rect, 0, -self.speed)
+                self.canvas.move(self.menu_button, 0, -self.speed)
+                self.canvas.move(self.armor_icon, 0, -self.speed)
+                self.canvas.move(self.backpack_icon, 0, -self.speed)
+                pers.y -= self.speed
+                self.health.y -= self.speed
+                self.satiety.y -= self.speed
                 self.pers.now_skin = self.pers.bot_transpose_skin
                 self.canvas.delete(self.pause_icon)
                 self.canvas.delete(self.play_icon)
@@ -602,7 +609,7 @@ class GUI:
                     try:
                         self.satiety.change(self.pers.satiety)
                     except:
-                        return
+                        print("satiety error")
                 else:
                     self.hung_is_stop = True
                     return

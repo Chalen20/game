@@ -3,7 +3,7 @@ from time import *
 from PIL import Image, ImageTk
 
 class Pers():
-    def __init__(self, name, x, y, tile):
+    def __init__(self, name, x, y, tile, gui):
         front_skin1 = Image.open("img/Pers1.png")
         front_skin1 = front_skin1.resize((100, 100), Image.ANTIALIAS)
         transpose_front_skin1 = front_skin1.transpose(Image.FLIP_LEFT_RIGHT)
@@ -164,6 +164,7 @@ class Pers():
                              ImageTk.PhotoImage(transpose_back_skin_animation2_4),
                              ImageTk.PhotoImage(front_died_skin4), ImageTk.PhotoImage(transpose_front_died_skin4),
                              ImageTk.PhotoImage(back_died_skin4), ImageTk.PhotoImage(transpose_back_died_skin4)]}
+        self.gui = gui
         self.x = x
         self.y = y
         self.tile = tile
@@ -195,32 +196,32 @@ class Pers():
         self.speed = allPers[name][3]
         self.health = allPers[name][4]
         self.satiety = 100
-        self.speed_of_hunger_change = 5
         self.armor = 0
-        self.equipment = {}
-        self.equipment['weapon'] = None
-        self.equipment['armor'] = None
+        self.speed_of_hunger_change = 5
         self.bot_skin = allPers[name][1]
         self.speed_of_hunger_change_timer = 13
         self.isDied = False
 
+    def armor_value(self):
+        value = 0
+        if self.gui.equipment["shield"] != []:
+            value += self.gui.equipment["shield"][4]
+        if self.gui.equipment["helmet"] != []:
+            value += self.gui.equipment["helmet"][4]
+        if self.gui.equipment["mail"] != []:
+            value += self.gui.equipment["mail"][4]
+        if self.gui.equipment["hands"] != []:
+            value += self.gui.equipment["hands"][4]
+        if self.gui.equipment["boots"] != []:
+            value += self.gui.equipment["boots"][4]
+        return value
+
     def attack(self):
-        if not self.equipment["weapon"]:
-            attack_value = randint(1, 5)
+        if not self.gui.equipment["weapon"] == []:
+            attack_value = randint(1, self.power)
         else:
-            attack_value = randint(1, 5 + self.equipment["weapon"]["value"])
+            attack_value = randint(1, self.power + self.gui.equipment["weapon"][4])
         return attack_value
-
-    #def eat(self, item):
-    #    if "food" in item["uses"]:
-    #        self.hunger -= item["eating_value"]
-
-    def equip(self, item):
-        if "weapon" in item["uses"]:
-            self.equipment["weapon"] = item
-        elif "armor" in item["uses"]:
-            self.equipment['armor'] = item
-            self.armor += item["value"]
 
     def die(self):
         self.health = 0
@@ -293,20 +294,20 @@ class Pers():
             self.transpose_back_skin_animation_right_leg = self.transpose_back_died_skin
 
             self.bot_skin = self.transpose_back_died_skin
-        print("die")
 
     def take_damage(self, damage):
-        if self.health + self.armor < damage:
+        if self.armor_value() != 0 and self.health < damage * (275-self.armor_value())/275:
             self.die()
             return
-        elif self.armor != 0 and self.armor < damage:
-            self.armor = 0
-            self.health -= damage - self.armor
-        elif self.armor != 0 and self.armor > damage:
-            self.armor -= damage
+        elif self.armor_value() == 0 and self.health < damage:
+            self.die()
+            return
+        elif self.armor_value() != 0:
+            self.health -= damage * (275-self.armor_value())/275
         else:
             self.health -= damage
-        #print(self.health)
+        print(self.health)
+
     def starvation(self):
         if self.satiety < self.speed_of_hunger_change:
             self.die()

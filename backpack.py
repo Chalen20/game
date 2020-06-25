@@ -2,12 +2,12 @@ from tkinter import *
 from math import *
 from PIL import Image, ImageTk
 from ammunition import Ammunition
+from time import sleep
 class Backpack:
     def __init__(self, root, pers, satiety, gui, allItems):
         self.items = gui.items
         self.gui = gui
         self.allItems = allItems
-
 
         throw_out = Image.open("img/throw_out.png")
         throw_out = throw_out.resize((100, 50), Image.ANTIALIAS)
@@ -15,11 +15,11 @@ class Backpack:
 
         eat = Image.open("img/eat.png")
         eat = eat.resize((50, 25), Image.ANTIALIAS)
-        self.eat = ImageTk.PhotoImage(eat)
+        self.eater = ImageTk.PhotoImage(eat)
 
         equip = Image.open("img/equip.png")
-        equip = equip.resize((150, 50), Image.ANTIALIAS)
-        self.equip = ImageTk.PhotoImage(equip)
+        equip = equip.resize((75, 25), Image.ANTIALIAS)
+        self.equiper = ImageTk.PhotoImage(equip)
 
         self.allItems = allItems
         self.root = root
@@ -96,18 +96,57 @@ class Backpack:
         image = self.allItems[y][1]
         self.item = self.canvas3.create_image(100, 100, image=image)
         throw_out = self.canvas4.create_image(50, 50, image=self.throw_out)
+        self.canvas4.create_image(150, 50, image=self.eater, tag="eat")
+        self.canvas4.delete("eat")
+        self.canvas4.create_image(150, 50, image=self.equiper, tag="equip")
+        self.canvas4.delete("equip")
+        self.canvas4.create_text(150, 50, text="use", font="Impact 25", tag="use")
+        self.canvas4.delete("use")
         if self.allItems[y][3] == "food":
-            eat = self.canvas4.create_image(150, 50, image=self.eat)
-            self.canvas4.tag_bind(eat, "<Button-1>", lambda event, z=x: self.eat_func(event, z))
+            self.eat = self.canvas4.create_image(150, 50, image=self.eater, tag="eat")
+            self.canvas4.tag_bind(self.eat, "<Button-1>", lambda event, z=x: self.eat_func(event, z))
         elif self.allItems[y][3] == "helmet" or self.allItems[y][3] == "mail" or self.allItems[y][3] == "hands" or\
-                self.allItems[y][3] == "boots" or self.allItems[y][3] == "shield":
-            equip = self.canvas4.create_image(150, 50, image=self.equip)
-            self.canvas4.tag_bind(equip, "<Button-1>", lambda event, z=x: self.equip_func(event, z))
+                self.allItems[y][3] == "boots" or self.allItems[y][3] == "shield" or self.allItems[y][3] == "weapon":
+            self.equip = self.canvas4.create_image(150, 50, image=self.equiper, tag="equip")
+            self.canvas4.tag_bind(self.equip, "<Button-1>", lambda event, z=x: self.equip_func(event, z))
+        elif self.allItems[y][3] == "poition":
+            self.use = self.canvas4.create_text(150, 50, text="use", font="Impact 25", tag="use")
+            self.canvas4.tag_bind(self.use, "<Button-1>", lambda event, z=x: self.use_func(event, z))
         self.canvas4.tag_bind(throw_out, "<Button-1>", lambda event, z=x: self.throw_out_func(event, z))
 
     def equip_func(self, event, x):
-        self.armor_window = Ammunition(self.root, self.gui)
-        self.armor_window.equip_func(event, x)
+        self.armor_window = Ammunition(self.root, self.gui, self.allItems)
+        self.gui.equipment[self.items[x][3]] = self.items[x]
+
+    def use_func(self, event, x):
+        if self.items[x][2] == "potion_red1":
+            self.pers.health += 10
+            self.gui.health.change(self.pers.health)
+            self.throw_out_func(event, x)
+        if self.items[x][2] == "potion_red4":
+            self.pers.health += 25
+            self.gui.health.change(self.pers.health)
+            self.throw_out_func(event, x)
+        if self.items[x][2] == "potion_blue1":
+            self.pers.speed += 5
+            self.gui.speed += 5
+            self.throw_out_func(event, x)
+            self.gui.canvas.after(15000, self.return_speed1)
+        if self.items[x][2] == "potion_blue4":
+            self.pers.speed += 10
+            self.gui.speed += 10
+            self.throw_out_func(event, x)
+            self.gui.canvas.after(30000, self.return_speed4)
+
+    def return_speed1(self):
+        self.pers.speed -= 5
+        self.gui.speed -= 5
+        print(self.pers.speed)
+
+    def return_speed4(self):
+        self.pers.speed -= 10
+        self.gui.speed -= 10
+        print(self.pers.speed)
 
     def throw_out_func(self, event, x):
         del self.items[x]

@@ -1,5 +1,6 @@
 from random import *
 from PIL import Image, ImageTk
+import time
 
 class Food:
     def __init__(self, skin, bigSkin, name, item, satiety, *args):
@@ -12,7 +13,6 @@ class Food:
         if (len(args) > 0):
             self.canRott = True
             self.rotteRate = args[0]
-            # self.rottness=100
         else:
             self.canRott = False
             self.rotteRate = 0
@@ -211,8 +211,8 @@ class ItemController:
                   self.getImage("img/armor/shield11.png", True),
                   "shield11", "shield", 121, 0.03),
             Poitions(self.getImage("img/Potions/Potion_blue1.png", False),
-                  self.getImage("img/Potions/Potion_blue1.png", True),
-                  "potion_blue1", "poition"),
+                    self.getImage("img/Potions/Potion_blue1.png", True),
+                    "potion_blue1", "poition"),
             Poitions(self.getImage("img/Potions/Potion_blue4.png", False),
                      self.getImage("img/Potions/Potion_blue4.png", True),
                      "potion_blue4", "poition"),
@@ -252,12 +252,12 @@ class ItemController:
             Poitions(self.getImage("img/Potions/Potion2.png", False),
                      self.getImage("img/Potions/Potion2.png", True),
                      "potion2", "poition"),
-            Poitions(self.getImage("img/Potions/Potion3.png", False),
-                     self.getImage("img/Potions/Potion3.png", True),
-                     "potion3", "poition"),
-            Poitions(self.getImage("img/Potions/Potion4.png", False),
-                     self.getImage("img/Potions/Potion4.png", True),
-                     "potion4", "poition"),
+            #Poitions(self.getImage("img/Potions/Potion3.png", False),
+            #         self.getImage("img/Potions/Potion3.png", True),
+            #         "potion3", "poition",),
+            #Poitions(self.getImage("img/Potions/Potion4.png", False),
+            #         self.getImage("img/Potions/Potion4.png", True),
+            #         "potion4", "poition"),
             Poitions(self.getImage("img/Potions/Potion5.png", False),
                      self.getImage("img/Potions/Potion5.png", True),
                      "potion5", "poition"),
@@ -380,5 +380,3 @@ class Poitions():
         self.bigSkin = bigSkin
         self.name = name
         self.item = item
-        self.fracture_of_weapon = 0
-        self.isBroken = False
