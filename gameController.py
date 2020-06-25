@@ -127,12 +127,14 @@ class GUI:
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
+        allItems = ItemController()
+        allItems = allItems.getAll()
 
         self.ammunition = []
         self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
-        self.armor_window = Ammunition(self.root, self)
+        self.armor_window = Ammunition(self.root, self, allItems)
 
-        self.backback = Backpack(self.root, self.pers, self.satiety, self)
+        self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)
         
         self.backpack = Image.open("img/back_pack.png")
         self.backpack = self.backpack.resize((75, 75), Image.ANTIALIAS)
@@ -150,7 +152,7 @@ class GUI:
             self.isPaused = True
             close_menu(event)
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
-            self.backback = Backpack(self.root, self.pers, self.satiety, self)
+            self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)
             self.backback.start()
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
 
@@ -173,7 +175,7 @@ class GUI:
             self.root.unbind('<Down>')
             self.isPaused = True
             close_menu(event)
-            self.armor_window = Ammunition(self.root, self)
+            self.armor_window = Ammunition(self.root, self, allItems)
             self.armor_window.start()
             self.canvas.lift(self.armor_window)
             self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
