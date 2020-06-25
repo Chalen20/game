@@ -39,11 +39,15 @@ class MiniMap:
         self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(x, y, gain=15)
         self.canvas.move(self.pers,-x*15,-y*15)
+    def lifter(self):
+        self.frame.lift()
+    def lowerer(self):
+        self.frame.lower()
     
 class GUI:
 
 
-    def __init__(self, name, visib,on):
+    def __init__(self, name, visib, on):
         self.size = 150
         self.x = 50000
         self.y = 50000
@@ -54,13 +58,14 @@ class GUI:
         #self.canvas.focus_set()
         self.minimap = MiniMap(self)
         self.minimap.toggle()
+        self.minimap.lowerer()
         self.ren = Renderer(self)
         self.time = 0
         self.name = name
+        self.on = on
         self.visib = visib
         self.isPaused = False
         self.hung_is_stop = True
-
         self.visibility = []
         self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
         self.canvas.pack()
@@ -153,446 +158,49 @@ class GUI:
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.allItems = ItemController()
-        allItems = self.allItems.getAll()
+        self.allItems_ = self.allItems.getAll()
         item = self.allItems.get()
 
         self.ammunition = []
-        self.items.append(allItems["potion_blue1"])
-        self.items.append(allItems["mail7"])
+        self.items.append(self.allItems_["potion2"])
+        self.items.append(self.allItems_["mail7"])
         self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
-        self.armor_window = Ammunition(self.root, self, allItems)
-        self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)  
+        self.armor_window = Ammunition(self.root, self, self.allItems_)
+        self.backback = Backpack(self.root, self.pers, self.satiety, self, self.allItems_)
         self.backpack = Image.open("img/back_pack.png")
         self.backpack = self.backpack.resize((75, 75), Image.ANTIALIAS)
         self.backpack = ImageTk.PhotoImage(self.backpack)
         self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=self.backpack)
         self.recharge = 0
-
-        #self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400,self)
-        def backpack_func(event):
-            if self.armor_window.is_Open:
-                close_armor(event)
-            self.root.unbind('<Left>')
-            self.root.unbind('<Right>')
-            self.root.unbind('<Up>')
-            self.root.unbind('<Down>')
-            self.isPaused = True
-            close_menu(event)
-            self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
-
-            self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)
-
-            self.backback.start()
-            self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
-
-        def close_backpack(event):
-            play_func(event)
-            
-            self.backback.remove()
-            self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
-            self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
-            self.isPaused = False
-        self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
+        self.canvas.tag_bind(self.backpack_icon, "<Button-1>", self.backpack_func)
+        self.canvas.tag_bind(self.armor_icon, "<Button-1>", self.armor_func)
+        self.canvas.tag_bind(self.menu_button, "<Button-1>", self.menu_label)
         self.mcb = MonsterCollectiveBrain(self)
-        def armor_func(event):
-            if self.backback.is_Open:
-                close_backpack(event)
-            self.root.unbind('<Left>')
-            self.root.unbind('<Right>')
-            self.root.unbind('<Up>')
-            self.root.unbind('<Down>')
-            self.isPaused = True
-            close_menu(event)
-            self.armor_window = Ammunition(self.root, self, allItems)
-            self.armor_window.start()
-            self.canvas.lift(self.armor_window)
-            self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
-            self.canvas.tag_bind(self.armor_icon, "<Button-1>", close_armor)
-
-        def close_armor(event):
-            play_func(event)
-            self.armor_window.remove()
-            self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
-            self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
-            self.isPaused = False
-
-        self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
-        #self.canvas.tag_bind(self.menu_button,"<Button-1>",
-        def close_menu(event):
-            self.canvas.delete(self.pause_icon)
-            self.canvas.delete(self.play_icon)
-            self.canvas.delete(self.back_icon)
-            self.canvas.delete(self.exit_icon)
-            self.canvas.tag_bind(self.menu_button, "<Button-1>",menu_label)
-            
-        #self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
-
-        def pause_func(event):
-            self.paused = Image.open("img/paused.png")
-            self.paused = ImageTk.PhotoImage(self.paused)
-            self.paused_icon = self.canvas.create_image(pers.x-70, pers.y-100, image=self.paused)
-            self.canvas.lift(self.paused_icon)
-            self.root.unbind('<Left>')
-            self.root.unbind('<Right>')
-            self.root.unbind('<Up>')
-            self.root.unbind('<Down>')
-            self.isPaused = True
-            close_menu(event)
-            self.canvas.tag_bind(self.paused_icon, "<Button-1>", play_func)
-
-        def play_func(event):
-            close_menu(event)
-            self.isPaused = False
-            self.canvas.delete(self.paused_icon)
-            self.root.bind('<Left>', onKeyLeft)
-            self.root.bind('<Right>', onKeyRight)
-            self.root.bind('<Up>', onKeyUp)
-            self.root.bind('<Down>', onKeyDown)
-            self.isPaused = False
-        def exit_func(event):
-            self.root.destroy()
-        def back_func(event):
-            #print(self)
-            self.root.destroy()
-            on()
-            #del self
-        def menu_label(event):
-            self.pause = Image.open("img/pause.png")
-            self.pause = self.pause.resize((100, 40), Image.ANTIALIAS)
-            self.pause = ImageTk.PhotoImage(self.pause)
-            self.pause_icon = self.canvas.create_image(pers.x-340, pers.y-430, image=self.pause)
-
-            self.play = Image.open("img/play2.png")
-            self.play = self.play.resize((100, 40), Image.ANTIALIAS)
-            self.play = ImageTk.PhotoImage(self.play)
-            self.play_icon = self.canvas.create_image(pers.x - 340, pers.y - 470, image=self.play)
-
-            self.back = Image.open("img/back.png")
-            self.back = self.back.resize((100, 40), Image.ANTIALIAS)
-            self.back = ImageTk.PhotoImage(self.back)
-            self.back_icon = self.canvas.create_image(pers.x - 340, pers.y - 390, image=self.back)
-
-            self.exit = Image.open("img/exit.png")
-            self.exit = self.exit.resize((100, 40), Image.ANTIALIAS)
-            self.exit = ImageTk.PhotoImage(self.exit)
-            self.exit_icon = self.canvas.create_image(pers.x - 340, pers.y - 350, image=self.exit)
-
-            self.canvas.lift(self.pause_icon)
-            self.canvas.lift(self.play_icon)
-            self.canvas.lift(self.back_icon)
-            self.canvas.lift(self.exit_icon)
-            self.canvas.tag_unbind(self.menu_button, "<Button-1>")
-            self.canvas.tag_bind(self.menu_button, "<Button-1>", close_menu)
-
-            self.canvas.tag_bind(self.pause_icon, "<Button-1>", pause_func)
-            self.canvas.tag_bind(self.play_icon, "<Button-1>", play_func)
-            self.canvas.tag_bind(self.exit_icon, "<Button-1>", exit_func)
-            #self.canvas.tag_bind(self.exit_icon, "<Button-1>", exit_func)
-            self.canvas.tag_bind(self.back_icon, "<Button-1>", back_func)
-       
-        self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
-        
-#----------------------------------------------------------------------------------
-        def onKeyLeft(event):
-            tile = pers.tile
-            move = True
-            if (tile.realx > pers.x - self.speed):
-
-                if (tile.connections[1]):
-
-                    pers.tile = tile.connections[1]
-                    if not visib:
-                        self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
-                        self.canvas.lift(self.health.rect)
-                        self.canvas.lift(self.health.form)
-                        self.canvas.lift(self.satiety.rect)
-                        self.canvas.lift(self.satiety.form)
-                        self.canvas.lift(self.menu_button)
-                        self.canvas.lift(self.armor_icon)
-                        self.canvas.lift(self.backpack_icon)
-                        self.minimap.drag(1, 0)
-                else:
-                    move = False
-            if pers.isDied:
-                move = False
-                self.canvas.delete(self.skin)
-                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                     image=self.pers.skin)
-            if move:
-                self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(self.speed, 0, gain=1)
-                if self.right_steps_counter % 4 == 0:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                         image=self.pers.back_skin_animation_right_leg)
-                elif self.right_steps_counter % 2 == 1:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.bot_skin)
-                elif self.right_steps_counter % 4 == 2:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                         image=self.pers.back_skin_animation_left_leg)
-                self.right_steps_counter += 1
-                self.canvas.move(self.skin, -self.speed, 0)
-                self.canvas.move(self.health.form, -self.speed, 0)
-                self.canvas.move(self.health.rect, -self.speed, 0)
-                self.canvas.move(self.satiety.form, -self.speed, 0)
-                self.canvas.move(self.satiety.rect, -self.speed, 0)
-                self.canvas.move(self.menu_button, -self.speed, 0)
-                self.canvas.move(self.armor_icon, -self.speed, 0)
-                self.canvas.move(self.backpack_icon, -self.speed, 0)
-                pers.x -= self.speed
-                self.health.x -= self.speed
-                self.satiety.x -= self.speed
-                self.pers.now_skin = self.pers.bot_skin
-                self.canvas.delete(self.pause_icon)
-                self.canvas.delete(self.play_icon)
-                self.canvas.delete(self.back_icon)
-                self.canvas.delete(self.exit_icon)
-            if (pers.chunk != tile.chunk):
-                pers.chunk = tile.chunk
-                self.addNeighbours(tile.chunk)
-                self.renderNeighbours(tile.chunk)
-
-        def onKeyRight(event):
-            move = True
-            tile = pers.tile
-            if (tile.realx + self.size - pers.size < pers.x + self.speed):
-
-                if (tile.connections[2]):
-                    pers.tile = tile.connections[2]
-                    if not visib:
-                        self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
-                        self.canvas.lift(self.health.rect)
-                        self.canvas.lift(self.health.form)
-                        self.canvas.lift(self.satiety.rect)
-                        self.canvas.lift(self.satiety.form)
-                        self.canvas.lift(self.menu_button)
-                        self.canvas.lift(self.armor_icon)
-                        self.canvas.lift(self.backpack_icon)
-                        self.minimap.drag(-1, 0)
-                else:
-                    move = False
-            if pers.isDied:
-                move = False
-                self.canvas.delete(self.skin)
-                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                     image=self.pers.skin)
-            if move:
-                self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(-self.speed, 0,gain=1)
-
-                if self.right_steps_counter % 4 == 0:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_right_leg)
-                elif self.right_steps_counter % 2 == 1:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.skin)
-                elif self.right_steps_counter % 4 == 2:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_left_leg)
-                self.right_steps_counter += 1
-                self.canvas.move(self.skin, self.speed, 0)
-                self.canvas.move(self.health.form, self.speed, 0)
-                self.canvas.move(self.health.rect, self.speed, 0)
-                self.canvas.move(self.satiety.form, self.speed, 0)
-                self.canvas.move(self.satiety.rect, self.speed, 0)
-                self.canvas.move(self.menu_button, self.speed, 0)
-                self.canvas.move(self.armor_icon, self.speed, 0)
-                self.canvas.move(self.backpack_icon, self.speed, 0)
-                pers.x += self.speed
-                self.health.x += self.speed
-                self.satiety.x += self.speed
-                self.pers.now_skin = self.pers.skin
-                self.canvas.delete(self.pause_icon)
-                self.canvas.delete(self.play_icon)
-                self.canvas.delete(self.back_icon)
-                self.canvas.delete(self.exit_icon)
-            if (pers.chunk != tile.chunk):
-                pers.chunk = tile.chunk
-
-                self.addNeighbours(tile.chunk)
-                self.renderNeighbours(tile.chunk)
-
-        def onKeyDown(event):
-            move = True
-            tile = pers.tile
-            if (tile.realy + self.size - pers.size < pers.y + self.speed):
-
-                if (tile.connections[3]):
-                    pers.tile = tile.connections[3]
-                    if not visib:
-                        self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
-                        self.canvas.lift(self.health.rect)
-                        self.canvas.lift(self.health.form)
-                        self.canvas.lift(self.satiety.rect)
-                        self.canvas.lift(self.satiety.form)
-                        self.canvas.lift(self.menu_button)
-                        self.canvas.lift(self.armor_icon)
-                        self.canvas.lift(self.backpack_icon)
-                        self.minimap.drag(0, -1)
-                else:
-                    move = False
-            if pers.isDied:
-                move = False
-                self.canvas.delete(self.skin)
-                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                     image=self.pers.skin)
-            if move:
-                self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(0, -self.speed,gain=1)
-                if self.right_steps_counter % 4 == 0:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                         image=self.pers.transpose_front_skin_animation_right_leg)
-                elif self.right_steps_counter % 2 == 1:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.transpose_skin)
-                elif self.right_steps_counter % 4 == 2:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                         image=self.pers.transpose_front_skin_animation_left_leg)
-                self.right_steps_counter += 1
-                self.canvas.move(self.skin, 0, self.speed)
-                self.canvas.move(self.health.form, 0, self.speed)
-                self.canvas.move(self.health.rect, 0, self.speed)
-                self.canvas.move(self.satiety.form, 0, self.speed)
-                self.canvas.move(self.satiety.rect, 0, self.speed)
-                self.canvas.move(self.menu_button, 0, self.speed)
-                self.canvas.move(self.armor_icon, 0, self.speed)
-                self.canvas.move(self.backpack_icon, 0, self.speed)
-                pers.y += self.speed
-                self.health.y += self.speed
-                self.satiety.y += self.speed
-                self.pers.now_skin = self.pers.transpose_skin
-                self.canvas.delete(self.pause_icon)
-                self.canvas.delete(self.play_icon)
-                self.canvas.delete(self.back_icon)
-                self.canvas.delete(self.exit_icon)
-            if (pers.chunk != tile.chunk):
-                pers.chunk = tile.chunk
-
-                self.addNeighbours(tile.chunk)
-                self.renderNeighbours(tile.chunk)
-        
-        def onKeyUp(event):
-            move = True
-            tile = pers.tile
-            if (tile.realy > pers.y - self.speed):
-
-                if (tile.connections[0]):
-                    pers.tile = tile.connections[0]
-                    if not visib:
-                        self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
-                        self.canvas.lift(self.health.rect)
-                        self.canvas.lift(self.health.form)
-                        self.canvas.lift(self.satiety.rect)
-                        self.canvas.lift(self.satiety.form)
-                        self.canvas.lift(self.menu_button)
-                        self.canvas.lift(self.armor_icon)
-                        self.canvas.lift(self.backpack_icon)
-                        self.minimap.drag(0, 1)
-                else:
-                    move = False
-            if pers.isDied:
-                move = False
-                self.canvas.delete(self.skin)
-                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                     image=self.pers.skin)
-            if move:
-                self.canvas.scan_mark(0, 0)
-                self.canvas.scan_dragto(0, self.speed, gain=1)
-                if self.right_steps_counter % 4 == 0:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                         image=self.pers.transpose_back_skin_animation_right_leg)
-                elif self.right_steps_counter % 2 == 1:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.bot_transpose_skin)
-                elif self.right_steps_counter % 4 == 2:
-                    self.canvas.delete(self.skin)
-                    self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
-                                                         image=self.pers.transpose_back_skin_animation_left_leg)
-                self.right_steps_counter += 1
-                self.canvas.move(self.skin, 0, -self.speed)
-                self.canvas.move(self.health.form, 0, -self.speed)
-                self.canvas.move(self.health.rect, 0, -self.speed)
-                self.canvas.move(self.satiety.form, 0, -self.speed)
-                self.canvas.move(self.satiety.rect, 0, -self.speed)
-                self.canvas.move(self.menu_button, 0, -self.speed)
-                self.canvas.move(self.armor_icon, 0, -self.speed)
-                self.canvas.move(self.backpack_icon, 0, -self.speed)
-                pers.y -= self.speed
-                self.health.y -= self.speed
-                self.satiety.y -= self.speed
-                self.pers.now_skin = self.pers.bot_transpose_skin
-                self.canvas.delete(self.pause_icon)
-                self.canvas.delete(self.play_icon)
-                self.canvas.delete(self.back_icon)
-                self.canvas.delete(self.exit_icon)
-            if (pers.chunk != tile.chunk):
-                pers.chunk = tile.chunk
-
-                self.addNeighbours(tile.chunk)
-                self.renderNeighbours(tile.chunk)
-#----------------------------------------------------------------------
-        def attack(event):
-            
-            if self.recharge>0:
-                return
-            self.recharge=0.2
-            attacky=event.y-500
-            attackx=event.x-500
-            vectlen=sqrt(attackx**2+attacky**2)
-            #print(attackx,attacky)
-            if vectlen > 70:
-                const=70/vectlen
-            else:
-                const=1
-            attackx*=const
-            attacky*=const
-            attackx=self.pers.x+attackx
-            attacky=self.pers.y+attacky
-            
-            #print(attackx,attacky)
-            circle=self.canvas.create_oval(attackx-self.pers.attackRange,attacky-self.pers.attackRange,attackx+self.pers.attackRange,attacky+self.pers.attackRange,fill='grey')
-            sleep(0.05)
-            def dele():
-                self.canvas.delete(circle)
-            self.canvas.after(100,dele)
-            
-            for i in self.mcb.monsters:
-                if sqrt((i.x-attackx)**2+(i.y-attacky)**2)<30:
-                    i.take_damage(pers.power)
-                    break
-            
-            
-            
-        self.root.bind('<Left>', onKeyLeft)
-        self.root.bind('<Right>', onKeyRight)
-        self.root.bind('<Up>', onKeyUp)
-        self.root.bind('<Down>', onKeyDown)
-        self.canvas.bind('<Button-1>', attack)
-        #self.mcb = MonsterCollectiveBrain(self)
+        self.root.bind('<Left>', self.onKeyLeft)
+        self.root.bind('<Right>', self.onKeyRight)
+        self.root.bind('<Up>', self.onKeyUp)
+        self.root.bind('<Down>', self.onKeyDown)
+        self.canvas.bind('<Button-1>', self.attack)
+        # self.mcb = MonsterCollectiveBrain(self)
 
         counter = 0
 
         while True:
-            if(self.pers.isDied):
+            if (self.pers.isDied):
                 self.canvas.delete(self.skin)
                 self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
                                                      image=self.pers.skin)
                 self.isPaused = True
-                
+
             try:
-                #self.root.lift(self.backpack_icon)
-                #self.root.lift(self.menu_button)
-                #self.root.lift(self.backpack)
+                # self.root.lift(self.backpack_icon)
+                # self.root.lift(self.menu_button)
+                # self.root.lift(self.backpack)
                 if not self.root.winfo_exists():
                     break
             except:
                 break
-            #self.canvas.lift(self.backpack_icon)
+            # self.canvas.lift(self.backpack_icon)
             if not self.isPaused:
                 self.mcb.loop(self)
             else:
@@ -616,13 +224,409 @@ class GUI:
             sleep(0.01)
             self.root.update()
             counter += 1
-            if self.recharge!=0:
-                self.recharge-=0.01
+            if self.recharge != 0:
+                self.recharge -= 0.01
             try:
                 self.canvas.lift(self.backpack_icon)
                 self.canvas.lift(self.menu)
                 self.canvas.lift(self.backpack)
             except:
+                break
+
+        #self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400,self)
+    def backpack_func(self, event):
+        if self.armor_window.is_Open:
+            self.close_armor(event)
+        self.root.unbind('<Left>')
+        self.root.unbind('<Right>')
+        self.root.unbind('<Up>')
+        self.root.unbind('<Down>')
+        self.isPaused = True
+        self.close_menu(event)
+        self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
+
+        self.backback = Backpack(self.root, self.pers, self.satiety, self, self.allItems_)
+
+        self.backback.start()
+        self.canvas.tag_bind(self.backpack_icon, "<Button-1>", self.close_backpack)
+
+    def close_backpack(self, event):
+        self.play_func(event)
+            
+        self.backback.remove()
+        self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
+        self.canvas.tag_bind(self.backpack_icon, "<Button-1>", self.backpack_func)
+        self.isPaused = False
+
+    def armor_func(self, event):
+        if self.backback.is_Open:
+            self.close_backpack(event)
+        self.root.unbind('<Left>')
+        self.root.unbind('<Right>')
+        self.root.unbind('<Up>')
+        self.root.unbind('<Down>')
+        self.isPaused = True
+        self.close_menu(event)
+        self.armor_window = Ammunition(self.root, self, self.allItems_)
+        self.armor_window.start()
+        self.canvas.lift(self.armor_window)
+        self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
+        self.canvas.tag_bind(self.armor_icon, "<Button-1>", self.close_armor)
+
+    def close_armor(self, event):
+        self.play_func(event)
+        self.armor_window.remove()
+        self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
+        self.canvas.tag_bind(self.armor_icon, "<Button-1>", self.armor_func)
+        self.isPaused = False
+
+        #self.canvas.tag_bind(self.menu_button,"<Button-1>",
+
+    def pause_func(self, event):
+        self.paused = Image.open("img/paused.png")
+        self.paused = ImageTk.PhotoImage(self.paused)
+        self.paused_icon = self.canvas.create_image(self.pers.x-70, self.pers.y-100, image=self.paused)
+        self.canvas.lift(self.paused_icon)
+        self.root.unbind('<Left>')
+        self.root.unbind('<Right>')
+        self.root.unbind('<Up>')
+        self.root.unbind('<Down>')
+        self.isPaused = True
+        self.close_menu(event)
+        self.canvas.tag_bind(self.paused_icon, "<Button-1>", self.play_func)
+
+    def play_func(self, event):
+        self.close_menu(event)
+        self.isPaused = False
+        self.canvas.delete(self.paused_icon)
+        self.root.bind('<Left>', self.onKeyLeft)
+        self.root.bind('<Right>', self.onKeyRight)
+        self.root.bind('<Up>', self.onKeyUp)
+        self.root.bind('<Down>', self.onKeyDown)
+        self.isPaused = False
+
+    def exit_func(self, event):
+        self.root.destroy()
+
+    def back_func(self, event):
+        #print(self)
+        self.root.destroy()
+        self.on()
+        #del self
+
+    def menu_label(self, event):
+        self.pause = Image.open("img/pause.png")
+        self.pause = self.pause.resize((100, 40), Image.ANTIALIAS)
+        self.pause = ImageTk.PhotoImage(self.pause)
+        self.pause_icon = self.canvas.create_image(self.pers.x-340, self.pers.y-430, image=self.pause)
+
+        self.play = Image.open("img/play2.png")
+        self.play = self.play.resize((100, 40), Image.ANTIALIAS)
+        self.play = ImageTk.PhotoImage(self.play)
+        self.play_icon = self.canvas.create_image(self.pers.x - 340, self.pers.y - 470, image=self.play)
+
+        self.back = Image.open("img/back.png")
+        self.back = self.back.resize((100, 40), Image.ANTIALIAS)
+        self.back = ImageTk.PhotoImage(self.back)
+        self.back_icon = self.canvas.create_image(self.pers.x - 340, self.pers.y - 390, image=self.back)
+
+        self.exit = Image.open("img/exit.png")
+        self.exit = self.exit.resize((100, 40), Image.ANTIALIAS)
+        self.exit = ImageTk.PhotoImage(self.exit)
+        self.exit_icon = self.canvas.create_image(self.pers.x - 340, self.pers.y - 350, image=self.exit)
+
+        self.canvas.lift(self.pause_icon)
+        self.canvas.lift(self.play_icon)
+        self.canvas.lift(self.back_icon)
+        self.canvas.lift(self.exit_icon)
+        self.canvas.tag_unbind(self.menu_button, "<Button-1>")
+        self.canvas.tag_bind(self.menu_button, "<Button-1>", self.close_menu)
+
+        self.canvas.tag_bind(self.pause_icon, "<Button-1>", self.pause_func)
+        self.canvas.tag_bind(self.play_icon, "<Button-1>", self.play_func)
+        self.canvas.tag_bind(self.exit_icon, "<Button-1>", self.exit_func)
+        #self.canvas.tag_bind(self.exit_icon, "<Button-1>", exit_func)
+        self.canvas.tag_bind(self.back_icon, "<Button-1>", self.back_func)
+
+    def close_menu(self, event):
+        self.canvas.delete(self.pause_icon)
+        self.canvas.delete(self.play_icon)
+        self.canvas.delete(self.back_icon)
+        self.canvas.delete(self.exit_icon)
+        self.canvas.tag_bind(self.menu_button, "<Button-1>", self.menu_label)
+
+        # self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
+        
+#----------------------------------------------------------------------------------
+    def onKeyLeft(self, event):
+        tile = self.pers.tile
+        move = True
+        if (tile.realx > self.pers.x - self.speed):
+
+            if (tile.connections[1]):
+
+                self.pers.tile = tile.connections[1]
+                if not self.visib:
+                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    self.canvas.lift(self.health.rect)
+                    self.canvas.lift(self.health.form)
+                    self.canvas.lift(self.satiety.rect)
+                    self.canvas.lift(self.satiety.form)
+                    self.canvas.lift(self.menu_button)
+                    self.canvas.lift(self.armor_icon)
+                    self.canvas.lift(self.backpack_icon)
+                    self.minimap.drag(1, 0)
+            else:
+                move = False
+        if self.pers.isDied:
+            move = False
+            self.canvas.delete(self.skin)
+            self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                     image=self.pers.skin)
+        if move:
+            self.canvas.scan_mark(0, 0)
+            self.canvas.scan_dragto(self.speed, 0, gain=1)
+            if self.right_steps_counter % 4 == 0:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                         image=self.pers.back_skin_animation_right_leg)
+            elif self.right_steps_counter % 2 == 1:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.bot_skin)
+            elif self.right_steps_counter % 4 == 2:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                         image=self.pers.back_skin_animation_left_leg)
+            self.right_steps_counter += 1
+            self.canvas.move(self.skin, -self.speed, 0)
+            self.canvas.move(self.health.form, -self.speed, 0)
+            self.canvas.move(self.health.rect, -self.speed, 0)
+            self.canvas.move(self.satiety.form, -self.speed, 0)
+            self.canvas.move(self.satiety.rect, -self.speed, 0)
+            self.canvas.move(self.menu_button, -self.speed, 0)
+            self.canvas.move(self.armor_icon, -self.speed, 0)
+            self.canvas.move(self.backpack_icon, -self.speed, 0)
+            self.pers.x -= self.speed
+            self.health.x -= self.speed
+            self.satiety.x -= self.speed
+            self.pers.now_skin = self.pers.bot_skin
+            self.canvas.delete(self.pause_icon)
+            self.canvas.delete(self.play_icon)
+            self.canvas.delete(self.back_icon)
+            self.canvas.delete(self.exit_icon)
+        if (self.pers.chunk != tile.chunk):
+            self.pers.chunk = tile.chunk
+            self.addNeighbours(tile.chunk)
+            self.renderNeighbours(tile.chunk)
+
+    def onKeyRight(self, event):
+        move = True
+        tile = self.pers.tile
+        if (tile.realx + self.size - self.pers.size < self.pers.x + self.speed):
+
+            if (tile.connections[2]):
+                self.pers.tile = tile.connections[2]
+                if not self.visib:
+                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    self.canvas.lift(self.health.rect)
+                    self.canvas.lift(self.health.form)
+                    self.canvas.lift(self.satiety.rect)
+                    self.canvas.lift(self.satiety.form)
+                    self.canvas.lift(self.menu_button)
+                    self.canvas.lift(self.armor_icon)
+                    self.canvas.lift(self.backpack_icon)
+                    self.minimap.drag(-1, 0)
+            else:
+                move = False
+        if self.pers.isDied:
+            move = False
+            self.canvas.delete(self.skin)
+            self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                     image=self.pers.skin)
+        if move:
+            self.canvas.scan_mark(0, 0)
+            self.canvas.scan_dragto(-self.speed, 0, gain=1)
+            if self.right_steps_counter % 4 == 0:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_right_leg)
+            elif self.right_steps_counter % 2 == 1:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.skin)
+            elif self.right_steps_counter % 4 == 2:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.front_skin_animation_left_leg)
+            self.right_steps_counter += 1
+            self.canvas.move(self.skin, self.speed, 0)
+            self.canvas.move(self.health.form, self.speed, 0)
+            self.canvas.move(self.health.rect, self.speed, 0)
+            self.canvas.move(self.satiety.form, self.speed, 0)
+            self.canvas.move(self.satiety.rect, self.speed, 0)
+            self.canvas.move(self.menu_button, self.speed, 0)
+            self.canvas.move(self.armor_icon, self.speed, 0)
+            self.canvas.move(self.backpack_icon, self.speed, 0)
+            self.pers.x += self.speed
+            self.health.x += self.speed
+            self.satiety.x += self.speed
+            self.pers.now_skin = self.pers.skin
+            self.canvas.delete(self.pause_icon)
+            self.canvas.delete(self.play_icon)
+            self.canvas.delete(self.back_icon)
+            self.canvas.delete(self.exit_icon)
+        if (self.pers.chunk != tile.chunk):
+            self.pers.chunk = tile.chunk
+
+            self.addNeighbours(tile.chunk)
+            self.renderNeighbours(tile.chunk)
+
+    def onKeyDown(self, event):
+        move = True
+        tile = self.pers.tile
+        if (tile.realy + self.size - self.pers.size < self.pers.y + self.speed):
+
+            if (tile.connections[3]):
+                self.pers.tile = tile.connections[3]
+                if not self.visib:
+                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    self.canvas.lift(self.health.rect)
+                    self.canvas.lift(self.health.form)
+                    self.canvas.lift(self.satiety.rect)
+                    self.canvas.lift(self.satiety.form)
+                    self.canvas.lift(self.menu_button)
+                    self.canvas.lift(self.armor_icon)
+                    self.canvas.lift(self.backpack_icon)
+                    self.minimap.drag(0, -1)
+            else:
+                move = False
+        if self.pers.isDied:
+            move = False
+            self.canvas.delete(self.skin)
+            self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.skin)
+        if move:
+            self.canvas.scan_mark(0, 0)
+            self.canvas.scan_dragto(0, -self.speed,gain=1)
+            if self.right_steps_counter % 4 == 0:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                         image=self.pers.transpose_front_skin_animation_right_leg)
+            elif self.right_steps_counter % 2 == 1:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.transpose_skin)
+            elif self.right_steps_counter % 4 == 2:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                         image=self.pers.transpose_front_skin_animation_left_leg)
+            self.right_steps_counter += 1
+            self.canvas.move(self.skin, 0, self.speed)
+            self.canvas.move(self.health.form, 0, self.speed)
+            self.canvas.move(self.health.rect, 0, self.speed)
+            self.canvas.move(self.satiety.form, 0, self.speed)
+            self.canvas.move(self.satiety.rect, 0, self.speed)
+            self.canvas.move(self.menu_button, 0, self.speed)
+            self.canvas.move(self.armor_icon, 0, self.speed)
+            self.canvas.move(self.backpack_icon, 0, self.speed)
+            self.pers.y += self.speed
+            self.health.y += self.speed
+            self.satiety.y += self.speed
+            self.pers.now_skin = self.pers.transpose_skin
+            self.canvas.delete(self.pause_icon)
+            self.canvas.delete(self.play_icon)
+            self.canvas.delete(self.back_icon)
+            self.canvas.delete(self.exit_icon)
+        if (self.pers.chunk != tile.chunk):
+            self.pers.chunk = tile.chunk
+
+            self.addNeighbours(tile.chunk)
+            self.renderNeighbours(tile.chunk)
+        
+    def onKeyUp(self, event):
+        move = True
+        tile = self.pers.tile
+        if (tile.realy > self.pers.y - self.speed):
+
+            if (tile.connections[0]):
+                self.pers.tile = tile.connections[0]
+                if not self.visib:
+                    self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
+                    self.canvas.lift(self.health.rect)
+                    self.canvas.lift(self.health.form)
+                    self.canvas.lift(self.satiety.rect)
+                    self.canvas.lift(self.satiety.form)
+                    self.canvas.lift(self.menu_button)
+                    self.canvas.lift(self.armor_icon)
+                    self.canvas.lift(self.backpack_icon)
+                    self.minimap.drag(0, 1)
+            else:
+                move = False
+        if self.pers.isDied:
+            move = False
+            self.canvas.delete(self.skin)
+            self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                     image=self.pers.skin)
+        if move:
+            self.canvas.scan_mark(0, 0)
+            self.canvas.scan_dragto(0, self.speed, gain=1)
+            if self.right_steps_counter % 4 == 0:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                         image=self.pers.transpose_back_skin_animation_right_leg)
+            elif self.right_steps_counter % 2 == 1:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y, image=self.pers.bot_transpose_skin)
+            elif self.right_steps_counter % 4 == 2:
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                         image=self.pers.transpose_back_skin_animation_left_leg)
+            self.right_steps_counter += 1
+            self.canvas.move(self.skin, 0, -self.speed)
+            self.canvas.move(self.health.form, 0, -self.speed)
+            self.canvas.move(self.health.rect, 0, -self.speed)
+            self.canvas.move(self.satiety.form, 0, -self.speed)
+            self.canvas.move(self.satiety.rect, 0, -self.speed)
+            self.canvas.move(self.menu_button, 0, -self.speed)
+            self.canvas.move(self.armor_icon, 0, -self.speed)
+            self.canvas.move(self.backpack_icon, 0, -self.speed)
+            self.pers.y -= self.speed
+            self.health.y -= self.speed
+            self.satiety.y -= self.speed
+            self.pers.now_skin = self.pers.bot_transpose_skin
+            self.canvas.delete(self.pause_icon)
+            self.canvas.delete(self.play_icon)
+            self.canvas.delete(self.back_icon)
+            self.canvas.delete(self.exit_icon)
+        if (self.pers.chunk != tile.chunk):
+            self.pers.chunk = tile.chunk
+
+            self.addNeighbours(tile.chunk)
+            self.renderNeighbours(tile.chunk)
+#----------------------------------------------------------------------
+    def attack(self, event):
+            
+        if self.recharge>0:
+            return
+        self.recharge=0.2
+        attacky=event.y-500
+        attackx=event.x-500
+        vectlen=sqrt(attackx**2+attacky**2)
+        #print(attackx,attacky)
+        if vectlen > 70:
+            const=70/vectlen
+        else:
+            const=1
+        attackx*=const
+        attacky*=const
+        attackx=self.pers.x+attackx
+        attacky=self.pers.y+attacky
+            
+        #print(attackx,attacky)
+        circle=self.canvas.create_oval(attackx-self.pers.attackRange,attacky-self.pers.attackRange,attackx+self.pers.attackRange,attacky+self.pers.attackRange,fill='grey')
+        sleep(0.05)
+        def dele():
+            self.canvas.delete(circle)
+        self.canvas.after(100,dele)
+            
+        for i in self.mcb.monsters:
+            if sqrt((i.x-attackx)**2+(i.y-attacky)**2)<30:
+                i.take_damage(self.pers.power)
                 break
     def level(self,lvl):
             self.canvas.scan_mark(0, 0)
@@ -668,7 +672,23 @@ class GUI:
          
             #self.mcb.monsters[-1].target=self.pers.tile
             #self.canvas.lift(self.backpack_icon)
-            self.canvas.move(self.backpack_icon,10,150)
+
+            self.canvas.delete(self.backpack_icon)
+            self.canvas.delete(self.menu_button)
+            self.canvas.delete(self.armor_icon)
+            self.canvas.delete(self.health)
+            self.canvas.delete(self.satiety)
+            self.health = Health(self.canvas, self.pers.health, persTile.realx + 250, persTile.realy - 420, persTile, "red",
+                                 200, 200, self.pers.health)
+            self.satiety = Health(self.canvas, self.pers.satiety, persTile.realx + 270, persTile.realy - 380, persTile,
+                                  'yellow', 150, 100, self.pers.satiety)
+            self.menu_button = self.canvas.create_image(persTile.realx - 400, persTile.realy - 420, image=self.menu)
+            self.canvas.tag_bind(self.menu_button, "<Button-1>", self.menu_label)
+            self.backpack_icon = self.canvas.create_image(self.pers.x - 460, self.pers.y, image=self.backpack)
+            self.canvas.tag_bind(self.backpack_icon, "<Button-1>", self.backpack_func)
+            self.armor_icon = self.canvas.create_image(self.pers.x - 460, self.pers.y - 200, image=self.armor)
+            self.canvas.tag_bind(self.armor_icon, "<Button-1>", self.armor_func)
+
             self.canvas.lift(self.backpack_icon)
             self.canvas.lift(self.menu_button)
             self.canvas.lift(self.armor_icon)

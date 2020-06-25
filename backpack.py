@@ -2,7 +2,6 @@ from tkinter import *
 from math import *
 from PIL import Image, ImageTk
 from ammunition import Ammunition
-from time import sleep
 class Backpack:
     def __init__(self, root, pers, satiety, gui, allItems):
         self.items = gui.items
@@ -137,16 +136,38 @@ class Backpack:
             self.gui.speed += 10
             self.throw_out_func(event, x)
             self.gui.canvas.after(30000, self.return_speed4)
+        if self.items[x][2] == "potion_orange1":
+            self.pers.power += 5
+            print(self.pers.power)
+            self.throw_out_func(event, x)
+            self.gui.canvas.after(15000, self.return_power1)
+        if self.items[x][2] == "potion_orange4":
+            self.pers.power += 10
+            self.throw_out_func(event, x)
+            self.gui.canvas.after(30000, self.return_power4)
+        if self.items[x][2] == "potion2":
+            self.gui.minimap.lifter()
+            self.throw_out_func(event, x)
+            self.gui.canvas.after(120000, self.return_Pause)
 
     def return_speed1(self):
         self.pers.speed -= 5
         self.gui.speed -= 5
-        print(self.pers.speed)
 
     def return_speed4(self):
         self.pers.speed -= 10
         self.gui.speed -= 10
-        print(self.pers.speed)
+
+    def return_power1(self):
+        self.pers.power -= 5
+        print(self.pers.power)
+
+    def return_power4(self):
+        self.pers.power -= 10
+        print(self.pers.power)
+
+    def return_Pause(self):
+        self.gui.minimap.lowerer()
 
     def throw_out_func(self, event, x):
         del self.items[x]
