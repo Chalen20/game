@@ -629,6 +629,11 @@ class GUI:
             self.canvas.scan_dragto(100000, 100000, gain=1)
             self.canvas.scan_mark(0, 0)
             self.canvas.scan_dragto(-50000, -50000, gain=1)
+
+            self.minimap.canvas.scan_mark(0, 0)
+            self.minimap.canvas.scan_dragto(100000, 100000, gain=1)
+            self.minimap.canvas.scan_mark(0, 0)
+            self.minimap.canvas.scan_dragto(-5000, -5000, gain=1)
             #persTile = self.maze.get(0, 0, lvl).tiles[3][3]
             options = {
                 'intensity': 0.1,
