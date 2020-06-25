@@ -2,7 +2,7 @@ from functools import partial
 from tkinter.ttk import *
 from gameController import *
 from time import *
-
+from PIL import Image, ImageTk
 
 class Start_window:
     def __init__(self):

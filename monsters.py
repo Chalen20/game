@@ -319,7 +319,7 @@ class MonsterCollectiveBrain:
             if(sqrt((i.x-self.pers.x)**2+(i.y-self.pers.y)**2)<i.attackRange and i.recharge<=0):
                 if(i.name =='portal'):
                     print(1)
-                    value = i.tile.chunk.z
+                    value = i.lvl
                     self.monsterCount=0
                     gui.level((value+1)%5)
                         
