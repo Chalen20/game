@@ -1,20 +1,13 @@
 from tkinter import *
 from math import *
 from PIL import Image, ImageTk
+from item import ItemController
 class Ammunition:
-    def __init__(self, root, gui):
-        watermelon = Image.open("img/food/Food_watermelon.png")
-        watermelon = watermelon.resize((100, 100), Image.ANTIALIAS)
-        watermelon_big = watermelon.resize((200, 200), Image.ANTIALIAS)
-        watermelon_big = ImageTk.PhotoImage(watermelon_big)
-        watermelon = ImageTk.PhotoImage(watermelon)
-
+    def __init__(self, root, gui, allItems):
         equip = Image.open("img/equip.png")
         equip = equip .resize((150, 50), Image.ANTIALIAS)
         self.equip = ImageTk.PhotoImage(equip)
-        allItems = {
-                    "watermelon": [watermelon, watermelon_big, "watermelon", "shield", 15, 0.035, True],
-                }
+        self.allItems = allItems
         self.amunition = gui.ammunition
         self.root = root
         self.is_Open = False
@@ -25,6 +18,7 @@ class Ammunition:
         self.build_amunition()
         self.is_Open = True
         self.buildItems()
+        self.buildEquiped()
 
     def build_amunition(self):
         self.frame = Frame(self.root, width=600, height=600, bg="red")
@@ -89,6 +83,22 @@ class Ammunition:
                     self.canvas2.tag_bind(self.amunition[len(self.amunition) - i - 1][2], "<Button-1>",
                                           lambda event, x=len(self.amunition) - i - 1: self.select_item(event, x))
         self.item = self.canvas3.create_rectangle(0, 0, 0, 0)
+
+    def buildEquiped(self):
+        for i in self.equiped:
+            if self.equiped[i] != []:
+                if i == "weapon":
+                    self.canvas3.create_image(50, 250, image=self.equiped[i][0])
+                elif i == "shield":
+                    self.canvas3.create_image(150, 250, image=self.equiped[i][0])
+                elif i == "helmet":
+                    self.canvas3.create_image(100, 50, image=self.equiped[i][0])
+                elif i == "mail":
+                    self.canvas3.create_image(100, 150, image=self.equiped[i][0])
+                elif i == "hands":
+                    self.canvas3.create_image(100, 350, image=self.equiped[i][0])
+                elif i == "boots":
+                    self.canvas3.create_image(100, 450, image=self.equiped[i][0])
 
     def select_item(self, event, x):
         equip = self.canvas3.create_image(100, 540, image=self.equip)

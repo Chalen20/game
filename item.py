@@ -319,14 +319,13 @@ class ItemController:
         a = {}
         for i in self.possibleItems:
             if i.item == "food":
-                a[i.item] = [i.skin, i.bigSkin, i.name, i.item, i.satiety, i.rotteRate, i.canRott]
+                a[i.name] = [i.skin, i.bigSkin, i.name, i.item, i.satiety, i.rotteRate, i.canRott]
             elif i.item == "poition":
-                a[i.item] = [i.skin, i.bigSkin, i.name, i.item]
+                a[i.name] = [i.skin, i.bigSkin, i.name, i.item]
             elif i.item == "weapon":
-                a[i.item] = [i.skin, i.bigSkin, i.name, i.item, i.attack_value, i.brokeRate]
+                a[i.name] = [i.skin, i.bigSkin, i.name, i.item, i.attack_value, i.brokeRate]
             else:
-                a[i.item] = [i.skin, i.bigSkin, i.name, i.item, i.block_value, i.brokeRate]
-        print(a)
+                a[i.name] = [i.skin, i.bigSkin, i.name, i.item, i.block_value, i.brokeRate]
         return a
 
 class Armor():
@@ -334,7 +333,6 @@ class Armor():
         self.skin = skin
         self.bigSkin = bigSkin
         self.name = name
-        self.rottness = 100
         self.brokeRate = brokeRate
         self.item = item
         self.block_value = block_value
@@ -358,7 +356,6 @@ class Weapon:
         self.skin = skin
         self.bigSkin = bigSkin
         self.name = name
-        self.rottness = 100
         self.brokeRate = brokeRate
         self.item = item
         self.attack_value = attack_value
@@ -382,7 +379,6 @@ class Poitions():
         self.skin = skin
         self.bigSkin = bigSkin
         self.name = name
-        self.rottness = 100
         self.item = item
         self.fracture_of_weapon = 0
         self.isBroken = False
