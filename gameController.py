@@ -9,8 +9,7 @@ from time import sleep
 from backpack import Backpack
 from math import *
 from ammunition import Ammunition
-from item import ItemController
-
+from item import *
 from random import *
 options = {
     'intensity': 0.1,
@@ -112,7 +111,9 @@ class GUI:
         self.exit_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
                                                        persTile.realx - 400, persTile.realy - 400)
         self.paused_icon = self.canvas.create_rectangle(persTile.realx - 400, persTile.realy - 400,
-                                                      persTile.realx - 400, persTile.realy - 400)
+                                                     persTile.realx - 400, persTile.realy - 400)
+        
+       
         self.armor = Image.open("img/armor.png")
         self.armor = self.armor.resize((75, 75), Image.ANTIALIAS)
         self.armor = ImageTk.PhotoImage(self.armor)
@@ -134,15 +135,14 @@ class GUI:
         self.ammunition = []
         self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
         self.armor_window = Ammunition(self.root, self, allItems)
-
-        self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)
-        
+        self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)  
         self.backpack = Image.open("img/back_pack.png")
-        self.backpack = self.backpack.resize((75, 75), Image.ANTIALIAS)
+        self.backpack =  self.backpack.resize((75, 75), Image.ANTIALIAS)
         self.backpack = ImageTk.PhotoImage(self.backpack)
         self.backpack_icon = self.canvas.create_image(pers.x - 460, pers.y, image=self.backpack)
         self.recharge = 0
 
+        #self.backback = Backpack(self.root, self.canvas, self.pers, self.satiety, pers.x-400, pers.y-400,self)
         def backpack_func(event):
             if self.armor_window.is_Open:
                 close_armor(event)
@@ -153,20 +153,21 @@ class GUI:
             self.isPaused = True
             close_menu(event)
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
+
             self.backback = Backpack(self.root, self.pers, self.satiety, self, allItems)
+
             self.backback.start()
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", close_backpack)
 
         def close_backpack(event):
             play_func(event)
-            self.items = self.backback.items
+            
             self.backback.remove()
             self.canvas.tag_unbind(self.backpack_icon, "<Button-1>")
             self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
             self.isPaused = False
         self.canvas.tag_bind(self.backpack_icon, "<Button-1>", backpack_func)
         self.mcb = MonsterCollectiveBrain(self)
-
         def armor_func(event):
             if self.backback.is_Open:
                 close_backpack(event)
@@ -187,6 +188,7 @@ class GUI:
             self.armor_window.remove()
             self.canvas.tag_unbind(self.armor_icon, "<Button-1>")
             self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
+            self.isPaused = False
 
         self.canvas.tag_bind(self.armor_icon, "<Button-1>", armor_func)
         #self.canvas.tag_bind(self.menu_button,"<Button-1>",
@@ -196,6 +198,7 @@ class GUI:
             self.canvas.delete(self.back_icon)
             self.canvas.delete(self.exit_icon)
             self.canvas.tag_bind(self.menu_button, "<Button-1>",menu_label)
+            
         #self.canvas.tag_bind(self.menu_button, "<Button-1>", menu_label)
 
         def pause_func(event):
@@ -532,6 +535,8 @@ class GUI:
                     i.take_damage(pers.power)
                     break
             
+            
+            
         self.root.bind('<Left>', onKeyLeft)
         self.root.bind('<Right>', onKeyRight)
         self.root.bind('<Up>', onKeyUp)
@@ -542,6 +547,12 @@ class GUI:
         counter = 0
 
         while True:
+            if(self.pers.isDied):
+                self.canvas.delete(self.skin)
+                self.skin = self.canvas.create_image(self.pers.x, self.pers.y,
+                                                     image=self.pers.skin)
+                self.isPaused = True
+                
             try:
                 #self.root.lift(self.backpack_icon)
                 #self.root.lift(self.menu_button)
@@ -627,7 +638,7 @@ class GUI:
         x = chunk.x
         y = chunk.y
         z = chunk.z
-
+        print(chunk.x,chunk.y,chunk.cleared)
         self.ren.renderChunk(self.maze.get(x + 1, y, z))
         self.ren.renderChunk(self.maze.get(x, y + 1, z))
         self.ren.renderChunk(self.maze.get(x + 1, y + 1, z))
@@ -644,7 +655,7 @@ class GUI:
                 random2=randint(2,chunk.size-2)
                 tile = chunk.tiles[random1][random2]
                 print('portal',random1,random2)
-                self.mcb.monsters.append(Monster('portal',tile,self))
+                self.mcb.monsters.append(Monster('portal',tile,self,chunk.z))
                 self.mcb.monsters[-1].target=tile
             chunk.portaled='Already'
 
