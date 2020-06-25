@@ -234,8 +234,8 @@ class ItemController:
             Poitions(self.getImage("img/Potions/Potion_orange4.png", False),
                      self.getImage("img/Potions/Potion_orange4.png", True),
                      "potion_orange4", "poition"),
-            Poitions(self.getImage("img/Potions/Potion_red1.png", False),
-                     self.getImage("img/Potions/Potion_red1.png", True),
+            Poitions(self.getImage("img/Potions/Potion_red_1.png", False),
+                     self.getImage("img/Potions/Potion_red_1.png", True),
                      "potion_red1", "poition"),
             Poitions(self.getImage("img/Potions/Potion_red4.png", False),
                      self.getImage("img/Potions/Potion_red4.png", True),
@@ -303,6 +303,31 @@ class ItemController:
                     self.possibleItems[x].name, self.possibleItems[x].item,
                     self.possibleItems[x].satiety, self.possibleItems[x].rotteRate,
                     self.possibleItems[x].canRott]
+        elif self.possibleItems[x].item == "poition":
+            return [self.possibleItems[x].skin, self.possibleItems[x].bigSkin,
+                    self.possibleItems[x].name, self.possibleItems[x].item]
+        elif self.possibleItems[x].item == "weapon":
+            return[self.possibleItems[x].skin, self.possibleItems[x].bigSkin,
+                  self.possibleItems[x].name, self.possibleItems[x].item,
+                  self.possibleItems[x].attack_value, self.possibleItems[x].brokeRate]
+        else:
+            return[self.possibleItems[x].skin, self.possibleItems[x].bigSkin,
+                  self.possibleItems[x].name, self.possibleItems[x].item,
+                  self.possibleItems[x].block_value, self.possibleItems[x].brokeRate]
+
+    def getAll(self):
+        a = {}
+        for i in self.possibleItems:
+            if i.item == "food":
+                a[i.item] = [i.skin, i.bigSkin, i.name, i.item, i.satiety, i.rotteRate, i.canRott]
+            elif i.item == "poition":
+                a[i.item] = [i.skin, i.bigSkin, i.name, i.item]
+            elif i.item == "weapon":
+                a[i.item] = [i.skin, i.bigSkin, i.name, i.item, i.attack_value, i.brokeRate]
+            else:
+                a[i.item] = [i.skin, i.bigSkin, i.name, i.item, i.block_value, i.brokeRate]
+        print(a)
+        return a
 
 class Armor():
     def __init__(self, skin, bigSkin, name, item, block_value, brokeRate):
