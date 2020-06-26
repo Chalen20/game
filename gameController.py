@@ -755,7 +755,7 @@ class GUI:
                 random1=randint(2,chunk.size-2)
                 random2=randint(2,chunk.size-2)
                 tile = chunk.tiles[random1][random2]
-                print('portal',random1,random2)
+                #print('portal',random1,random2)
                 self.mcb.addPortal(self.pers.tile.neighbours[0],self,chunk.z)
             chunk.portaled='Already'
 

@@ -93,7 +93,7 @@ class Backpack:
         
         self.canvas3.delete(self.item)
         y = self.items[x][2]
-        print(y)
+        #print(y)
         image = self.allItems[y][1]
         self.item = self.canvas3.create_image(100, 100, image=image)
         throw_out = self.canvas4.create_image(50, 50, image=self.throw_out)
