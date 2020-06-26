@@ -60,6 +60,7 @@ class GUI:
         self.root = Tk()
         self.root.grab_set()
         self.root.focus_force()
+        self.root.resizable(False, False)
         self.canvas = Canvas(self.root, width=800, height=800)
         self.label=Label(self.root,width = 10,height = 2,text=120)
         self.label.place(x=650,y=620)
