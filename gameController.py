@@ -56,7 +56,6 @@ class GUI:
     def __init__(self, name, visib, on):
         self.size = 150
         self.x = 50000
-        a = 2 + 2
         self.y = 50000
         self.root = Tk()
         self.root.grab_set()
@@ -86,7 +85,7 @@ class GUI:
             'intensity': 0.5,
             'lifespan': 8,
             'loopchance': 1,
-            'cavechance': 1,
+            'cavechance': 0,
             'chunk_size': 18,
             'block_chance': 0,
             'double_entrance': 1
@@ -209,9 +208,9 @@ class GUI:
                 self.isPaused = True
 
             try:
-                # self.root.lift(self.backpack_icon)
-                # self.root.lift(self.menu_button)
-                # self.root.lift(self.backpack)
+                self.canvas.lift(self.backpack_icon)
+                self.canvas.lift(self.menu_button)
+                self.canvas.lift(self.backpack)
                 if not self.root.winfo_exists():
                     #print('smert2')
                     break
@@ -220,6 +219,7 @@ class GUI:
                 break
             self.canvas.lift(self.backpack_icon)
             if not self.isPaused:
+                #print(self.canvas.coords(self.backpack_icon))
                 self.mcb.loop(self)
                 self.label.config(text=round(float(self.label.cget('text'))-0.01,2))
             else:
@@ -737,6 +737,7 @@ class GUI:
         maze.addChunk(x + 1, y + 1, z)
 
     def renderNeighbours(self, chunk):
+        #print(self.canvas.coords(self.backpack_icon))
         x = chunk.x
         y = chunk.y
         z = chunk.z
@@ -759,6 +760,13 @@ class GUI:
                 #print('portal',random1,random2)
                 self.mcb.addPortal(self.pers.tile.neighbours[0],self,chunk.z)
             chunk.portaled='Already'
+        try:
+            self.canvas.lift(self.backpack_icon)
+            self.canvas.lift(self.menu)
+            self.canvas.lift(self.backpack)
+            #print(self.canvas.coords(self.backpack_icon))
+        except:
+            print('1')
 
     def scroll_start(self, event):
         # print("from",event.x,event.y)

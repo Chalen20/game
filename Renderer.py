@@ -16,7 +16,8 @@ class Renderer:
         #self.tile_bg=ImageTk.PhotoImage(tile_bg.resize((97, 97), Image.ANTIALIAS))
         if(chunk.rendered):
             for i in chunk.drawings:
-               self.canvas.delete(i) 
+                if(i!=self.gui.backpack_icon and i!=self.gui.menu_button and i!= self.gui.armor_icon and i!=self.gui.health.form and  i!=self.gui.health.rect and i!=self.gui.satiety.form and i!=self.gui.satiety.rect):
+                    self.canvas.delete(i) 
         if(not chunk):
             return
         chunk.rendered=True
