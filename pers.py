@@ -307,7 +307,6 @@ class Pers():
             self.health -= damage * (275-self.armor_value())/275
         else:
             self.health -= damage
-        print(self.health)
 
     def starvation(self):
         if self.satiety < self.speed_of_hunger_change:
