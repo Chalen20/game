@@ -13,13 +13,13 @@ from item import *
 from random import *
 
 options = {
-    'intensity': 0.1,
+    'intensity': 1,
     'lifespan': 8,
-    'loopchance': 0.5,
+    'loopchance': 0,
     'cavechance': 1,
-    'chunk_size': 18,
+    'chunk_size': 5,
     'block_chance': 0,
-    'double_entrance': 0.2
+    'double_entrance': 1
 }
 class MiniMap:
     def __init__(self,gui):
@@ -60,7 +60,6 @@ class GUI:
         self.root = Tk()
         self.root.grab_set()
         self.root.focus_force()
-        self.root.resizable(False, False)
         self.canvas = Canvas(self.root, width=800, height=800)
         self.label=Label(self.root,width = 10,height = 2,text=120)
         self.label.place(x=650,y=620)
@@ -83,13 +82,13 @@ class GUI:
         #self.canvas.bind("<B1-Motion>", self.scroll_move)
         
         options = {
-            'intensity': 0.1,
+            'intensity': 0.5,
             'lifespan': 8,
-            'loopchance': 0.5,
+            'loopchance': 1,
             'cavechance': 1,
             'chunk_size': 18,
-            'block_chance': 0.9,
-            'double_entrance': 0.2
+            'block_chance': 0,
+            'double_entrance': 1
         }
         self.maze = Maze(options)
         self.maze.addChunk(0, 0, 0)
