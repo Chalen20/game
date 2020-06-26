@@ -56,6 +56,7 @@ class GUI:
     def __init__(self, name, visib, on):
         self.size = 150
         self.x = 50000
+        a = 2 + 2
         self.y = 50000
         self.root = Tk()
         self.root.grab_set()
