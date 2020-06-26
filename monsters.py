@@ -265,12 +265,12 @@ class MonsterCollectiveBrain:
         self.monsters[-1].q=True
     def loop(self,gui):
         lvl=self.pers.tile.chunk.z
-        possible = {0:['deathMonster','deadlyMonster','mage','miniboss'],
-                    1:['deathMonster','deadlyMonster','death','deathMonster'],
-                    2:['deathMonster','deadlyMonster','death','mage','deadlyMonster'],
-                    3:['deathMonster','deadlyMonster','death','mage','deadlyMonster'],
-                    4:['deathMonster','deadlyMonster','death','mage','deadlyMonster'],
-                    5:['deathMonster','deadlyMonster','death','mage','deadlyMonster']
+        possible = {0:['deathMonster','deadlyMonster','mage'],
+                    1:['deathMonster','deadlyMonster','death','deathMonster','mage'],
+                    2:['deathMonster','deadlyMonster','death','mage','deadlyMonster','miniboss'],
+                    3:['deathMonster','deadlyMonster','death','mage','deadlyMonster','miniboss'],
+                    4:['deathMonster','deadlyMonster','death','mage','deadlyMonster','miniboss'],
+                    5:['deathMonster','deadlyMonster','death','mage','deadlyMonster','miniboss']
                     }
         
         if(lvl>5):

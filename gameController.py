@@ -227,17 +227,11 @@ class GUI:
                         self.satiety.change(self.pers.satiety)
                     except:
                         pass
-<<<<<<< HEAD
-                        #print("satiety error")
-                else:
-                    self.hung_is_stop = True
-                    #print("satiety error")
-                    counter = 0
-=======
+
                 else:
                     self.hung_is_stop = True
                 counter = 0
->>>>>>> 92928b2632208f689b4d655e4a82547c8d744bbb
+
             sleep(0.01)
             self.root.update()
             counter += 1
