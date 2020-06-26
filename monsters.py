@@ -27,14 +27,32 @@ class allMonsters():
         front_skin5 = Image.open("img/Orc1.png")
         front_skin5 = front_skin5.resize((100, 100), Image.ANTIALIAS)
 
+        front_skin5_animation1 = Image.open("img/Orc1_animation1.png")
+        front_skin5_animation1 = front_skin5_animation1.resize((100, 100), Image.ANTIALIAS)
+
+        front_skin5_animation2 = Image.open("img/Orc1_animation2.png")
+        front_skin5_animation2 = front_skin5_animation2.resize((100, 100), Image.ANTIALIAS)
+
         front_skin6 = Image.open("img/Orc5.png")
         front_skin6 = front_skin6.resize((100, 100), Image.ANTIALIAS)
+
+        front_skin6_animation1 = Image.open("img/Orc5_animation1.png")
+        front_skin6_animation1 = front_skin6_animation1.resize((100, 100), Image.ANTIALIAS)
+
+        front_skin6_animation2 = Image.open("img/Orc5_animation2.png")
+        front_skin6_animation2 = front_skin6_animation2.resize((100, 100), Image.ANTIALIAS)
 
         front_skin7 = Image.open("img/portal.png")
         front_skin7 = front_skin7.resize((20, 20), Image.ANTIALIAS)
 
         front_skin8 = Image.open("img/Orc4.png")
         front_skin8 = front_skin8.resize((120, 120), Image.ANTIALIAS)
+
+        front_skin8_animation1 = Image.open("img/Orc4_animation1.png")
+        front_skin8_animation1 = front_skin8_animation1.resize((120, 120), Image.ANTIALIAS)
+
+        front_skin8_animation2 = Image.open("img/Orc4_animation2.png")
+        front_skin8_animation2 = front_skin8_animation2.resize((120, 120), Image.ANTIALIAS)
 
         front_skin3 = Image.open("img/full_chest.png")
         front_skin3 = front_skin3.resize((100, 100), Image.ANTIALIAS)
@@ -51,13 +69,13 @@ class allMonsters():
                        'portal':[ImageTk.PhotoImage(front_skin4), "dead_skin", 30, 100000, 0, 0,
                                  ImageTk.PhotoImage(front_skin4), ImageTk.PhotoImage(front_skin4), False],
                        'death':[ImageTk.PhotoImage(front_skin5), "dead_skin", 20, 1, 0.6, 50,
-                                 ImageTk.PhotoImage(front_skin5), ImageTk.PhotoImage(front_skin5), False],
+                                 ImageTk.PhotoImage(front_skin5_animation1), ImageTk.PhotoImage(front_skin5_animation2), False],
                        'mage':[ImageTk.PhotoImage(front_skin6), "dead_skin", 200, 1, 0.6, 0,
-                                 ImageTk.PhotoImage(front_skin6), ImageTk.PhotoImage(front_skin6), False],
+                                 ImageTk.PhotoImage(front_skin6_animation1), ImageTk.PhotoImage(front_skin6_animation2), False],
                        'fireball':[ImageTk.PhotoImage(front_skin7), "dead_skin", 30, 1, 2, 5,
                                  ImageTk.PhotoImage(front_skin7), ImageTk.PhotoImage(front_skin7), True],
                        'miniboss':[ImageTk.PhotoImage(front_skin8), "dead_skin", 200, 100, 0.6, 0,
-                                 ImageTk.PhotoImage(front_skin8), ImageTk.PhotoImage(front_skin8), False]
+                                 ImageTk.PhotoImage(front_skin8_animation1), ImageTk.PhotoImage(front_skin8_animation2), False]
         }
 class Monster():
 

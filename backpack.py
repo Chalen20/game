@@ -90,8 +90,10 @@ class Backpack:
         self.item = self.canvas3.create_rectangle(0, 0, 0, 0)
 
     def select_item(self, event, x):
+        
         self.canvas3.delete(self.item)
         y = self.items[x][2]
+        print(y)
         image = self.allItems[y][1]
         self.item = self.canvas3.create_image(100, 100, image=image)
         throw_out = self.canvas4.create_image(50, 50, image=self.throw_out)
@@ -146,6 +148,7 @@ class Backpack:
             self.throw_out_func(event, x)
             self.gui.canvas.after(30000, self.return_power4)
         if self.items[x][2] == "potion2":
+            
             self.gui.minimap.lifter()
             self.throw_out_func(event, x)
             self.gui.canvas.after(120000, self.return_Pause)

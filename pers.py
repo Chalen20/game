@@ -195,6 +195,7 @@ class Pers():
         self.items = []
         self.speed = allPers[name][3]
         self.health = allPers[name][4]
+        self.maxHealth=allPers[name][4]
         self.satiety = 100
         self.armor = 0
         self.speed_of_hunger_change = 5

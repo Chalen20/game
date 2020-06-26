@@ -29,6 +29,9 @@ class MiniMap:
         self.frame.place(x=650, y=650)
         self.canvas = Canvas(self.frame, width=150, height=150, bg="#ccccaa")
         self.canvas.configure(scrollregion=(0, 0, 100000, 100000))
+        #self.label=Label(self.gui.root,width = 10,height = 5,text='aaaaaaaaaaaaaaaa')
+        #self.label.config(text = '2')
+        #self.label.place(x=650,y=620)
         self.canvas.place(x=0, y=0)
         self.canvas.scan_mark(0, 0)
         self.canvas.scan_dragto(-5000, -5000, gain=1)
@@ -40,8 +43,11 @@ class MiniMap:
         self.canvas.scan_dragto(x, y, gain=15)
         self.canvas.move(self.pers,-x*15,-y*15)
     def lifter(self):
+        self.gui.label.config(text = '120')
+        self.gui.label.lift()
         self.frame.lift()
     def lowerer(self):
+        self.gui.label.lower()
         self.frame.lower()
     
 class GUI:
@@ -55,6 +61,9 @@ class GUI:
         self.root.grab_set()
         self.root.focus_force()
         self.canvas = Canvas(self.root, width=800, height=800)
+        self.label=Label(self.root,width = 10,height = 2,text=120)
+        self.label.place(x=650,y=620)
+        #self.label.lift()
         #self.canvas.focus_set()
         self.minimap = MiniMap(self)
         self.minimap.toggle()
@@ -154,16 +163,15 @@ class GUI:
         meat_big = ImageTk.PhotoImage(meat_big)
         meat = ImageTk.PhotoImage(meat)
         self.items = []
-        self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
-        self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
-        self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
+        for i in range(2):
+            self.items.append([meat, meat_big, "meat", "food", 20, 0.04, True])
         self.allItems = ItemController()
         self.allItems_ = self.allItems.getAll()
         item = self.allItems.get()
 
         self.ammunition = []
         self.items.append(self.allItems_["potion2"])
-        self.items.append(self.allItems_["mail7"])
+        #  self.items.append(self.allItems_["mail7"])
         self.equipment = {"weapon": [], "helmet": [], "mail": [], "hands": [], "boots": [], "shield": []}
         self.armor_window = Ammunition(self.root, self, self.allItems_)
         self.backback = Backpack(self.root, self.pers, self.satiety, self, self.allItems_)
@@ -191,7 +199,7 @@ class GUI:
                     paused = Image.open("img/game_over.png")
                     paused = ImageTk.PhotoImage(paused)
                     paused_icon = self.canvas.create_image(self.pers.x-70, self.pers.y-100, image=paused)
-                    canvas.lift(paused_icon)
+                    self.canvas.lift(paused_icon)
                     self.a=True
                 
                 self.canvas.delete(self.skin)
@@ -212,6 +220,7 @@ class GUI:
             self.canvas.lift(self.backpack_icon)
             if not self.isPaused:
                 self.mcb.loop(self)
+                self.label.config(text=round(float(self.label.cget('text'))-0.01,2))
             else:
                 #print("TRUE")
                 a=5+5
@@ -691,9 +700,11 @@ class GUI:
             self.canvas.delete(self.health)
             self.canvas.delete(self.satiety)
             self.health = Health(self.canvas, self.pers.health, persTile.realx + 250, persTile.realy - 420, persTile, "red",
-                                 200, 200, self.pers.health)
+                                 200, 200, self.pers.maxHealth)
+            self.health.change(self.pers.health)
             self.satiety = Health(self.canvas, self.pers.satiety, persTile.realx + 270, persTile.realy - 380, persTile,
-                                  'yellow', 150, 100, self.pers.satiety)
+                                  'yellow', 150, 100, 100)
+            
             self.menu_button = self.canvas.create_image(persTile.realx - 400, persTile.realy - 420, image=self.menu)
             self.canvas.tag_bind(self.menu_button, "<Button-1>", self.menu_label)
             self.backpack_icon = self.canvas.create_image(self.pers.x - 460, self.pers.y, image=self.backpack)
