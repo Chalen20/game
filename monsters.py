@@ -6,6 +6,7 @@ from copy import copy, deepcopy
 from time import sleep
 class allMonsters():
     def __init__(self):
+
         front_skin1 = Image.open("img/Orc2.png")
         front_skin1 = front_skin1.resize((100, 100), Image.ANTIALIAS)
         front_skin2 = Image.open("img/Orc3.png")
@@ -76,7 +77,7 @@ class allMonsters():
                                  ImageTk.PhotoImage(front_skin7), ImageTk.PhotoImage(front_skin7), True],
                        'miniboss':[ImageTk.PhotoImage(front_skin8), "dead_skin", 200, 100, 0.6, 0,
                                  ImageTk.PhotoImage(front_skin8_animation1), ImageTk.PhotoImage(front_skin8_animation2), False]
-        }
+                    }
 class Monster():
 
     def __init__(self, name,tile,gui,*args):
@@ -90,7 +91,7 @@ class Monster():
         self.skin = allMonsters[name][0]
         self.name = name
         self.speed = allMonsters[name][4]*(1+self.lvl*0.05)
-        self.health = allMonsters[name][3]
+        self.health = allMonsters[name][3]*(1+self.lvl*0.1)
         self.died_skin = allMonsters[name][1]
         self.faced_north = True
         self.faced_east = False
@@ -155,7 +156,7 @@ class Monster():
             mcb.monsters[-1].y=self.y
 
             
-        attack_value = self.power + randint(0,self.lvl)*(1+self.lvl*0.7)
+        attack_value = self.power + randint(0,self.lvl)*(1+self.lvl*0.3)
         return attack_value
 
     def die(self):
@@ -216,7 +217,8 @@ class Monster():
                         self.tile = self.tile.connections[1]
                         #print(self.tile.x,self.tile.y)
         except:
-            print(self.name,self.tile)
+            #print(self.name,self.tile)
+            pass
             
 
 
@@ -378,7 +380,7 @@ class MonsterCollectiveBrain:
                     i.lifespan+=0.01
             if(sqrt((i.x-self.pers.x)**2+(i.y-self.pers.y)**2)<i.attackRange and i.recharge<=0):
                 if(i.name =='portal'):
-                    print(1)
+                    #print(1)
                     value = i.lvl
                     self.monsterCount=0
                     #if(value<4):

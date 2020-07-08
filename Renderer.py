@@ -19,8 +19,15 @@ class Renderer:
                         i != self.gui.health.form and i != self.gui.health.rect and i != self.gui.satiety.form and
                         i != self.gui.satiety.rect):
                     self.canvas.delete(i)
-        if not chunk:
-            return
+       # if not chunk:
+       #        self.canvas.delete(i)
+        if(not chunk):
+                if(i != self.gui.backpack_icon and i != self.gui.menu_button and i != self.gui.armor_icon and
+                        i != self.gui.health.form and i != self.gui.health.rect and i != self.gui.satiety.form and
+                        i != self.gui.satiety.rect):
+                    self.canvas.delete(i) 
+        #if(not chunk):
+        #    return
         chunk.rendered = True
         for i in chunk.tiles:
            for j in i:

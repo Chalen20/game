@@ -13,13 +13,13 @@ from random import *
 from minotavr import Minotavr
 
 options = {
-    'intensity': 0.1,
+    'intensity': 1,
     'lifespan': 8,
-    'loopchance': 0.5,
+    'loopchance': 0,
     'cavechance': 1,
-    'chunk_size': 18,
+    'chunk_size': 5,
     'block_chance': 0,
-    'double_entrance': 0.2
+    'double_entrance': 1
 }
 class MiniMap:
     def __init__(self, gui):
@@ -60,7 +60,6 @@ class GUI:
         self.root = Tk()
         self.root.grab_set()
         self.root.focus_force()
-        self.root.resizable(False, False)
         self.canvas = Canvas(self.root, width=800, height=800)
         self.label=Label(self.root, width=10, height=2, text=120)
         self.label.place(x=650, y=620)
@@ -79,13 +78,13 @@ class GUI:
         self.canvas.pack()
         
         options = {
-            'intensity': 0.1,
+            'intensity': 0.5,
             'lifespan': 8,
-            'loopchance': 0.5,
-            'cavechance': 1,
+            'loopchance': 1,
+            'cavechance': 0,
             'chunk_size': 18,
-            'block_chance': 0.9,
-            'double_entrance': 0.2
+            'block_chance': 0,
+            'double_entrance': 1
         }
         self.maze = Maze(options)
         self.maze.addChunk(0, 0, 0)
@@ -128,8 +127,6 @@ class GUI:
         self.speed = speed
         pers.chunk = self.maze.get(0, 0, 0)
         self.right_steps_counter = 0
-        minotavrTile = self.maze.get(0, 0, 0).tiles[0][0]
-        minotavr = Minotavr(minotavrTile.realx+50, minotavrTile.realy+50, 10, 100, self, minotavrTile)
 
         if not visib:
             self.ren.renderVisibility(self.pers.tile, self.visibility, self.maze)
@@ -227,12 +224,16 @@ class GUI:
                 self.isPaused = True
 
             try:
+                self.canvas.lift(self.backpack_icon)
+                self.canvas.lift(self.menu_button)
+                self.canvas.lift(self.backpack)
                 if not self.root.winfo_exists():
                     break
             except:
                 break
             self.canvas.lift(self.backpack_icon)
             if not self.isPaused:
+                #print(self.canvas.coords(self.backpack_icon))
                 self.mcb.loop(self)
                 self.label.config(text=round(float(self.label.cget('text'))-0.01, 2))
             else:
@@ -748,6 +749,7 @@ class GUI:
         maze.addChunk(x + 1, y + 1, z)
 
     def renderNeighbours(self, chunk):
+        #print(self.canvas.coords(self.backpack_icon))
         x = chunk.x
         y = chunk.y
         z = chunk.z
@@ -767,8 +769,16 @@ class GUI:
                 random1 = randint(2, chunk.size-2)
                 random2 = randint(2, chunk.size-2)
                 tile = chunk.tiles[random1][random2]
-                self.mcb.addPortal(self.pers.tile.neighbours[0], self, chunk.z)
-            chunk.portaled = 'Already'
+                #print('portal',random1,random2)
+                self.mcb.addPortal(self.pers.tile.neighbours[0],self,chunk.z)
+            chunk.portaled='Already'
+        try:
+            self.canvas.lift(self.backpack_icon)
+            self.canvas.lift(self.menu)
+            self.canvas.lift(self.backpack)
+            #print(self.canvas.coords(self.backpack_icon))
+        except:
+            print('1')
 
     def scroll_start(self, event):
         self.canvas.scan_mark(event.x, event.y)
