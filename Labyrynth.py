@@ -1,7 +1,7 @@
-SOUTH=0
-WEST=2
-EAST=1
-NORTH=3
+SOUTH = 0
+WEST = 2
+EAST = 1
+NORTH = 3
 from tkinter import *
 from random import*
 from time import sleep
@@ -26,182 +26,174 @@ from time import sleep
 #
 #
 class Maze:
-    def __init__(self,opt):
-        options={
+    def __init__(self, opt):
+        options = {
             'intensity': opt['intensity'],
-            'lifespan':opt['lifespan'],
-            'loopchance':opt['loopchance'],
-            'cavechance':opt['cavechance']            
+            'lifespan': opt['lifespan'],
+            'loopchance': opt['loopchance'],
+            'cavechance': opt['cavechance']
         }
-        self.chunkOptions={
-            'chunk_size':opt['chunk_size'],
-            'block_chance':opt['block_chance'],
-            'double_entrance':opt['double_entrance'],
-            
+
+        self.chunkOptions = {
+            'chunk_size': opt['chunk_size'],
+            'block_chance': opt['block_chance'],
+            'double_entrance': opt['double_entrance'],
         }
-        self.rooms=[]
+        self.rooms = []
         self.chunks = {}
-        self.cb=CollectiveBrain(options)
-        self.chunks[0]={}
-        self.chunks[0][0]={}
-        self.chunks[0][0][0]={}
-        self.unoMap={}
-        self.unoMap[0]={}
-        self.unoMap[0][0]={}
-        self.unoMap[0][0][0]={}
+        self.cb = CollectiveBrain(options)
+        self.chunks[0] = {}
+        self.chunks[0][0] = {}
+        self.chunks[0][0][0] = {}
+        self.unoMap = {}
+        self.unoMap[0] = {}
+        self.unoMap[0][0] = {}
+        self.unoMap[0][0][0] = {}
         
-        
-    def addChunk(self,x,y,z):
-        if(self.get(x,y,z)):
+    def addChunk(self, x, y, z):
+        if self.get(x, y, z):
             return
-        #print(x,y,z)
-        c=Chunk(self.chunkOptions,x,y,z,self)
-        southN=self.get(x,y-1,z)
-        northN=self.get(x,y+1,z)
-        westN=self.get(x+1,y,z)
-        eastN=self.get(x-1,y,z)
+        c = Chunk(self.chunkOptions, x, y, z, self)
+        southN = self.get(x, y-1, z)
+        northN = self.get(x, y+1, z)
+        westN = self.get(x+1, y, z)
+        eastN = self.get(x-1, y, z)
         self.cb.setChunk(c)
         room = self.cb.createChunk(c.tiles[0][0])     
         if southN:
-            c.connect(southN,SOUTH)
+            c.connect(southN, SOUTH)
         if westN:
-            c.connect(westN,WEST)
+            c.connect(westN, WEST)
         if eastN:
-            c.connect(eastN,EAST)
+            c.connect(eastN, EAST)
         if northN:
-            c.connect(northN,NORTH)
+            c.connect(northN, NORTH)
         self.rooms.append(room)
-        self.add(x,y,z,c)
-    def getTiles(self,x,y,deltax,deltay):
-        pass
-        
-     
-        
-    def add(self,x,y,z,item):
-        if not x in self.chunks:
-            self.chunks[x]={}
-        if not y in self.chunks[x]:
-            self.chunks[x][y]={}
-        self.chunks[x][y][z]=item  
+        self.add(x, y, z, c)
 
-    def get(self,x,y,z):
-        if not x in self.chunks:
+    def getTiles(self, x, y, deltax, deltay):
+        pass
+
+    def add(self, x, y, z, item):
+        if x not in self.chunks:
+            self.chunks[x] = {}
+        if y not in self.chunks[x]:
+            self.chunks[x][y] = {}
+        self.chunks[x][y][z] = item
+
+    def get(self, x, y, z):
+        if x not in self.chunks:
             return False
-        if not y in self.chunks[x]:
+        if y not in self.chunks[x]:
             return False
-        if not z in self.chunks[x][y]:
+        if z not in self.chunks[x][y]:
             return False
         return self.chunks[x][y][z]
 
-    def addTile(self,x,y,z,item):
-        if not x in self.unoMap:
-            self.unoMap[x]={}
-        if not y in self.unoMap[x]:
-            self.unoMap[x][y]={}
-        self.unoMap[x][y][z]=item  
+    def addTile(self, x, y, z, item):
+        if x not in self.unoMap:
+            self.unoMap[x] = {}
+        if y not in self.unoMap[x]:
+            self.unoMap[x][y] = {}
+        self.unoMap[x][y][z] = item
 
-    def getTile(self,x,y,z):
-        if not x in self.unoMap:
+    def getTile(self, x, y, z):
+        if x not in self.unoMap:
             return False
-        if not y in self.unoMap[x]:
+        if y not in self.unoMap[x]:
             return False
-        if not z in self.unoMap[x][y]:
+        if z not in self.unoMap[x][y]:
             return False
         return self.unoMap[x][y][z]
+
 class Chunk:
-    def __init__(self,options,x,y,z,maze):
-        self.portaled="mayBe"
-        self.drawings=[]
-        self.rendered=False
-        self.x=x
-        self.y=y
-        self.z=z
-        self.cleared=False
-        self.size=options['chunk_size']
-        self.block_chance=options['block_chance']
-        self.e_chance=options['double_entrance']
-        self.tiles=[]
-        self.chunkExits=[None,None,None,None]
-        self.neighbours=[]
+    def __init__(self, options, x, y, z, maze):
+        self.portaled = "mayBe"
+        self.drawings = []
+        self.rendered = False
+        self.x = x
+        self.y = y
+        self.z = z
+        self.cleared = False
+        self.size = options['chunk_size']
+        self.block_chance = options['block_chance']
+        self.e_chance = options['double_entrance']
+        self.tiles = []
+        self.chunkExits = [None, None, None, None]
+        self.neighbours = []
         for i in range(options['chunk_size']):
             self.tiles.append([])
             for j in range(options['chunk_size']):
-                tile=Tile(i,j,x,y,self)
-                self.tiles[i].append(tile);
-                x1=self.x*(self.size)+i
-                y2=self.y*(self.size)+j
-                z3=self.z
-                #if(x1==0 and y2==0 and z3==0):
-                    #print(x1,y2,z3)
-                maze.addTile(x1,y2,z3,tile)
-                if(i>0):
-                    self.tiles[i][j].addNeighbour(EAST,self.tiles[i-1][j])
-                if(j>0):
-                    self.tiles[i][j].addNeighbour(SOUTH,self.tiles[i][j-1])
-    
-    #def generateExits(self,southExit,eastExit,westExit,northExit):
-    #        self.self.chunkExits=[southExit,eastExit,westExit,northExit]
-    def connect(self,chunk,direction):
-        
-        exits=0
-        def genEx(x,y,exits):
-            blocked=False
+                tile = Tile(i, j, x, y, self)
+                self.tiles[i].append(tile)
+                x1 = self.x * self.size + i
+                y2 = self.y * self.size + j
+                z3 = self.z
+                maze.addTile(x1, y2, z3, tile)
+                if i > 0:
+                    self.tiles[i][j].addNeighbour(EAST, self.tiles[i-1][j])
+                if j > 0:
+                    self.tiles[i][j].addNeighbour(SOUTH, self.tiles[i][j-1])
+
+    def connect(self, chunk, direction):
+        exits = 0
+
+        def genEx(x, y, exits):
+            blocked = False
             for i in self.chunkExits:
-                if(i):
-                    blocked=True
+                if i:
+                    blocked = True
                     break
-            if(blocked and random()>self.block_chance):
-                blocked=False
-            #print(blocked,self.block_chance)
+            if blocked and random() > self.block_chance:
+                blocked = False
             for t in range(self.size):
-                cx=x
-                cy=y
-                if(y is False):
-                    cy=t
-                    oy=t
+                cx = x
+                cy = y
+                if y is False:
+                    cy = t
+                    oy = t
                 else:
-                    oy=chunk.size-1-cy
-                if(x is False):
-                    cx=t
-                    ox=t
+                    oy = chunk.size-1-cy
+                if x is False:
+                    cx = t
+                    ox = t
                 else:
-                    ox=chunk.size-1-cx
+                    ox = chunk.size-1-cx
                     
-                i=self.tiles[cx][cy]
-                i.addNeighbour(direction,chunk.tiles[ox][oy])
+                i = self.tiles[cx][cy]
+                i.addNeighbour(direction, chunk.tiles[ox][oy])
                 rand = random()
-                if not blocked and exits<3 and (random()<t/(chunk.size-1) or rand<self.e_chance):
-                    exits+=1         
+                if not blocked and exits < 3 and (random() < t/(chunk.size-1) or rand < self.e_chance):
+                    exits += 1
                     i.connect(chunk.tiles[ox][oy])
-                    self.chunkExits[direction]=i
+                    self.chunkExits[direction] = i
        
-        if direction==EAST:
-            genEx(0,False,exits)
-        if direction==SOUTH:
-            genEx(False,0,exits)
-        if direction==NORTH:
-            genEx(False,chunk.size-1,exits)
-        if direction==WEST:
-            genEx(chunk.size-1,False,exits)
-        
-            
+        if direction == EAST:
+            genEx(0, False, exits)
+        if direction == SOUTH:
+            genEx(False, 0, exits)
+        if direction == NORTH:
+            genEx(False, chunk.size-1, exits)
+        if direction == WEST:
+            genEx(chunk.size-1, False, exits)
         
 class Tile:
-    def __init__(self,x,y,cx,cy,chunk):
-        self.room=False
-        self.visible=False
-        self.chunk=chunk
-        self.x=x
-        self.y=y
-        self.chunk_x=cx
-        self.chunk_y=cy
-        self.mazex=cx*(self.chunk.size)+x
-        self.mazey=cy*(self.chunk.size)+y
-        self.connections =[False,False,False,False]
-        self.neighbours =[False,False,False,False]
-    def addNeighbour(self,direction,tile):
-        self.neighbours[direction]=tile
-        tile.neighbours[3-direction]=self
+    def __init__(self, x, y, cx, cy, chunk):
+        self.room = False
+        self.visible = False
+        self.chunk = chunk
+        self.x = x
+        self.y = y
+        self.chunk_x = cx
+        self.chunk_y = cy
+        self.mazex = cx * self.chunk.size + x
+        self.mazey = cy * self.chunk.size + y
+        self.connections = [False, False, False, False]
+        self.neighbours = [False, False, False, False]
+
+    def addNeighbour(self, direction, tile):
+        self.neighbours[direction] = tile
+        tile.neighbours[3-direction] = self
     def connect(self,tile):
             self.connections[self.neighbours.index(tile)]=tile
             tile.connections[3-self.neighbours.index(tile)]=self

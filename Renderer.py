@@ -7,31 +7,31 @@ class Renderer:
         self.y = self.gui.y
         self.canvas = self.gui.canvas
         self.mini = self.gui.minimap.canvas
-        self.chunk=''
+        self.chunk = ''
         tile_bg = Image.open("img/patern3.png")
-        self.tile_bg=ImageTk.PhotoImage(tile_bg.resize((self.size, self.size), Image.ANTIALIAS))
+        self.tile_bg = ImageTk.PhotoImage(tile_bg.resize((self.size, self.size), Image.ANTIALIAS))
+
     def renderChunk(self, chunk):
-        self.chunk=chunk
-        #tile_bg = Image.open("img/patern.png")
-        #self.tile_bg=ImageTk.PhotoImage(tile_bg.resize((97, 97), Image.ANTIALIAS))
-        if(chunk.rendered):
+        self.chunk = chunk
+        if chunk.rendered:
             for i in chunk.drawings:
-               self.canvas.delete(i) 
-        if(not chunk):
+                if (i != self.gui.backpack_icon and i != self.gui.menu_button and i != self.gui.armor_icon and
+                        i != self.gui.health.form and i != self.gui.health.rect and i != self.gui.satiety.form and
+                        i != self.gui.satiety.rect):
+                    self.canvas.delete(i)
+        if not chunk:
             return
-        chunk.rendered=True
+        chunk.rendered = True
         for i in chunk.tiles:
            for j in i:
                self.renderTile(j, chunk.x, chunk.y, chunk)
-    def renderTile(self,tile,cx,cy,chunk):
-        #print(tile.x,tile.y,cx,cy)
-        
-        #self.skin = self.canvas.create_image(x,y)
+
+    def renderTile(self, tile, cx, cy, chunk):
         size = self.size
         x = self.x+size*(tile.x+cx*chunk.size)
         y = self.y+size*(tile.y+cy*chunk.size)
-        tile.realx=x
-        tile.realy=y
+        tile.realx = x
+        tile.realy = y
         
         if not tile.connections[0]:
             self.addWall(x, y, x+size, y+5)
@@ -41,66 +41,42 @@ class Renderer:
             self.addWall(x+size, y, x+size-5, y+size)
         if not tile.connections[3]:
             self.addWall(x, y+size, x+size, y+size-5)
-        self.chunk.drawings.append(self.canvas.create_image(x+self.size/2,y+self.size/2,image=self.tile_bg))
+        self.chunk.drawings.append(self.canvas.create_image(x+self.size/2, y+self.size/2, image=self.tile_bg))
         self.canvas.lower(self.chunk.drawings[-1])
-    def addWall(self, x1, y1, x2, y2):
-        
-        self.chunk.drawings.append(self.canvas.create_rectangle(x1, y1, x2, y2,fill='red'))
-        self.canvas.lower(self.chunk.drawings[-1])
-        #print(x1,x2,y1,y2)
-        self.chunk.drawings.append(self.mini.create_line(int(x1/10), int(y1/10), int(x2/10), int(y2/10), width=2,fill='black'))
-        self.canvas.lower(self.chunk.drawings[-1])
-        #self.mini.create_line(-5000, -5000, -4950, -4950, width=2,fill='black')
-        #self.mini.create_rectangle(0,0, 20, 20,fill='red')
 
+    def addWall(self, x1, y1, x2, y2):
+        self.chunk.drawings.append(self.canvas.create_rectangle(x1, y1, x2, y2, fill='red'))
+        self.canvas.lower(self.chunk.drawings[-1])
+        self.chunk.drawings.append(self.mini.create_line(int(x1/10), int(y1/10), int(x2/10), int(y2/10),
+                                                         width=2, fill='black'))
+        self.canvas.lower(self.chunk.drawings[-1])
         
-    def renderVisibility(self,tile,vis,tiles):
-        #print(tile)
-        t= tile
-        c= t.chunk.z
-        self.gui.visible=[[],[]]
+    def renderVisibility(self, tile, vis, tiles):
+        t = tile
+        c = t.chunk.z
+        self.gui.visible = [[], []]
         self.gui.visible.append(t)
-        
         for i in vis:
             self.canvas.delete(i)
-            #vis.remove(i)
-        for i in range(0,4):
-            while(tile.connections[i]):
+        for i in range(0, 4):
+            while tile.connections[i]:
                 tile=tile.connections[i]
                 tile.visible=True
                 self.gui.visible[0].append(tile)
-            if not tile==t:
+            if not tile == t:
                  self.gui.visible[1].append(tile)
-                 
-            tile=t
+            tile = t
         self.gui.visible[0].append(tile)
-        tile.visible=True
-        #a=tiles.getTile(0,0,0)
-        if(tile.room):
+        tile.visible = True
+        if tile.room:
             for i in tile.room.tiles:
-                i.visible=True
+                i.visible = True
                 self.gui.visible[0].append(i)
-        #vis.append(self.canvas.create_rectangle(a.realx+100,a.realy+100,a.realx+100+self.size,a.realy+100+self.size,fill='black'))
-        #print(a.realx,a.realy)
-        for i in range(tile.mazex-4,tile.mazex+4):
-            for j in range(tile.mazey-4,tile.mazey+4):
-                a=tiles.getTile(i,j,c)
-                if(a):
-                    #print(a)
-                    if(not a.visible):
-                        vis.append(self.canvas.create_rectangle(a.realx,a.realy,a.realx+self.size,a.realy+self.size,fill='black'))
-                    a.visible=False    
-                        
-                    
-            
-            
-        
-
-
-
-
-
-
-
-
-        
+        for i in range(tile.mazex-4, tile.mazex+4):
+            for j in range(tile.mazey-4, tile.mazey+4):
+                a = tiles.getTile(i, j, c)
+                if a:
+                    if not a.visible:
+                        vis.append(self.canvas.create_rectangle(a.realx, a.realy, a.realx+self.size, a.realy+self.size,
+                                                                fill='black'))
+                    a.visible = False

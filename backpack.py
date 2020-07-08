@@ -79,14 +79,15 @@ class Backpack:
                                               image=self.items[4*(j-1)+i][0], tag=self.items[4*(j-1)+i][2])
                     self.canvas2.tag_bind(self.items[4*(j-1)+i][2], "<Button-1>",
                                           lambda event, x=4*(j-1)+i: self.select_item(event, x))
+            t = floor(len(self.items)/4)-1
             if len(self.items)/4 > floor(len(self.items)/4):
                 x = int(4 * (len(self.items)/4 - floor(len(self.items)/4)))
                 for i in range(x):
                     self.canvas2.create_image(i * 100 + 50, floor(len(self.items)/4) * 100 + 50,
-                                              image=self.items[len(self.items)-i-5][0],
-                                              tag=self.items[len(self.items)-i-5][2])
-                    self.canvas2.tag_bind(self.items[len(self.items)-i-1][2], "<Button-1>",
-                                          lambda event, x=len(self.items)-i-1: self.select_item(event, x))
+                                              image=self.items[4 * t + i][0],
+                                              tag=self.items[4 * t + i][2])
+                    self.canvas2.tag_bind(self.items[4 * t + i][2], "<Button-1>",
+                                          lambda event, x=4 * t + i: self.select_item(event, x))
         self.item = self.canvas3.create_rectangle(0, 0, 0, 0)
 
     def select_item(self, event, x):
@@ -140,7 +141,6 @@ class Backpack:
             self.gui.canvas.after(30000, self.return_speed4)
         if self.items[x][2] == "potion_orange1":
             self.pers.power += 5
-            print(self.pers.power)
             self.throw_out_func(event, x)
             self.gui.canvas.after(15000, self.return_power1)
         if self.items[x][2] == "potion_orange4":
@@ -148,7 +148,6 @@ class Backpack:
             self.throw_out_func(event, x)
             self.gui.canvas.after(30000, self.return_power4)
         if self.items[x][2] == "potion2":
-            
             self.gui.minimap.lifter()
             self.throw_out_func(event, x)
             self.gui.canvas.after(120000, self.return_Pause)

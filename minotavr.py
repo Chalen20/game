@@ -1,7 +1,7 @@
 from PIL import ImageTk, Image
 from random import randint
 class Minotavr:
-    def __init__(self, x, y, speed, attack):
+    def __init__(self, x, y, speed):
         skin = Image.open("img/Minotavr.png")
         skin = skin.resize((100, 100), Image.ANTIALIAS)
         died_skin = skin.rotate(90)
@@ -13,7 +13,7 @@ class Minotavr:
         transpose_died_skin = ImageTk.PhotoImage(transpose_died_skin)
 
         back_skin = Image.open('img/Minotavr_bottom_view.png')
-        back_skin = back_skin((100, 100), Image.ANTIALIAS)
+        back_skin = back_skin.resize((100, 100), Image.ANTIALIAS)
         died_back_skin = back_skin.rotate(90)
         transpose_back_skin = back_skin.transpose(Image.FLIP_LEFT_RIGHT)
         transpose_died_back_skin = transpose_back_skin.rotate(90)
@@ -34,12 +34,9 @@ class Minotavr:
         self.faced_east = False
         self.bot_skin = back_skin
         self.transpose_bot_skin = transpose_back_skin
-        self.coords = {}
-        self.coords.x = 0
-        self.coords.y = 0
-        self.attack = attack
         self.x = x
         self.y = y
+        self.attack = 100
         self.isDied = False
 
     def attack(self):
